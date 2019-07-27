@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Word Collector</string>
+    <string name="save">Save</string>
+    <string name="look_up">Look Up</string>
+
+    <string name="example">supercalifragilisticexpialidocious</string>
+    <string name="definition">extraordinarily good; wonderful.</string>
+    <string name="item_delete">" has been deleted."</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit Word</string>
+
+
+
+</resources>
