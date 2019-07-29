@@ -8,7 +8,7 @@
     <string name="item_delete">" has been deleted."</string>
     <string name="cancel">Cancel</string>
     <string name="edit">Edit Word</string>
-
+    <string name="edit_word">Edit Word</string>
 
 
 </resources>

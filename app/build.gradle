@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -27,6 +28,9 @@ android {
     dataBinding {
         enabled = true
     }
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
 }
 
 dependencies {
@@ -45,4 +49,12 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
+    // Room and Lifecycle dependencies
+    implementation "androidx.room:room-runtime:2.1.0"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    kapt "androidx.room:room-compiler:2.1.0"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0"
 }
