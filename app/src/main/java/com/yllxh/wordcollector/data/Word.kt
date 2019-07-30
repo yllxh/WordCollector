@@ -10,7 +10,7 @@ data class Word(
     var definition: String = "",
     var category: String = "All",
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L){
+    var id: Long = 0L){
 
     @Ignore
     constructor(
