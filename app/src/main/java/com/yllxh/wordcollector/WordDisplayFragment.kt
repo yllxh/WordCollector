@@ -13,20 +13,23 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.adapters.WordAdapter
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
+import kotlinx.android.synthetic.main.fragment_word_display.*
 
 
 class WordDisplayFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
+        val binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        binding.viewModel = viewModel
 
-        val adapter = WordAdapter(WordAdapter.OnEditClickListener { word ->
+        val wordAdapter = WordAdapter(WordAdapter.OnEditClickListener { word ->
             DialogEditWordBinding.inflate(inflater, container, false).apply {
                 editedWord.setText(word.word)
                 editedDefinition.setText(word.definition)
@@ -49,18 +52,39 @@ class WordDisplayFragment : Fragment() {
                 }
             }
         })
+        binding.wordRecycleview.adapter = wordAdapter
 
         viewModel.words.observe(this, Observer {
-            adapter.submitList(it)
+            wordAdapter.submitList(it)
 
             // If the new word was inserted to the list, scroll to the Top of the recycleView
             if (viewModel.newItemInserted) {
-                binding.recycleviewWordDisplay.smoothScrollToPosition(0)
+                binding.wordRecycleview.smoothScrollToPosition(0)
                 viewModel.newItemInserted = false
             }
         })
-        binding.recycleviewWordDisplay.adapter = adapter
-        binding.viewModel = viewModel
+
+        ItemTouchHelper(object : ItemTouchHelper
+        .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val word = wordAdapter.getWordAtPosition(position)
+                toast("Deleting " + word.word, Toast.LENGTH_LONG)
+                viewModel.deleteWord(word)
+            }
+        }).attachToRecyclerView(binding.wordRecycleview)
+
+        val categoryAdapter = CategoryAdapter(false)
+        binding.categoryRecycleview.adapter = categoryAdapter
+
+        viewModel.categories.observe(this, Observer {
+            categoryAdapter.submitList(it)
+        })
+
 
         viewModel.saveNewWord.observe(this, Observer {
             if (it) {
@@ -92,19 +116,7 @@ class WordDisplayFragment : Fragment() {
             }
         })
 
-        ItemTouchHelper(object : ItemTouchHelper
-        .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return false
-            }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val word = adapter.getWordAtPosition(position)
-                toast("Deleting " + word.word, Toast.LENGTH_LONG)
-                viewModel.deleteWord(word)
-            }
-        }).attachToRecyclerView(binding.recycleviewWordDisplay)
 
         return binding.root
     }

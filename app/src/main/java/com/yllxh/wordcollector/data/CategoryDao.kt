@@ -8,8 +8,8 @@ interface CategoryDao{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(category: Category)
 
-    @Update
-    fun update(category: Category)
+    @Query("UPDATE category_table SET name = :newName WHERE name = :oldName")
+    fun update(newName: String, oldName: String)
 
     @Query("SELECT * FROM category_table")
     fun getAll(): LiveData<List<Category>>

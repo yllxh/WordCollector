@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.data.AppDatabase
+import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import kotlinx.coroutines.*
 
@@ -21,6 +22,13 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
     private val db = AppDatabase.getInstance(application)
     var words = db.wordDao.getAll()
+    var categories = db.categoryDao.getAll()
+
+    init {
+        coroutineScope.launch {
+            insert(Category("All"))
+        }
+    }
 
     private var _saveNewWord = MutableLiveData<Boolean>()
     val saveNewWord: LiveData<Boolean>
@@ -42,7 +50,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     fun onLookUpWord() {
         _lookUpWord.value = true
     }
-
     fun onLookUpWordCompleted() {
         _lookUpWord.value = false
     }
@@ -71,7 +78,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     private suspend fun insert(word: Word) {
         withContext(Dispatchers.IO) {
             db.wordDao.insert(word)
-
         }
     }
 
@@ -107,6 +113,12 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     private suspend fun delete(word: Word) {
         withContext(Dispatchers.IO) {
             db.wordDao.delete(word)
+        }
+    }
+
+    private suspend fun insert(category: Category) {
+        withContext(Dispatchers.IO) {
+            db.categoryDao.insert(category)
         }
     }
 
