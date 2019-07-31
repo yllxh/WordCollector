@@ -1,6 +1,7 @@
 package com.yllxh.wordcollector
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +19,6 @@ import com.yllxh.wordcollector.adapters.WordAdapter
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
-import kotlinx.android.synthetic.main.fragment_word_display.*
 
 
 class WordDisplayFragment : Fragment() {
@@ -78,8 +78,8 @@ class WordDisplayFragment : Fragment() {
             }
         }).attachToRecyclerView(binding.wordRecycleview)
 
-        val categoryAdapter = CategoryAdapter(false) {
-            viewModel.currentCategory.value = it?.name ?: viewModel.defaultCategory
+        val categoryAdapter = CategoryAdapter(activity as Context,false) {
+            viewModel.updateSelectedCategory(it?.name ?: viewModel.defaultCategory)
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 

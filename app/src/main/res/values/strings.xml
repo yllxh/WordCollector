@@ -21,5 +21,8 @@
     <string name="category">Category:</string>
     <string name="word_is_not_valid">No valid Word was entered</string>
     <string name="all">All</string>
+    <string name="deleting">Deleting </string>
+    <string name="nice_try">Nice try!</string>
+    <string name="look_again">Look again!</string>
 
 </resources>

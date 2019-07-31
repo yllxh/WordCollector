@@ -144,5 +144,15 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         viewModelJob.cancel()
     }
 
+    fun updateSelectedCategory(s: String) {
+        currentCategory.value = s
+        coroutineScope.launch {
+            withContext(Dispatchers.IO){
+                db.categoryDao.deselectPreviousSelection()
+                db.categoryDao.updateSelectedCategory(currentCategory.value)
+            }
+        }
+    }
+
 
 }

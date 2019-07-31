@@ -23,4 +23,10 @@ interface CategoryDao{
     @Delete
     fun delete(vararg category: Category): Int
 
+    @Query("UPDATE category_table SET isSelected = 0 WHERE isSelected = 1")
+    fun deselectPreviousSelection()
+
+    @Query("UPDATE category_table SET isSelected = 1 WHERE name = :selectedCategory")
+    fun updateSelectedCategory(selectedCategory: String?)
+
 }

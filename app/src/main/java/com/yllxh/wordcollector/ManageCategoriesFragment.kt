@@ -55,7 +55,7 @@ class ManageCategoriesFragment : Fragment() {
                 }
             }
         }
-        val categoryAdapter = CategoryAdapter(true, onAddOrEditCategory)
+        val categoryAdapter = CategoryAdapter(activity as Context,true, onAddOrEditCategory)
         binding.categoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
@@ -76,8 +76,11 @@ class ManageCategoriesFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val category = categoryAdapter.getCategoryAtPosition(position)
-                toast("Deleting " + category.name, Toast.LENGTH_LONG)
-                viewModel.deleteCategory(category)
+                if (viewModel.deleteCategory(category)) {
+                    toast(getString(R.string.deleting) + category.name)
+                } else {
+                    toast(getString(R.string.look_again))
+                }
             }
         }).attachToRecyclerView(binding.categoryRecycleview)
 

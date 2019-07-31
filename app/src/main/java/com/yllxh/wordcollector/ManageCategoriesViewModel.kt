@@ -71,11 +71,14 @@ class ManageCategoriesViewModel(application: Application):
         }
     }
 
-    fun deleteCategory(category: Category) {
-        if (category.name != defaultCategory)
+    fun deleteCategory(category: Category): Boolean{
+        if (category.name != defaultCategory) {
             coroutineScope.launch {
                 delete(category)
             }
+            return true
+        }
+        return false
     }
 
     private suspend fun delete(category: Category) {
