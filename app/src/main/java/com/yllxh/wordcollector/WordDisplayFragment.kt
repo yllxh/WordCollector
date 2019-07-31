@@ -78,7 +78,9 @@ class WordDisplayFragment : Fragment() {
             }
         }).attachToRecyclerView(binding.wordRecycleview)
 
-        val categoryAdapter = CategoryAdapter(false)
+        val categoryAdapter = CategoryAdapter(false) {
+            viewModel.currentCategory.value = it?.name ?: viewModel.defaultCategory
+        }
         binding.categoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
@@ -90,7 +92,8 @@ class WordDisplayFragment : Fragment() {
             if (it) {
                 val word = Word(
                     binding.newWordEditText.text.toString(),
-                    binding.newDefinitionEditText.text.toString()
+                    binding.newDefinitionEditText.text.toString(),
+                    viewModel.currentCategory.value ?: viewModel.defaultCategory
                 )
                 binding.apply {
                     newWordEditText.setText("")

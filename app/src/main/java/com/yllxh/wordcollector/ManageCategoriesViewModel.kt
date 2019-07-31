@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 
 class ManageCategoriesViewModel(application: Application):
         AndroidViewModel(application){
+    val defaultCategory = application.getString(R.string.all)
     /**
     Used to indicate if a new word was added to the list, only used by the recycleView to check,
     when the list of words is changes, if a new item was inserted, if it is true the recycleView
@@ -22,7 +23,7 @@ class ManageCategoriesViewModel(application: Application):
     var categories = db.categoryDao.getAll()
 
     private fun checkCategory(newCategory: Category, oldCategory: Category? = null): Boolean {
-        if (newCategory.name.isEmpty() || newCategory.name == "All" || oldCategory?.name == "All")
+        if (newCategory.name.isEmpty() || newCategory.name == defaultCategory || oldCategory?.name == defaultCategory)
             return false
         else if (oldCategory != null) {
             if (newCategory.name != oldCategory.name)
@@ -66,11 +67,12 @@ class ManageCategoriesViewModel(application: Application):
     private suspend fun update(newName: String, oldName: String) {
         withContext(Dispatchers.IO) {
             db.categoryDao.update(newName, oldName)
+            db.wordDao.updateCategory(newName, oldName)
         }
     }
 
     fun deleteCategory(category: Category) {
-        if (category.name != "All")
+        if (category.name != defaultCategory)
             coroutineScope.launch {
                 delete(category)
             }

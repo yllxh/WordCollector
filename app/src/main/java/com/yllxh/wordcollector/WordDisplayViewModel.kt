@@ -1,9 +1,11 @@
 package com.yllxh.wordcollector
 
 import android.app.Application
+import androidx.arch.core.util.Function
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.yllxh.wordcollector.data.AppDatabase
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
@@ -11,24 +13,39 @@ import kotlinx.coroutines.*
 
 
 class WordDisplayViewModel(application: Application) : AndroidViewModel(application) {
+    val defaultCategory = application.getString(R.string.all)
     /**
-    Used to indicate if a new word was added to the list, only used by the recycleView to check,
-    when the list of words is changes, if a new item was inserted, if it is true the recycleView
-    scroll to the top of the list.
+     *  Used to indicate if a new word was added to the list, only used by the recycleView to check
+     *  whether the list of items was changed because a new item was Inserted, if it is true the recycleView
+     *  scroll to the top of the list.
      */
     var newItemInserted = false
 
+    // Used to keep track of the current category
+    var currentCategory: MutableLiveData<String> = MutableLiveData()
+
+    private val db = AppDatabase.getInstance(application)
+
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-    private val db = AppDatabase.getInstance(application)
-    var words = db.wordDao.getAll()
-    var categories = db.categoryDao.getAll()
 
     init {
+        currentCategory.value = defaultCategory
         coroutineScope.launch {
-            insert(Category("All"))
+            insert(Category(defaultCategory))
         }
     }
+
+    // The words that are displayed will depend
+    // on the currentCategory which is selected by the user
+    var words: LiveData<List<Word>> = Transformations.switchMap(currentCategory, Function {
+        when (it) {
+            defaultCategory -> db.wordDao.getAll()
+            else -> db.wordDao.getWordsOfCategory(it)
+        }
+    })
+    var categories = db.categoryDao.getAll()
+
 
     private var _saveNewWord = MutableLiveData<Boolean>()
     val saveNewWord: LiveData<Boolean>
@@ -126,4 +143,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         super.onCleared()
         viewModelJob.cancel()
     }
+
+
 }
