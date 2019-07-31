@@ -1,5 +1,6 @@
 package com.yllxh.wordcollector
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -23,6 +24,7 @@ import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 
 class WordDisplayFragment : Fragment() {
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
@@ -54,16 +56,6 @@ class WordDisplayFragment : Fragment() {
         })
         binding.wordRecycleview.adapter = wordAdapter
 
-        viewModel.words.observe(this, Observer {
-            wordAdapter.submitList(it)
-
-            // If the new word was inserted to the list, scroll to the Top of the recycleView
-            if (viewModel.newItemInserted) {
-                binding.wordRecycleview.smoothScrollToPosition(0)
-                viewModel.newItemInserted = false
-            }
-        })
-
         ItemTouchHelper(object : ItemTouchHelper
         .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -77,6 +69,15 @@ class WordDisplayFragment : Fragment() {
                 viewModel.deleteWord(word)
             }
         }).attachToRecyclerView(binding.wordRecycleview)
+        viewModel.words.observe(this, Observer {
+            wordAdapter.submitList(it)
+
+            // If the new word was inserted to the list, scroll to the Top of the recycleView
+            if (viewModel.newItemInserted) {
+                binding.wordRecycleview.smoothScrollToPosition(0)
+                viewModel.newItemInserted = false
+            }
+        })
 
         val categoryAdapter = CategoryAdapter(activity as Context,false) {
             viewModel.updateSelectedCategory(it?.name ?: viewModel.defaultCategory)
@@ -119,12 +120,20 @@ class WordDisplayFragment : Fragment() {
             }
         })
 
+        binding.hideHeaderButton.setOnClickListener {
+            binding.enterNewWordCv.visibility = View.GONE
+            binding.floatingActionButton.visibility= View.VISIBLE
+        }
+
+        binding.floatingActionButton.setOnClickListener {
+            binding.enterNewWordCv.visibility = View.VISIBLE
+            binding.floatingActionButton.visibility= View.GONE
+        }
+
 
 
         return binding.root
     }
-
-
 
     private fun lookUpTheNewWord(str: String) {
         // Temporary solution to look up the new work on Google Translate

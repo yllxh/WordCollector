@@ -39,8 +39,14 @@ class CategoryAdapter(
 
                 // Sets the color of the view which is selected
                 when(category.isSelected){
-                    1 -> cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    else -> cardView.setCardBackgroundColor(ContextCompat.getColor(context,android.R.color.white))
+                    1 -> {
+                        cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+                        categoryTextView.setTextColor(ContextCompat.getColor(context,android.R.color.white))
+                    }
+                    else -> {
+                        cardView.setCardBackgroundColor(ContextCompat.getColor(context,android.R.color.white))
+                        categoryTextView.setTextColor(ContextCompat.getColor(context,android.R.color.darker_gray))
+                    }
                 }
             }
         }
