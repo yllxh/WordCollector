@@ -32,11 +32,22 @@ class WordDisplayFragment : Fragment() {
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         binding.viewModel = viewModel
 
+        // Create an instance of the CategoryAdapter with the necessary parameters
+        val categoryAdapter = CategoryAdapter(activity as Context,false) {
+            viewModel.onSelectCategory(it?.name ?: viewModel.defaultCategory)
+        }
+        binding.categoryRecycleview.adapter = categoryAdapter
+
+        // Observing the categories for changes.
+        viewModel.categories.observe(this, Observer {
+            categoryAdapter.submitList(it)
+        })
 
         onEditWordListener = { word ->
             DialogEditWordBinding.inflate(inflater, container, false).apply {
                 editedWord.setText(word.word)
                 editedDefinition.setText(word.definition)
+                dialogCategoryRecycleview.adapter = categoryAdapter
 
                 AlertDialog.Builder(activity).apply {
                     setView(root)
@@ -49,7 +60,7 @@ class WordDisplayFragment : Fragment() {
                                 Word(
                                     newWord,
                                     newDefinition,
-                                    viewModel.currentCategory.value ?: viewModel.defaultCategory),
+                                    viewModel.currentCategory.value ?: word.category),
                                 word))
                             toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
 
@@ -88,17 +99,6 @@ class WordDisplayFragment : Fragment() {
                 binding.wordRecycleview.smoothScrollToPosition(0)
                 viewModel.newItemInserted = false
             }
-        })
-
-        // Create an instance of the CategoryAdapter with the necessary parameters
-        val categoryAdapter = CategoryAdapter(activity as Context,false) {
-            viewModel.onSelectCategory(it?.name ?: viewModel.defaultCategory)
-        }
-        binding.categoryRecycleview.adapter = categoryAdapter
-
-        // Observing the categories for changes.
-        viewModel.categories.observe(this, Observer {
-            categoryAdapter.submitList(it)
         })
 
         // Observing when the Save button is clicked.
