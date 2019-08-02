@@ -112,7 +112,7 @@ class WordDisplayFragment : Fragment() {
 
         })
 
-        // Observing when the LookUp button is clicked
+        // Observing when the LookUp button is clicked.
         viewModel.lookUpWord.observe(this, Observer {
             if (it) {
                 val str = binding.newWordEditText.text.toString().trim()
