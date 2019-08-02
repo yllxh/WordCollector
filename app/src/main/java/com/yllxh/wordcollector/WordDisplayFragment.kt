@@ -101,38 +101,33 @@ class WordDisplayFragment : Fragment() {
             }
         })
 
-        // Observing when the Save button is clicked.
-        viewModel.saveNewWord.observe(this, Observer {
-            if (it) {
+        // Setting click listener for the Save textView button
+        // if the EditTexts have valid content the word will be saved
+        binding.saveTextView.setOnClickListener {
+            binding.apply {
                 val word = Word(
-                    binding.newWordEditText.text.toString(),
-                    binding.newDefinitionEditText.text.toString(),
+                    newWordEditText.text.toString(),
+                    newDefinitionEditText.text.toString(),
                     viewModel.currentCategory.value ?: viewModel.defaultCategory
                 )
-                binding.apply {
-                    newWordEditText.setText("")
-                    newDefinitionEditText.setText("")
-                }
+
+                newWordEditText.setText("")
+                newDefinitionEditText.setText("")
                 // If the word is not inserted, than it means that it is not valid
-                if(!viewModel.insertWordIfValid(word)){
+                if (!viewModel.insertWordIfValid(word)) {
                     toast(getString(R.string.word_is_not_valid))
                 }
             }
+        }
 
-        })
-
-        // Observing when the LookUp button is clicked.
-        viewModel.lookUpWord.observe(this, Observer {
-            if (it) {
-                val str = binding.newWordEditText.text.toString().trim()
-                if (str.isEmpty()) {
-                    toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
-                } else {
-                    lookUpTheNewWord(str)
-                }
-                viewModel.onLookUpWordCompleted()
+        binding.lookUpTextView.setOnClickListener {
+            val str = binding.newWordEditText.text.toString().trim()
+            if (str.isEmpty()) {
+                toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
+            } else {
+                lookUpTheNewWord(str)
             }
-        })
+        }
 
         // Sets onClickListener for the hideHeader imageButton, to hide the header on this fragment
         // and show a fab instead.

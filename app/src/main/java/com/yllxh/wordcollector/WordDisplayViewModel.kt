@@ -57,31 +57,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     // Gets all the categories as a List of LiveData
     var categories = categoryDao.getAll()
 
-
-    private var _saveNewWord = MutableLiveData<Boolean>()
-    val saveNewWord: LiveData<Boolean>
-        get() = _saveNewWord
-
-    fun onSaveNewWord() {
-        _saveNewWord.value = true
-    }
-
-    private fun onSaveNewWordCompleted() {
-        _saveNewWord.value = false
-        newItemInserted = true
-    }
-
-    private var _lookUpWord = MutableLiveData<Boolean>()
-    val lookUpWord: MutableLiveData<Boolean>
-        get() = _lookUpWord
-
-    fun onLookUpWord() {
-        _lookUpWord.value = true
-    }
-    fun onLookUpWordCompleted() {
-        _lookUpWord.value = false
-    }
-
     /**
      * Used to update the selected category in the database.
      */
@@ -119,7 +94,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         if (checkWord(word)) {
             coroutineScope.launch {
                 insert(word)
-                onSaveNewWordCompleted()
+                newItemInserted = true
             }
             return true
         }
