@@ -49,8 +49,7 @@ class WordDisplayFragment : Fragment() {
                                 Word(
                                     newWord,
                                     newDefinition,
-                                    viewModel.currentCategory.value ?: viewModel.defaultCategory
-                                    ),
+                                    viewModel.currentCategory.value ?: viewModel.defaultCategory),
                                 word))
                             toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
 
