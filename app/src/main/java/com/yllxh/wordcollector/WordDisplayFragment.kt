@@ -31,6 +31,7 @@ class WordDisplayFragment : Fragment() {
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         binding.viewModel = viewModel
 
+        // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
         val wordAdapter = WordAdapter(WordAdapter.OnEditClickListener { word ->
             DialogEditWordBinding.inflate(inflater, container, false).apply {
                 editedWord.setText(word.word)
@@ -56,6 +57,7 @@ class WordDisplayFragment : Fragment() {
         })
         binding.wordRecycleview.adapter = wordAdapter
 
+        // Enable the deletion of words, by swiping the item left or right.
         ItemTouchHelper(object : ItemTouchHelper
         .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -79,16 +81,18 @@ class WordDisplayFragment : Fragment() {
             }
         })
 
+        // Create an instance of the CategoryAdapter with the necessary parameters
         val categoryAdapter = CategoryAdapter(activity as Context,false) {
-            viewModel.updateSelectedCategory(it?.name ?: viewModel.defaultCategory)
+            viewModel.onSelectCategory(it?.name ?: viewModel.defaultCategory)
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 
+        // Observing the categories for changes.
         viewModel.categories.observe(this, Observer {
             categoryAdapter.submitList(it)
         })
 
-
+        // Observing when the Save button is clicked.
         viewModel.saveNewWord.observe(this, Observer {
             if (it) {
                 val word = Word(
@@ -108,6 +112,7 @@ class WordDisplayFragment : Fragment() {
 
         })
 
+        // Observing when the LookUp button is clicked
         viewModel.lookUpWord.observe(this, Observer {
             if (it) {
                 val str = binding.newWordEditText.text.toString().trim()
@@ -120,18 +125,18 @@ class WordDisplayFragment : Fragment() {
             }
         })
 
+        // Sets onClickListener for the hideHeader imageButton, to hide the header on this fragment
+        // and show a fab instead.
         binding.hideHeaderButton.setOnClickListener {
             binding.enterNewWordCv.visibility = View.GONE
             binding.floatingActionButton.visibility= View.VISIBLE
         }
 
+        // Sets onClickListener for the fab, to hide the itself and show the header of this fragment.
         binding.floatingActionButton.setOnClickListener {
             binding.enterNewWordCv.visibility = View.VISIBLE
             binding.floatingActionButton.visibility= View.GONE
         }
-
-
-
         return binding.root
     }
 

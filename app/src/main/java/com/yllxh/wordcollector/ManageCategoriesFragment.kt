@@ -28,7 +28,11 @@ class ManageCategoriesFragment : Fragment() {
         val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
         val viewModel = ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
 
-        // Is used in cases where a category needs to be updated or inserted
+        /**
+         * Function used to create a dialog in cases when a category needs to be is inserted/updated.
+         * To insert a category the category parameter must be set to null, and to update a category
+         * the category should be passed to it.
+         */
         onAddOrEditCategory = { category ->
             DialogAddEditCategoryBinding.inflate(inflater, container, false).apply {
                 val oldCategoryName = category?.name ?: ""
@@ -55,19 +59,22 @@ class ManageCategoriesFragment : Fragment() {
                 }
             }
         }
+
+        // Create an instance of the CategoryAdapter
         val categoryAdapter = CategoryAdapter(activity as Context,true, onAddOrEditCategory)
         binding.categoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
             categoryAdapter.submitList(it)
 
-            // If the new category was inserted to the list, scroll to the Top of the recycleView
+            // If the new category was inserted to the list, scroll to the Top of the recycleView.
             if (viewModel.newItemInserted) {
                 binding.categoryRecycleview.smoothScrollToPosition(0)
                 viewModel.newItemInserted = false
             }
         })
 
+        // Enable the deletion of categories, by swiping the item left or right.
         ItemTouchHelper(object : ItemTouchHelper
         .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -84,11 +91,16 @@ class ManageCategoriesFragment : Fragment() {
             }
         }).attachToRecyclerView(binding.categoryRecycleview)
 
+        // Fab button used to pop up a dialog, for inserting a new category.
         binding.fab.setOnClickListener {
             onAddOrEditCategory(null)
         }
         return binding.root
     }
+
+    /**
+     * Function used as shortcut the Toast.makeText() function.
+     */
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(activity, s, lengthLong).show()
     }
