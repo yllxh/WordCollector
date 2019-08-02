@@ -4,8 +4,8 @@
             android:id="@+id/navigation" app:startDestination="@id/wordDisplayFragment">
     <fragment android:id="@+id/wordDisplayFragment" android:name="com.yllxh.wordcollector.WordDisplayFragment"
               tools:layout="@layout/fragment_word_display"
-              android:label="WordDisplayFragment"/>
+              android:label="Word Collector"/>
     <fragment android:id="@+id/manageCategoriesFragment" android:name="com.yllxh.wordcollector.ManageCategoriesFragment"
               tools:layout="@layout/fragment_manage_categories"
-              android:label="ManageCategoriesFragment"/>
+              android:label="Manage Categories"/>
 </navigation>
