@@ -28,11 +28,10 @@ class ManageCategoriesFragment : Fragment() {
         val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
         val viewModel = ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
 
-        /**
-         * Function used to create a dialog in cases when a category needs to be is inserted/updated.
-         * To insert a category the category parameter must be set to null, and to update a category
-         * the category should be passed to it.
-         */
+
+        // Function used to create a dialog in cases when a category needs to be is inserted/updated.
+        // To insert a category the category parameter must be set to null, and to update a category
+        // the category should be passed to it.
         onAddOrEditCategory = { category ->
             DialogAddEditCategoryBinding.inflate(inflater, container, false).apply {
                 val oldCategoryName = category?.name ?: ""

@@ -9,7 +9,7 @@ import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.WordListItemBinding
 
 
-class WordAdapter(private var onEditClickListener: OnEditClickListener)
+class WordAdapter(private var onEditClickListener: (Word) -> Unit)
     : ListAdapter<Word, WordAdapter.ViewHolder>(WordDiffCallback()){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
        return ViewHolder.from(parent)
@@ -24,11 +24,13 @@ class WordAdapter(private var onEditClickListener: OnEditClickListener)
         : RecyclerView.ViewHolder(binding.root){
         fun bind(
             word: Word,
-            onEditClickListener: OnEditClickListener
+            onEditClickListener: (Word) -> Unit
         ) {
-            binding.word = word
-            binding.onEditClickListener = onEditClickListener
-            binding.executePendingBindings()
+            binding.apply {
+                this.word = word
+                editButton.setOnClickListener { onEditClickListener(word) }
+                executePendingBindings()
+            }
         }
 
         companion object {
@@ -39,9 +41,6 @@ class WordAdapter(private var onEditClickListener: OnEditClickListener)
                 return ViewHolder(binding)
             }
         }
-    }
-    class OnEditClickListener(private val clickListener: (word: Word) -> Unit) {
-        fun onClick(word: Word) = clickListener(word)
     }
 
     fun getWordAtPosition(position: Int): Word{

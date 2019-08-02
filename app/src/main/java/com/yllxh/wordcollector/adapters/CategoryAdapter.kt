@@ -14,7 +14,7 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean,
-    private val onAddOrEditCategory: ((category: Category?) -> Unit)? = null
+    private val onAddOrEditCategory: (category: Category?) -> Unit
 ) : ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,11 +31,11 @@ class CategoryAdapter(
         fun bind(
             context: Context,
             category: Category,
-            onAddOrEditCategory: ((category: Category?) -> Unit)? = null
+            onAddOrEditCategory: (category: Category?) -> Unit
         ) {
             binding.apply {
                 categoryTextView.text = category.name
-                cardView.setOnClickListener { onAddOrEditCategory?.let { it(category)} }
+                cardView.setOnClickListener { onAddOrEditCategory(category) }
 
                 // Sets the color of the view which is selected
                 when(category.isSelected){

@@ -23,6 +23,7 @@ import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 
 
 class WordDisplayFragment : Fragment() {
+    private lateinit var onEditWordListener: (Word) -> Unit
 
     @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -31,8 +32,8 @@ class WordDisplayFragment : Fragment() {
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         binding.viewModel = viewModel
 
-        // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
-        val wordAdapter = WordAdapter(WordAdapter.OnEditClickListener { word ->
+
+        onEditWordListener = { word ->
             DialogEditWordBinding.inflate(inflater, container, false).apply {
                 editedWord.setText(word.word)
                 editedDefinition.setText(word.definition)
@@ -44,7 +45,13 @@ class WordDisplayFragment : Fragment() {
                         val newDefinition = editedDefinition.text.toString()
 
                         // If the word is not updated display a toast to inform the user
-                        if (!viewModel.updateWordIfValid(Word(newWord, newDefinition), word))
+                        if (!viewModel.updateWordIfValid(
+                                Word(
+                                    newWord,
+                                    newDefinition,
+                                    viewModel.currentCategory.value ?: viewModel.defaultCategory
+                                    ),
+                                word))
                             toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
 
                     }
@@ -54,7 +61,10 @@ class WordDisplayFragment : Fragment() {
                     create().show()
                 }
             }
-        })
+        }
+
+        // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
+        val wordAdapter = WordAdapter(onEditWordListener)
         binding.wordRecycleview.adapter = wordAdapter
 
         // Enable the deletion of words, by swiping the item left or right.

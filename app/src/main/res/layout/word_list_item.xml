@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="word" type="com.yllxh.wordcollector.data.Word"/>
-        <variable name="onEditClickListener" type="com.yllxh.wordcollector.adapters.WordAdapter.OnEditClickListener"/>
     </data>
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -70,7 +70,6 @@
                     android:contentDescription="@string/edit"
                     android:src="@android:drawable/ic_menu_edit"
                     android:layout_marginTop="16dp"
-                    android:onClick="@{() -> onEditClickListener.onClick(word)}"
                     card_view:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
                     card_view:layout_constraintBottom_toBottomOf="parent"
