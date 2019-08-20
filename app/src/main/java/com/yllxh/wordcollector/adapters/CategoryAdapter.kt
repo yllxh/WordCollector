@@ -41,11 +41,11 @@ class CategoryAdapter(
                 when(category.isSelected){
                     1 -> {
                         cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
-                        categoryTextView.setTextColor(ContextCompat.getColor(context,android.R.color.white))
+                        categoryTextView.setTextColor(ContextCompat.getColor(context,R.color.categorySelectedTextColor))
                     }
                     else -> {
-                        cardView.setCardBackgroundColor(ContextCompat.getColor(context,android.R.color.white))
-                        categoryTextView.setTextColor(ContextCompat.getColor(context,android.R.color.darker_gray))
+                        cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.categoryBackground))
+                        categoryTextView.setTextColor(ContextCompat.getColor(context,R.color.categoryTextColor))
                     }
                 }
             }
