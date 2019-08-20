@@ -40,7 +40,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      * category from the database.
      */
     init {
-        currentCategory.value = defaultCategory
+        onSelectCategory(defaultCategory)
         coroutineScope.launch {
             insert(Category(defaultCategory, 1))
         }
