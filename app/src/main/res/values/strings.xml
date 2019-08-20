@@ -27,5 +27,6 @@
     <string name="day_night_key">dayNightKey</string>
     <string name="night_mode">Night Mode</string>
     <string name="night_mode_menu_title">Night Mode</string>
+    <string name="shared_preferences_file_key">SharedPreferencesFileKey</string>
 
 </resources>

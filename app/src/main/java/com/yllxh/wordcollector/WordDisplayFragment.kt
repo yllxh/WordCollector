@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -157,7 +156,10 @@ class WordDisplayFragment : Fragment() {
             // Update the NightMode of the app.
             if (it.itemId == R.id.night_mode_menu_item){
                 val dayNightKey = getString(R.string.day_night_key)
-                val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+                val sharedPref = activity?.getSharedPreferences(
+                    getString(R.string.shared_preferences_file_key),
+                    Context.MODE_PRIVATE
+                )
                 val isNightMode = sharedPref?.getBoolean(dayNightKey, false)
                 if (isNightMode == true){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -175,20 +177,24 @@ class WordDisplayFragment : Fragment() {
     }
 
     private fun initializeSharedPreferences(){
-        val dayNightKey = getString(R.string.day_night_key)
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = activity?.getSharedPreferences(
+            getString(R.string.shared_preferences_file_key),
+            Context.MODE_PRIVATE
+        )
         sharedPref?.let {
-            if (!it.contains(dayNightKey)) {
-                it.edit().putBoolean(dayNightKey, false).apply()
+            val key = getString(R.string.day_night_key)
+            if (!it.contains(key)) {
+                it.edit().putBoolean(key, false).apply()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }else{
-                val isNightMode = it.getBoolean(dayNightKey, false)
+                val isNightMode = it.getBoolean(key, false)
                 if (isNightMode){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
+
         }
     }
 
