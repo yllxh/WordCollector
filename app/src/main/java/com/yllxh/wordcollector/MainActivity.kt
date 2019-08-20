@@ -19,8 +19,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         navController = findNavController(R.id.myNavHostFragment)
         setupActionBarWithNavController(navController)
-
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     override fun onSupportNavigateUp(): Boolean {

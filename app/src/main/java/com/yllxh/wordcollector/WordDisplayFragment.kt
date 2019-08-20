@@ -149,13 +149,13 @@ class WordDisplayFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
-
         inflater?.inflate(R.menu.main_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         item?.let {
-            if (it.itemId == R.id.night_mode_menu){
+            // Update the NightMode of the app.
+            if (it.itemId == R.id.night_mode_menu_item){
                 val dayNightKey = getString(R.string.day_night_key)
                 val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
                 val isNightMode = sharedPref?.getBoolean(dayNightKey, false)
@@ -170,10 +170,7 @@ class WordDisplayFragment : Fragment() {
                 return true
             }
         }
-        return NavigationUI.onNavDestinationSelected(
-            item!!,
-            view!!.findNavController()
-        )
+        return NavigationUI.onNavDestinationSelected(item!!, view!!.findNavController())
                 || super.onOptionsItemSelected(item)
     }
 
@@ -193,9 +190,6 @@ class WordDisplayFragment : Fragment() {
                 }
             }
         }
-
-        Log.d("AAA", ""+sharedPref?.getBoolean(dayNightKey, true))
-
     }
 
     private fun lookUpTheNewWord(str: String) {
