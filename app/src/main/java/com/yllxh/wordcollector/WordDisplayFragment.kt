@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -141,7 +143,59 @@ class WordDisplayFragment : Fragment() {
             binding.enterNewWordCv.visibility = View.VISIBLE
             binding.floatingActionButton.visibility= View.GONE
         }
+        initializeSharedPreferences()
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater?.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item?.let {
+            if (it.itemId == R.id.night_mode_menu){
+                val dayNightKey = getString(R.string.day_night_key)
+                val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+                val isNightMode = sharedPref?.getBoolean(dayNightKey, false)
+                if (isNightMode == true){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    sharedPref.edit().putBoolean(dayNightKey, false).apply()
+                }else{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    sharedPref?.edit()?.putBoolean(dayNightKey, true)?.apply()
+                }
+                activity?.recreate()
+                return true
+            }
+        }
+        return NavigationUI.onNavDestinationSelected(
+            item!!,
+            view!!.findNavController()
+        )
+                || super.onOptionsItemSelected(item)
+    }
+
+    private fun initializeSharedPreferences(){
+        val dayNightKey = getString(R.string.day_night_key)
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        sharedPref?.let {
+            if (!it.contains(dayNightKey)) {
+                it.edit().putBoolean(dayNightKey, false).apply()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }else{
+                val isNightMode = it.getBoolean(dayNightKey, false)
+                if (isNightMode){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+        }
+
+        Log.d("AAA", ""+sharedPref?.getBoolean(dayNightKey, true))
+
     }
 
     private fun lookUpTheNewWord(str: String) {
@@ -154,18 +208,5 @@ class WordDisplayFragment : Fragment() {
 
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(activity, s, lengthLong).show()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.main_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return NavigationUI.onNavDestinationSelected(
-            item!!,
-            view!!.findNavController()
-        )
-                || super.onOptionsItemSelected(item)
     }
 }

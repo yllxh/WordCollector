@@ -24,5 +24,7 @@
     <string name="deleting">Deleting </string>
     <string name="nice_try">Nice try!</string>
     <string name="look_again">Look again!</string>
+    <string name="day_night_key">dayNightKey</string>
+    <string name="night_mode">Night Mode</string>
 
 </resources>
