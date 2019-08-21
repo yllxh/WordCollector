@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -29,13 +30,14 @@ class WordDisplayFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
+        initializeSharedPreferences()
         val binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         binding.viewModel = viewModel
 
         // Create an instance of the CategoryAdapter with the necessary parameters
         val categoryAdapter = CategoryAdapter(activity as Context,false) {
-            viewModel.onSelectCategory(it?.name ?: viewModel.defaultCategory)
+            viewModel.currentCategory.value = it?.name
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 
@@ -142,7 +144,6 @@ class WordDisplayFragment : Fragment() {
             binding.enterNewWordCv.visibility = View.VISIBLE
             binding.floatingActionButton.visibility= View.GONE
         }
-        initializeSharedPreferences()
         return binding.root
     }
 
@@ -176,12 +177,16 @@ class WordDisplayFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
-    private fun initializeSharedPreferences(){
-        val sharedPref = activity?.getSharedPreferences(
+    /**
+     * Checks if the app has stored a mode for the night mode.
+     * If it does not, have a saved mode, it saves a new mode (MODE_NIGHT_YES) and sets the current
+     * mode for the app, if it does have a night mode set, then it sets the mode of the app to it.
+     */
+    private fun initializeSharedPreferences() {
+        activity?.getSharedPreferences(
             getString(R.string.shared_preferences_file_key),
             Context.MODE_PRIVATE
-        )
-        sharedPref?.let {
+        )?.let {
             val key = getString(R.string.day_night_key)
             if (!it.contains(key)) {
                 it.edit().putBoolean(key, false).apply()
@@ -194,7 +199,6 @@ class WordDisplayFragment : Fragment() {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
-
         }
     }
 

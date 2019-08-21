@@ -28,5 +28,6 @@
     <string name="night_mode">Night Mode</string>
     <string name="night_mode_menu_title">Night Mode</string>
     <string name="shared_preferences_file_key">SharedPreferencesFileKey</string>
+    <string name="current_selected_category_key">CurrentselectedCategoryKey</string>
 
 </resources>

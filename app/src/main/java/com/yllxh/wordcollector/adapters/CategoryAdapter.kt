@@ -17,41 +17,59 @@ class CategoryAdapter(
     private val onAddOrEditCategory: (category: Category?) -> Unit
 ) : ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
+    /**
+     * Notifies the adapter that a new item is selected, and it informs the adapter
+     * about the oldSelection and the newSelection positions in the adapter.
+     */
+    private val onNewCategorySelected = { oldSelection: Int, newSelection: Int ->
+        notifyItemChanged(oldSelection)
+        notifyItemChanged(newSelection)
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent, widthMatchParent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = getItem(position)
-        holder.bind(context, category, onAddOrEditCategory)
-
+        holder.bind(context, category, onAddOrEditCategory, onNewCategorySelected)
     }
+
 
     class ViewHolder private constructor(val binding: CategoryListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             context: Context,
             category: Category,
-            onAddOrEditCategory: (category: Category?) -> Unit
-        ) {
+            onAddOrEditCategory: (category: Category?) -> Unit,
+            itemChangedListener: (Int, Int) -> Unit
+            ) {
             binding.apply {
                 categoryTextView.text = category.name
-                cardView.setOnClickListener { onAddOrEditCategory(category) }
+                cardView.setOnClickListener {
+                    onAddOrEditCategory(category)
+                    itemChangedListener(lastSelectedItem, adapterPosition)
+                    lastSelectedItem = adapterPosition
+                }
 
-                // Sets the color of the view which is selected
-                when(category.isSelected){
-                    1 -> {
+                // Paints the current view with the correct colors
+                when (lastSelectedItem) {
+                    adapterPosition -> {
                         cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                         categoryTextView.setTextColor(ContextCompat.getColor(context,R.color.categorySelectedTextColor))
-                    }
-                    else -> {
-                        cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.categoryBackground))
-                        categoryTextView.setTextColor(ContextCompat.getColor(context,R.color.categoryTextColor))
+                    }else -> {
+                        cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.categoryBackground))
+                        categoryTextView.setTextColor(ContextCompat.getColor(context, R.color.categoryTextColor))
                     }
                 }
             }
         }
 
         companion object {
+            /**
+             * Variable used to keep track of the last selected item in of the parent adapter.
+             * It is used to highlight the correct ViewHolder.
+             */
+            private var lastSelectedItem: Int = 0
+
             fun from(parent: ViewGroup, widthMatchParent: Boolean): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
@@ -63,6 +81,9 @@ class CategoryAdapter(
         }
     }
 
+    /**
+     * Gives access to the items of the adapter to classes outside the adapter.
+     */
     fun getCategoryAtPosition(position: Int): Category {
         return getItem(position)
     }

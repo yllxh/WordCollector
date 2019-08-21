@@ -40,11 +40,14 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      * category from the database.
      */
     init {
-        onSelectCategory(defaultCategory)
+        currentCategory.value = defaultCategory
         coroutineScope.launch {
             insert(Category(defaultCategory, 1))
         }
     }
+
+    // Gets all the categories as a List of LiveData
+    var categories = categoryDao.getAll()
 
     // The words that are displayed will depend
     // on the currentCategory which is selected by the user
@@ -54,22 +57,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
             else -> wordDao.getWordsOfCategory(it)
         }
     }
-    // Gets all the categories as a List of LiveData
-    var categories = categoryDao.getAll()
-
-    /**
-     * Used to update the selected category in the database.
-     */
-    fun onSelectCategory(s: String) {
-        currentCategory.value = s
-        coroutineScope.launch {
-            withContext(Dispatchers.IO){
-                categoryDao.deselectPreviousSelection()
-                categoryDao.updateSelectedCategory(currentCategory.value)
-            }
-        }
-    }
-
 
     /**
      * Used to check if a word is valid to perform operations with it.
