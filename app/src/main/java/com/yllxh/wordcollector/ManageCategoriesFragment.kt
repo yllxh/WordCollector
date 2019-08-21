@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
@@ -83,7 +84,12 @@ class ManageCategoriesFragment : Fragment() {
                 val position = viewHolder.adapterPosition
                 val category = categoryAdapter.getCategoryAtPosition(position)
                 if (viewModel.deleteCategory(category)) {
-                    toast(getString(R.string.deleting) + category.name)
+                    Snackbar.make(binding.root,
+                        getString(R.string.deleting) + category.name,
+                        Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo) {
+                            viewModel.insertCategoryIfValid(category)
+                        }.show()
                 } else {
                     toast(getString(R.string.look_again))
                 }

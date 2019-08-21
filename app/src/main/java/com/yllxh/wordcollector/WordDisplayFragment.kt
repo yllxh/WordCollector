@@ -17,6 +17,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.adapters.WordAdapter
 import com.yllxh.wordcollector.data.Word
@@ -90,7 +91,13 @@ class WordDisplayFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val word = wordAdapter.getWordAtPosition(position)
-                toast("Deleting " + word.word, Toast.LENGTH_LONG)
+                Snackbar.make(binding.root,
+                    getString(R.string.deleting) + word.word,
+                    Snackbar.LENGTH_LONG)
+                    .setAction(R.string.undo) {
+                        viewModel.insertWordIfValid(word)
+                    }.show()
+
                 viewModel.deleteWord(word)
             }
         }).attachToRecyclerView(binding.wordRecycleview)

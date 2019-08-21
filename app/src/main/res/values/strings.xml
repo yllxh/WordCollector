@@ -19,7 +19,7 @@
     <string name="empty_category_alert">No category name was entered.</string>
     <string name="add_category">Add Category</string>
     <string name="category">Category:</string>
-    <string name="word_is_not_valid">No valid Word was entered</string>
+    <string name="word_is_not_valid">No valid word was entered</string>
     <string name="all">All</string>
     <string name="deleting">Deleting </string>
     <string name="nice_try">Nice try!</string>
@@ -29,5 +29,6 @@
     <string name="night_mode_menu_title">Night Mode</string>
     <string name="shared_preferences_file_key">SharedPreferencesFileKey</string>
     <string name="current_selected_category_key">CurrentselectedCategoryKey</string>
+    <string name="undo">Undo</string>
 
 </resources>
