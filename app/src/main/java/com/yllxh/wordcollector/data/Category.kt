@@ -6,8 +6,5 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "category_table")
 data class Category(
     @PrimaryKey
-    var name: String = "All",
-    var isSelected: Int = 0
-){
-
-}
+    var name: String = "All"
+)
