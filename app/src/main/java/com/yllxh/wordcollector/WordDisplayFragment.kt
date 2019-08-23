@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -26,17 +28,19 @@ import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 
 class WordDisplayFragment : Fragment() {
     private lateinit var onEditWordListener: (Word) -> Unit
+    private lateinit var binding: FragmentWordDisplayBinding
+    private lateinit var wordAdapter: WordAdapter
 
     @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         initializeSharedPreferences()
-        val binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
 
         // Create an instance of the CategoryAdapter with the necessary parameters
-        val categoryAdapter = CategoryAdapter(activity as Context,false) {
+        val categoryAdapter = CategoryAdapter(activity as Context, false) {
             viewModel.currentCategory.value = it?.name
         }
         binding.categoryRecycleview.adapter = categoryAdapter
@@ -63,8 +67,11 @@ class WordDisplayFragment : Fragment() {
                                 Word(
                                     newWord,
                                     newDefinition,
-                                    viewModel.currentCategory.value ?: word.category),
-                                word))
+                                    viewModel.currentCategory.value ?: word.category
+                                ),
+                                word
+                            )
+                        )
                             toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
 
                     }
@@ -77,22 +84,28 @@ class WordDisplayFragment : Fragment() {
         }
 
         // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
-        val wordAdapter = WordAdapter(onEditWordListener)
+        wordAdapter = WordAdapter(onEditWordListener)
         binding.wordRecycleview.adapter = wordAdapter
 
         // Enable the deletion of words, by swiping the item left or right.
         ItemTouchHelper(object : ItemTouchHelper
         .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
                 return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val word = wordAdapter.getWordAtPosition(position)
-                Snackbar.make(binding.root,
+                Snackbar.make(
+                    binding.root,
                     getString(R.string.deleting) + word.word,
-                    Snackbar.LENGTH_LONG)
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction(R.string.undo) {
                         viewModel.insertWordIfValid(word)
                     }.show()
@@ -118,6 +131,22 @@ class WordDisplayFragment : Fragment() {
             if (viewModel.newItemInserted) {
                 binding.wordRecycleview.smoothScrollToPosition(0)
                 viewModel.newItemInserted = false
+            }
+        })
+
+        viewModel.isUserSearching.observe(this, Observer {
+            when (it) {
+                true -> {
+                    binding.enterNewWordCv.visibility = View.GONE
+                    binding.floatingActionButton.visibility = View.GONE
+                    binding.categoryRecycleview.visibility = View.GONE
+                }
+                else -> {
+                    binding.enterNewWordCv.visibility = View.VISIBLE
+                    binding.floatingActionButton.visibility = View.VISIBLE
+                    binding.categoryRecycleview.visibility = View.VISIBLE
+                    viewModel.currentCategory.value = viewModel.currentCategory.value
+                }
             }
         })
 
@@ -153,13 +182,13 @@ class WordDisplayFragment : Fragment() {
         // and show a fab instead.
         binding.hideHeaderButton.setOnClickListener {
             binding.enterNewWordCv.visibility = View.GONE
-            binding.floatingActionButton.visibility= View.VISIBLE
+            binding.floatingActionButton.visibility = View.VISIBLE
         }
 
         // Sets onClickListener for the fab, to hide the itself and show the header of this fragment.
         binding.floatingActionButton.setOnClickListener {
             binding.enterNewWordCv.visibility = View.VISIBLE
-            binding.floatingActionButton.visibility= View.GONE
+            binding.floatingActionButton.visibility = View.GONE
         }
         return binding.root
     }
@@ -167,22 +196,50 @@ class WordDisplayFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.main_menu, menu)
+        val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        val searchItem = menu?.findItem(R.id.menu_item_search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                wordAdapter.submitList(
+                    viewModel.filterToMatchQuery(newText)
+                )
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // task HERE
+                return false
+            }
+
+        })
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+        searchView.setOnSearchClickListener {
+            viewModel.isUserSearching.value = true
+        }
+        searchView.setOnCloseListener (SearchView.OnCloseListener {
+            viewModel.isUserSearching.value = false
+            false
+        })
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        item?.let {
-            // Update the NightMode of the app.
-            if (it.itemId == R.id.night_mode_menu_item){
+        // Update the NightMode of the app.
+        if (item?.itemId == R.id.night_mode_menu_item) {
+            item.let {
                 val dayNightKey = getString(R.string.day_night_key)
                 val sharedPref = activity?.getSharedPreferences(
                     getString(R.string.shared_preferences_file_key),
                     Context.MODE_PRIVATE
                 )
                 val isNightMode = sharedPref?.getBoolean(dayNightKey, false)
-                if (isNightMode == true){
+                if (isNightMode == true) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     sharedPref.edit().putBoolean(dayNightKey, false).apply()
-                }else{
+                } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     sharedPref?.edit()?.putBoolean(dayNightKey, true)?.apply()
                 }
@@ -208,11 +265,11 @@ class WordDisplayFragment : Fragment() {
             if (!it.contains(key)) {
                 it.edit().putBoolean(key, false).apply()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }else{
+            } else {
                 val isNightMode = it.getBoolean(key, false)
-                if (isNightMode){
+                if (isNightMode) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }else {
+                } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }

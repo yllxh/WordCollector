@@ -19,6 +19,8 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      */
     var newItemInserted = false
 
+    var isUserSearching = MutableLiveData<Boolean>()
+
     // Used to keep track of the current category
     var currentCategory: MutableLiveData<String> = MutableLiveData()
 
@@ -43,6 +45,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      * category from the database.
      */
     init {
+        isUserSearching.value = false
         currentCategory.value = defaultCategory
         coroutineScope.launch {
             insert(Category(defaultCategory))
@@ -157,6 +160,13 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         super.onCleared()
         // Cancels the job used by the coroutine.
         viewModelJob.cancel()
+    }
+
+    fun filterToMatchQuery(queryString: String): MutableList<Word>? {
+        return words.value?.filter {
+            it.word.contains(queryString, true)
+                                    || it.definition.contains(queryString, true)
+        }?.toMutableList()
     }
 
 }
