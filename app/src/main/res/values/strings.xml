@@ -11,7 +11,6 @@
     <string name="edit_word">Edit Word</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="empty_word_alert">No Word Entered</string>
-    <string name="manage_categories">Manage Categories</string>
     <string name="dialog_message">Add category</string>
     <string name="done">Done</string>
     <string name="add_or_edit_category">Add or edit category</string>
@@ -30,5 +29,7 @@
     <string name="shared_preferences_file_key">SharedPreferencesFileKey</string>
     <string name="current_selected_category_key">CurrentselectedCategoryKey</string>
     <string name="undo">Undo</string>
+    <string name="search">Search</string>
+    <string name="manage_categories">Manage Categories</string>
 
 </resources>

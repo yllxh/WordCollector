@@ -30,7 +30,13 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     // Job needed by the coroutine scope.
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+    // Gets all the words as a List of LiveData
     var words = wordDao.getAll()
+
+    // Gets all the categories as a List of LiveData
+    var categories = categoryDao.getAll()
+
     /**
      * Used to insert a category named as the defaultCategory in case
      * there is no such category, and also used  to get the last selected
@@ -43,13 +49,10 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    // Gets all the categories as a List of LiveData
-    var categories = categoryDao.getAll()
-
-    // The words that are displayed will depend
-    // on the currentCategory which is selected by the user
-
-    fun filterWordsToCurrentCategory(s: String): List<Word>? {
+    /**
+     * Returns a filtered list of words of the current category.
+     */
+    fun filterWordsToCurrentCategory(s: String = currentCategory.value ?: defaultCategory): List<Word>? {
         return when (s) {
             defaultCategory -> words.value
             else -> words.value?.filter { it.category == currentCategory.value }

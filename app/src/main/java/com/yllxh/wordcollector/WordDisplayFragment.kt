@@ -100,20 +100,25 @@ class WordDisplayFragment : Fragment() {
                 viewModel.deleteWord(word)
             }
         }).attachToRecyclerView(binding.wordRecycleview)
+
+        // Observes changes to the current category, in case it changes
+        // the list of words shown in updated to the correct category.
         viewModel.currentCategory.observe(this, Observer {
             wordAdapter.submitList(
                 viewModel.filterWordsToCurrentCategory(it ?: viewModel.defaultCategory)
             )
+        })
 
+        // Observes the list of words for changes. In case it changes it only need
+        viewModel.words.observe(this, Observer {
+            wordAdapter.submitList(
+                viewModel.filterWordsToCurrentCategory()
+            )
             // If the new word was inserted to the list, scroll to the Top of the recycleView
             if (viewModel.newItemInserted) {
                 binding.wordRecycleview.smoothScrollToPosition(0)
                 viewModel.newItemInserted = false
             }
-        })
-
-        viewModel.words.observe(this, Observer {
-            viewModel.currentCategory.value = viewModel.currentCategory.value
         })
 
         // Setting click listener for the Save textView button
