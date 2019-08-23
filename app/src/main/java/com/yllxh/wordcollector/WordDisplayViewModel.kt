@@ -1,11 +1,8 @@
 package com.yllxh.wordcollector
 
 import android.app.Application
-import androidx.arch.core.util.Function
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.yllxh.wordcollector.data.AppDatabase
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
@@ -33,7 +30,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     // Job needed by the coroutine scope.
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
+    var words = wordDao.getAll()
     /**
      * Used to insert a category named as the defaultCategory in case
      * there is no such category, and also used  to get the last selected
@@ -51,13 +48,13 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
 
     // The words that are displayed will depend
     // on the currentCategory which is selected by the user
-    var words: LiveData<List<Word>> = Transformations.switchMap(currentCategory) {
-        when (it) {
-            defaultCategory -> wordDao.getAll()
-            else -> wordDao.getWordsOfCategory(it)
+
+    fun filterWordsToCurrentCategory(s: String): List<Word>? {
+        return when (s) {
+            defaultCategory -> words.value
+            else -> words.value?.filter { it.category == currentCategory.value }
         }
     }
-
     /**
      * Used to check if a word is valid to perform operations with it.
      * oldWord can be used in cases where the newWord needs to be compared

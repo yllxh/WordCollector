@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -101,14 +100,20 @@ class WordDisplayFragment : Fragment() {
                 viewModel.deleteWord(word)
             }
         }).attachToRecyclerView(binding.wordRecycleview)
-        viewModel.words.observe(this, Observer {
-            wordAdapter.submitList(it)
+        viewModel.currentCategory.observe(this, Observer {
+            wordAdapter.submitList(
+                viewModel.filterWordsToCurrentCategory(it ?: viewModel.defaultCategory)
+            )
 
             // If the new word was inserted to the list, scroll to the Top of the recycleView
             if (viewModel.newItemInserted) {
                 binding.wordRecycleview.smoothScrollToPosition(0)
                 viewModel.newItemInserted = false
             }
+        })
+
+        viewModel.words.observe(this, Observer {
+            viewModel.currentCategory.value = viewModel.currentCategory.value
         })
 
         // Setting click listener for the Save textView button
