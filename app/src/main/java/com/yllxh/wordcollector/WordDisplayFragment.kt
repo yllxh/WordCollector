@@ -63,7 +63,7 @@ class WordDisplayFragment : Fragment() {
 
                         // If the word is not updated display a toast to inform the user
                         val wasWordValid = viewModel.updateWordIfValid(
-                            Word(newWord,newDefinition, viewModel.currentCategory.value ?: word.category),
+                            Word(newWord, newDefinition, viewModel.currentCategory.value ?: word.category),
                             word
                         )
                         if (!wasWordValid) {
@@ -101,9 +101,9 @@ class WordDisplayFragment : Fragment() {
                     getString(R.string.deleting) + word.word,
                     Snackbar.LENGTH_LONG
                 )
-                .setAction(R.string.undo) {
+                    .setAction(R.string.undo) {
                         viewModel.insertWordIfValid(word, false)
-                }.show()
+                    }.show()
 
                 viewModel.deleteWord(word)
             }
@@ -196,30 +196,32 @@ class WordDisplayFragment : Fragment() {
         inflater?.inflate(R.menu.main_menu, menu)
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
 
+        // Setting up the behaviour of the SearchView
         val searchView = menu?.findItem(R.id.menu_item_search)?.actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.apply {
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                wordAdapter.submitList(
-                    viewModel.filterWordsToMatchQuery(newText)
-                )
-                return true
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    wordAdapter.submitList(
+                        viewModel.filterWordsToMatchQuery(newText)
+                    )
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    return false
+                }
+            })
+            this.imeOptions = EditorInfo.IME_ACTION_DONE
+            setOnSearchClickListener {
+                viewModel.isUserSearching.value = true
             }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
+            setOnCloseListener {
+                viewModel.isUserSearching.value = false
+                false
             }
-
-        })
-        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
-        searchView.setOnSearchClickListener {
-            viewModel.isUserSearching.value = true
         }
-        searchView.setOnCloseListener {
-            viewModel.isUserSearching.value = false
-            false
-        }
-
 
     }
 
@@ -232,14 +234,13 @@ class WordDisplayFragment : Fragment() {
 
                 preferences?.apply {
                     val isNightMode = getBoolean(dayNightKey, false)
-
-                    if (isNightMode) {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        preferences.edit().putBoolean(dayNightKey, false).apply()
-                    } else {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        preferences.edit()?.putBoolean(dayNightKey, true)?.apply()
-                    }
+                    AppCompatDelegate.setDefaultNightMode(
+                        when {
+                            isNightMode -> AppCompatDelegate.MODE_NIGHT_NO
+                            else -> AppCompatDelegate.MODE_NIGHT_YES
+                        }
+                    )
+                    preferences.edit()?.putBoolean(dayNightKey, !isNightMode)?.apply()
                     activity?.recreate()
                 }
                 return true
@@ -257,7 +258,7 @@ class WordDisplayFragment : Fragment() {
      *
      * If it does not have a current category saved it sets it to the default category ("All").
      */
-    private fun initializePreferences(){
+    private fun initializePreferences() {
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         val preferences = activity?.getPreferences(Context.MODE_PRIVATE)
 
@@ -269,19 +270,20 @@ class WordDisplayFragment : Fragment() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
                 val isNightMode = it.getBoolean(key, true)
-                if (isNightMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
+                AppCompatDelegate.setDefaultNightMode(
+                    when {
+                        isNightMode -> AppCompatDelegate.MODE_NIGHT_YES
+                        else -> AppCompatDelegate.MODE_NIGHT_NO
+                    }
+                )
             }
 
             // Checking if a default selected category is already set.
             key = getString(R.string.current_selected_category_key)
             val defaultCategory = getString(R.string.default_category_name)
-            if (!it.contains(key)){
+            if (!it.contains(key)) {
                 it.edit().putString(key, defaultCategory).apply()
-            }else{
+            } else {
                 viewModel.currentCategory.value = it.getString(key, defaultCategory)
             }
 
@@ -296,7 +298,7 @@ class WordDisplayFragment : Fragment() {
 
         if (i.resolveActivity(activity?.packageManager) != null) {
             startActivity(i)
-        }else{
+        } else {
             toast(getString(R.string.look_up_failed))
         }
     }
