@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="night_mode_menu_title">Light Mode</string>
+    <string name="night_mode_menu_title">Day Mode</string>
 </resources>

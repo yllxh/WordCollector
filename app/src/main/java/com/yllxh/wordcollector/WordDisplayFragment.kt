@@ -247,7 +247,7 @@ class WordDisplayFragment : Fragment() {
 
     /**
      * Checks if the app has stored a mode for the night mode.
-     * If it does not, have a saved mode, it saves a new mode (MODE_NIGHT_YES) and sets the current
+     * If it does not have a saved mode, it saves a new mode (MODE_NIGHT_YES) and sets the current
      * mode for the app, if it does have a night mode set, then it sets the mode of the app to it.
      */
     private fun initializeSharedPreferences() {
@@ -257,10 +257,10 @@ class WordDisplayFragment : Fragment() {
         )?.let {
             val key = getString(R.string.day_night_key)
             if (!it.contains(key)) {
-                it.edit().putBoolean(key, false).apply()
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                it.edit().putBoolean(key, true).apply()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
-                val isNightMode = it.getBoolean(key, false)
+                val isNightMode = it.getBoolean(key, true)
                 if (isNightMode) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 } else {
