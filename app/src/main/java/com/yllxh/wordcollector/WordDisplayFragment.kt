@@ -196,7 +196,7 @@ class WordDisplayFragment : Fragment() {
         inflater?.inflate(R.menu.main_menu, menu)
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
 
-        // Setting up the behaviour of the SearchView
+        // Setup up the behaviour of the SearchView
         val searchView = menu?.findItem(R.id.menu_item_search)?.actionView as SearchView
         searchView.apply {
 
