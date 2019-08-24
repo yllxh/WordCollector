@@ -22,4 +22,7 @@ interface CategoryDao{
 
     @Delete
     fun delete(vararg category: Category): Int
+
+    @Query("SELECT * FROM category_table LIMIT 1")
+    fun getAnyCategory(): IntArray
 }

@@ -44,16 +44,11 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     var categories = categoryDao.getAll()
 
     /**
-     * Used to insert a category named as the defaultCategory in case
-     * there is no such category, and also used  to get the last selected
-     * category from the database.
+     * Initializing LiveData with default values.
      */
     init {
         isUserSearching.value = false
         currentCategory.value = defaultCategory
-        coroutineScope.launch {
-            insert(Category(defaultCategory))
-        }
     }
 
     /**
