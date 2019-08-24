@@ -10,11 +10,11 @@ import kotlinx.coroutines.*
 
 
 class WordDisplayViewModel(application: Application) : AndroidViewModel(application) {
-    val defaultCategory: String = application.getString(R.string.all)
+    val defaultCategory: String = application.getString(R.string.default_category_name)
     /**
      * Used to indicate if a new word was added to the list.
      */
-    var newItemInserted = false
+    var isNewItemInserted = MutableLiveData<Boolean>()
 
     /**
      * Used to indicate if the whether or not the user is searching.
@@ -24,7 +24,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     /**
      * Used to keep track of the current category
      */
-    var currentCategory: MutableLiveData<String> = MutableLiveData()
+    var currentCategory = MutableLiveData<String>()
 
     /**
      * Database instance use to get the necessary Dao's
@@ -47,6 +47,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      * Initializing LiveData with default values.
      */
     init {
+        isNewItemInserted.value = false
         isUserSearching.value = false
         currentCategory.value = defaultCategory
     }
@@ -86,7 +87,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         if (checkWord(word)) {
             coroutineScope.launch {
                 insert(word)
-                newItemInserted = isNewWord
+                isNewItemInserted.value = isNewWord
             }
             return true
         }

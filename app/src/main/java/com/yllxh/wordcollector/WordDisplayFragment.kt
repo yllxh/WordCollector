@@ -33,7 +33,7 @@ class WordDisplayFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        initializeSharedPreferences()
+        initializePreferences()
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
@@ -122,10 +122,14 @@ class WordDisplayFragment : Fragment() {
             wordAdapter.submitList(
                 viewModel.filterWordsToCurrentCategory()
             )
+
+        })
+
+        viewModel.isNewItemInserted.observe(this, Observer {
             // If the new word was inserted to the list, scroll to the Top of the recycleView
-            if (viewModel.newItemInserted) {
+            if (it) {
                 binding.wordRecycleview.smoothScrollToPosition(0)
-                viewModel.newItemInserted = false
+                viewModel.isNewItemInserted.value = false
             }
         })
 
@@ -133,16 +137,15 @@ class WordDisplayFragment : Fragment() {
             when (it) {
                 true -> {
                     binding.enterNewWordCv.visibility = View.GONE
-                    binding.floatingActionButton.visibility = View.GONE
                     binding.categoryRecycleview.visibility = View.GONE
                 }
                 else -> {
                     binding.enterNewWordCv.visibility = View.VISIBLE
-                    binding.floatingActionButton.visibility = View.VISIBLE
                     binding.categoryRecycleview.visibility = View.VISIBLE
                     viewModel.currentCategory.value = viewModel.currentCategory.value
                 }
             }
+            binding.floatingActionButton.visibility = View.GONE
         })
 
         // Setting click listener for the Save textView button
@@ -158,7 +161,7 @@ class WordDisplayFragment : Fragment() {
                 newWordEditText.setText("")
                 newDefinitionEditText.setText("")
                 // If the word is not inserted, than it means that it is not valid
-                if (!viewModel.insertWordIfValid(word, false)) {
+                if (!viewModel.insertWordIfValid(word)) {
                     toast(getString(R.string.word_is_not_valid))
                 }
             }
@@ -246,16 +249,20 @@ class WordDisplayFragment : Fragment() {
     }
 
     /**
-     * Checks if the app has stored a mode for the night mode.
-     * If it does not have a saved mode, it saves a new mode (MODE_NIGHT_YES) and sets the current
-     * mode for the app, if it does have a night mode set, then it sets the mode of the app to it.
+     * Checks if the app has stored a night mode and a current category.
+     *
+     * If it does not have a saved night mode, it saves a new mode (MODE_NIGHT_YES)
+     * otherwise,it sets the mode of the app to the one which is stored.
+     *
+     * If it does not have a current category saved it sets it to the default category ("All").
      */
-    private fun initializeSharedPreferences() {
-        activity?.getSharedPreferences(
-            getString(R.string.shared_preferences_file_key),
-            Context.MODE_PRIVATE
-        )?.let {
-            val key = getString(R.string.day_night_key)
+    private fun initializePreferences(){
+        val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        val preferences = activity?.getPreferences(Context.MODE_PRIVATE)
+
+        preferences?.let {
+            // Checking if a day or night mode is already set.
+            var key = getString(R.string.day_night_key)
             if (!it.contains(key)) {
                 it.edit().putBoolean(key, true).apply()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -267,6 +274,16 @@ class WordDisplayFragment : Fragment() {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
+
+            // Checking if a default selected category is already set.
+            key = getString(R.string.current_selected_category_key)
+            val defaultCategory = getString(R.string.default_category_name)
+            if (!it.contains(key)){
+                it.edit().putString(key, defaultCategory).apply()
+            }else{
+                viewModel.currentCategory.value = it.getString(key, defaultCategory)
+            }
+
         }
     }
 
