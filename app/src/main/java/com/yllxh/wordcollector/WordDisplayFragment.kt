@@ -27,7 +27,6 @@ import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 
 
 class WordDisplayFragment : Fragment() {
-    private lateinit var onEditWordListener: (Word) -> Unit
     private lateinit var binding: FragmentWordDisplayBinding
     private lateinit var wordAdapter: WordAdapter
 
@@ -50,7 +49,7 @@ class WordDisplayFragment : Fragment() {
             categoryAdapter.submitList(it)
         })
 
-        onEditWordListener = { word ->
+        val onEditClickListener: (Word) -> Unit = { word ->
             DialogEditWordBinding.inflate(inflater, container, false).apply {
                 editedWord.setText(word.word)
                 editedDefinition.setText(word.definition)
@@ -63,17 +62,13 @@ class WordDisplayFragment : Fragment() {
                         val newDefinition = editedDefinition.text.toString()
 
                         // If the word is not updated display a toast to inform the user
-                        if (!viewModel.updateWordIfValid(
-                                Word(
-                                    newWord,
-                                    newDefinition,
-                                    viewModel.currentCategory.value ?: word.category
-                                ),
-                                word
-                            )
+                        val wasWordValid = viewModel.updateWordIfValid(
+                            Word(newWord,newDefinition, viewModel.currentCategory.value ?: word.category),
+                            word
                         )
+                        if (!wasWordValid) {
                             toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
-
+                        }
                     }
                     setNegativeButton(R.string.cancel) { dialog, _ ->
                         dialog.cancel()
@@ -84,7 +79,7 @@ class WordDisplayFragment : Fragment() {
         }
 
         // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
-        wordAdapter = WordAdapter(onEditWordListener)
+        wordAdapter = WordAdapter(onEditClickListener)
         binding.wordRecycleview.adapter = wordAdapter
 
         // Enable the deletion of words, by swiping the item left or right.
@@ -197,19 +192,18 @@ class WordDisplayFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.main_menu, menu)
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
-        val searchItem = menu?.findItem(R.id.menu_item_search)
-        val searchView = searchItem?.actionView as SearchView
+
+        val searchView = menu?.findItem(R.id.menu_item_search)?.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 wordAdapter.submitList(
-                    viewModel.filterToMatchQuery(newText)
+                    viewModel.filterWordsToMatchQuery(newText)
                 )
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                // task HERE
                 return false
             }
 
@@ -276,8 +270,8 @@ class WordDisplayFragment : Fragment() {
         }
     }
 
+    // Opens a browser to look up the new work on Google Translate.
     private fun lookUpTheNewWord(str: String) {
-        // Temporary solution to look up the new work on Google Translate
         val url = "https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=$str"
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)

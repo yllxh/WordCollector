@@ -12,31 +12,35 @@ import kotlinx.coroutines.*
 class WordDisplayViewModel(application: Application) : AndroidViewModel(application) {
     val defaultCategory: String = application.getString(R.string.all)
     /**
-     * Used to indicate if a new word was added to the list,
-     * only used by the recycleView to check when the list of words is changes,
-     * if the change was caused because a new item was inserted it should be set to true,
-     * this is done to inform you that the recycleView should scroll up to show the new item.
+     * Used to indicate if a new word was added to the list.
      */
     var newItemInserted = false
 
+    /**
+     * Used to indicate if the whether or not the user is searching.
+     */
     var isUserSearching = MutableLiveData<Boolean>()
 
-    // Used to keep track of the current category
+    /**
+     * Used to keep track of the current category
+     */
     var currentCategory: MutableLiveData<String> = MutableLiveData()
 
-    // Database instance use to get the necessary Dao's
+    /**
+     * Database instance use to get the necessary Dao's
+     */
     private val db = AppDatabase.getInstance(application)
     private val wordDao = db.wordDao
     private val categoryDao = db.categoryDao
 
-    // Job needed by the coroutine scope.
+    /* Job needed by the coroutine scope. */
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // Gets all the words as a List of LiveData
+    /* Gets all the words as a List of LiveData */
     var words = wordDao.getAll()
 
-    // Gets all the categories as a List of LiveData
+    /* Gets all the categories as a List of LiveData */
     var categories = categoryDao.getAll()
 
     /**
@@ -162,10 +166,13 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         viewModelJob.cancel()
     }
 
-    fun filterToMatchQuery(queryString: String): MutableList<Word>? {
+    /**
+     * Returns a filtered list of the all the words that contain the queryString.
+     */
+    fun filterWordsToMatchQuery(queryString: String): MutableList<Word>? {
         return words.value?.filter {
             it.word.contains(queryString, true)
-                                    || it.definition.contains(queryString, true)
+                    || it.definition.contains(queryString, true)
         }?.toMutableList()
     }
 

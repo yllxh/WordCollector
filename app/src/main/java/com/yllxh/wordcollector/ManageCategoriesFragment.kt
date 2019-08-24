@@ -20,7 +20,6 @@ import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
 
 class ManageCategoriesFragment : Fragment() {
-    private lateinit var onAddOrEditCategory: (category: Category?) -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +32,7 @@ class ManageCategoriesFragment : Fragment() {
         // Function used to create a dialog in cases when a category needs to be is inserted/updated.
         // To insert a category the category parameter must be set to null, and to update a category
         // the category should be passed to it.
-        onAddOrEditCategory = { category ->
+        val onAddOrEditCategory: (category: Category?) -> Unit = { category ->
             DialogAddEditCategoryBinding.inflate(inflater, container, false).apply {
                 val oldCategoryName = category?.name ?: ""
                 newCategoryEt.setText(oldCategoryName)
