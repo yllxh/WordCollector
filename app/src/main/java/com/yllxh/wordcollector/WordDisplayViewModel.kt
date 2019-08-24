@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.data.AppDatabase
-import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import kotlinx.coroutines.*
 
@@ -146,18 +145,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
             wordDao.delete(word)
         }
     }
-
-    /**
-     * Suspend function used to insert a category.
-     */
-    private suspend fun insert(category: Category) {
-        withContext(Dispatchers.IO) {
-            categoryDao.insert(category)
-        }
-    }
-
-
-
 
     override fun onCleared() {
         super.onCleared()

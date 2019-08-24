@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/edit"
+                    android:contentDescription="@string/edit_word"
                     android:src="@android:drawable/ic_menu_edit"
                     android:layout_marginTop="16dp"
                     card_view:layout_constraintTop_toTopOf="parent"

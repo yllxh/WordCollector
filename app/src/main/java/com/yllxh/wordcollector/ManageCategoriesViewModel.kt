@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 
 class ManageCategoriesViewModel(application: Application):
         AndroidViewModel(application){
-    val defaultCategory = application.getString(R.string.default_category_name)
+    private val defaultCategory: String = application.getString(R.string.default_category_name)
     /**
      * Used to indicate if a new category was added to the list,
      * only used by the recycleView to check when the list of categories is changes,

@@ -215,10 +215,10 @@ class WordDisplayFragment : Fragment() {
         searchView.setOnSearchClickListener {
             viewModel.isUserSearching.value = true
         }
-        searchView.setOnCloseListener (SearchView.OnCloseListener {
+        searchView.setOnCloseListener {
             viewModel.isUserSearching.value = false
             false
-        })
+        }
 
 
     }
@@ -228,19 +228,20 @@ class WordDisplayFragment : Fragment() {
         if (item?.itemId == R.id.night_mode_menu_item) {
             item.let {
                 val dayNightKey = getString(R.string.day_night_key)
-                val sharedPref = activity?.getSharedPreferences(
-                    getString(R.string.shared_preferences_file_key),
-                    Context.MODE_PRIVATE
-                )
-                val isNightMode = sharedPref?.getBoolean(dayNightKey, false)
-                if (isNightMode == true) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    sharedPref.edit().putBoolean(dayNightKey, false).apply()
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    sharedPref?.edit()?.putBoolean(dayNightKey, true)?.apply()
+                val preferences = activity?.getPreferences(Context.MODE_PRIVATE)
+
+                preferences?.apply {
+                    val isNightMode = getBoolean(dayNightKey, false)
+
+                    if (isNightMode) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        preferences.edit().putBoolean(dayNightKey, false).apply()
+                    } else {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        preferences.edit()?.putBoolean(dayNightKey, true)?.apply()
+                    }
+                    activity?.recreate()
                 }
-                activity?.recreate()
                 return true
             }
         }
