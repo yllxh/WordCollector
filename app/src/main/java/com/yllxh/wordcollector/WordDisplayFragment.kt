@@ -101,9 +101,9 @@ class WordDisplayFragment : Fragment() {
                     getString(R.string.deleting) + word.word,
                     Snackbar.LENGTH_LONG
                 )
-                    .setAction(R.string.undo) {
+                .setAction(R.string.undo) {
                         viewModel.insertWordIfValid(word)
-                    }.show()
+                }.show()
 
                 viewModel.deleteWord(word)
             }
@@ -270,12 +270,17 @@ class WordDisplayFragment : Fragment() {
         }
     }
 
-    // Opens a browser to look up the new work on Google Translate.
+    /* Opens a browser to look up the new work on Google Translate. */
     private fun lookUpTheNewWord(str: String) {
-        val url = "https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=$str"
+        val url = getString(R.string.google_translate_site) + str
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
-        startActivity(i)
+
+        if (i.resolveActivity(activity?.packageManager) != null) {
+            startActivity(i)
+        }else{
+            toast(getString(R.string.look_up_failed))
+        }
     }
 
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
