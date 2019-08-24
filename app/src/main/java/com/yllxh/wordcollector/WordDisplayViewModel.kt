@@ -83,12 +83,15 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     /**
      * Inserts a word in the database if it is a valid word,
      * if the word is inserted it returns true and false otherwise.
+     * In case that the function is used to undo a deletion the isNewWord parameter
+     * can be used to indicate that.
+     * @param isNewWord  Indicates if this word existed before.
      */
-    fun insertWordIfValid(word: Word): Boolean {
+    fun insertWordIfValid(word: Word, isNewWord: Boolean = true): Boolean {
         if (checkWord(word)) {
             coroutineScope.launch {
                 insert(word)
-                newItemInserted = true
+                newItemInserted = isNewWord
             }
             return true
         }

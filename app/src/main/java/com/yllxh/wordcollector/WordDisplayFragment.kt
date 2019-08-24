@@ -102,7 +102,7 @@ class WordDisplayFragment : Fragment() {
                     Snackbar.LENGTH_LONG
                 )
                 .setAction(R.string.undo) {
-                        viewModel.insertWordIfValid(word)
+                        viewModel.insertWordIfValid(word, false)
                 }.show()
 
                 viewModel.deleteWord(word)
@@ -158,7 +158,7 @@ class WordDisplayFragment : Fragment() {
                 newWordEditText.setText("")
                 newDefinitionEditText.setText("")
                 // If the word is not inserted, than it means that it is not valid
-                if (!viewModel.insertWordIfValid(word)) {
+                if (!viewModel.insertWordIfValid(word, false)) {
                     toast(getString(R.string.word_is_not_valid))
                 }
             }
