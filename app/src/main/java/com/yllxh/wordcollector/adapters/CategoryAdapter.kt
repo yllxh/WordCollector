@@ -14,9 +14,8 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean,
-    private val onAddOrEditCategory: (category: Category?) -> Unit
+    private val onItemClickListener: (category: Category?) -> Boolean
 ) : ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
-
     /**
      * Notifies the adapter that a new item is selected, and it informs the adapter
      * about the oldSelection and the newSelection positions in the adapter.
@@ -31,7 +30,7 @@ class CategoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = getItem(position)
-        holder.bind(context, category, onAddOrEditCategory, onNewCategorySelected)
+        holder.bind(context, category, onItemClickListener, onNewCategorySelected)
     }
 
 
@@ -39,19 +38,21 @@ class CategoryAdapter(
         fun bind(
             context: Context,
             category: Category,
-            onAddOrEditCategory: (category: Category?) -> Unit,
+            onItemClickListener: (category: Category?) -> Boolean,
             itemChangedListener: (Int, Int) -> Unit
             ) {
             binding.apply {
                 categoryTextView.text = category.name
                 cardView.setOnClickListener {
-                    onAddOrEditCategory(category)
-                    itemChangedListener(lastSelectedItem, adapterPosition)
-                    lastSelectedItem = adapterPosition
+                    // If the onItemClickListener returns true, then highlight the selected category.
+                    if(onItemClickListener(category)){
+                        itemChangedListener(lastSelectedItemId, adapterPosition)
+                        lastSelectedItemId = adapterPosition
+                    }
                 }
 
                 // Paints the current view with the correct colors
-                when (lastSelectedItem) {
+                when (lastSelectedItemId) {
                     adapterPosition -> {
                         cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                         categoryTextView.setTextColor(ContextCompat.getColor(context,R.color.categorySelectedTextColor))
@@ -68,7 +69,7 @@ class CategoryAdapter(
              * Variable used to keep track of the last selected item in of the parent adapter.
              * It is used to highlight the correct ViewHolder.
              */
-            private var lastSelectedItem: Int = 0
+            private var lastSelectedItemId: Int = 0
 
             fun from(parent: ViewGroup, widthMatchParent: Boolean): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)

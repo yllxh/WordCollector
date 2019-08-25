@@ -3,6 +3,7 @@ package com.yllxh.wordcollector
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,6 @@ import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
 
 class ManageCategoriesFragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,7 +32,7 @@ class ManageCategoriesFragment : Fragment() {
         // Function used to create a dialog in cases when a category needs to be is inserted/updated.
         // To insert a category the category parameter must be set to null, and to update a category
         // the category should be passed to it.
-        val onAddOrEditCategory: (category: Category?) -> Unit = { category ->
+        val onAddOrEditCategory: (category: Category?) -> Boolean = { category ->
             DialogAddEditCategoryBinding.inflate(inflater, container, false).apply {
                 val oldCategoryName = category?.name ?: ""
                 newCategoryEt.setText(oldCategoryName)
@@ -57,6 +57,8 @@ class ManageCategoriesFragment : Fragment() {
                     create().show()
                 }
             }
+            // Returning false to tell the adapter not to highlight the selected color.
+            false
         }
 
         // Create an instance of the CategoryAdapter

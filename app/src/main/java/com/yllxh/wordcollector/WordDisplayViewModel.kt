@@ -48,7 +48,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     init {
         isNewItemInserted.value = false
         isUserSearching.value = false
-        currentCategory.value = defaultCategory
     }
 
     /**

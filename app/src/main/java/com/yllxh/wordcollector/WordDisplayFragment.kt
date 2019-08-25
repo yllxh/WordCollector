@@ -1,6 +1,7 @@
 package com.yllxh.wordcollector
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.adapters.WordAdapter
+import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
@@ -33,14 +35,16 @@ class WordDisplayFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        initializePreferences()
         val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        initializePreferences()
         binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
 
         // Create an instance of the CategoryAdapter with the necessary parameters
         val categoryAdapter = CategoryAdapter(activity as Context, false) {
             viewModel.currentCategory.value = it?.name
+            // Returning true to indicate that the adapter should highlight the selected color.
+            true
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 
@@ -264,7 +268,7 @@ class WordDisplayFragment : Fragment() {
 
         preferences?.let {
             // Checking if a day or night mode is already set.
-            var key = getString(R.string.day_night_key)
+            val key = getString(R.string.day_night_key)
             if (!it.contains(key)) {
                 it.edit().putBoolean(key, true).apply()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -277,16 +281,6 @@ class WordDisplayFragment : Fragment() {
                     }
                 )
             }
-
-            // Checking if a default selected category is already set.
-            key = getString(R.string.current_selected_category_key)
-            val defaultCategory = getString(R.string.default_category_name)
-            if (!it.contains(key)) {
-                it.edit().putString(key, defaultCategory).apply()
-            } else {
-                viewModel.currentCategory.value = it.getString(key, defaultCategory)
-            }
-
         }
     }
 

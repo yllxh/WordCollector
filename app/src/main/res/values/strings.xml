@@ -20,7 +20,6 @@
     <string name="look_again">Look again!</string>
     <string name="day_night_key">dayNightKey</string>
     <string name="night_mode_menu_title">Night Mode</string>
-    <string name="current_selected_category_key">CurrentSelectedCategoryKey</string>
     <string name="undo">Undo</string>
     <string name="search">Search</string>
     <string name="manage_categories">Manage Categories</string>
