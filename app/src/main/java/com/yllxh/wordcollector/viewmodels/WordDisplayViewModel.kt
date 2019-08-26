@@ -1,8 +1,9 @@
-package com.yllxh.wordcollector
+package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.AppDatabase
 import com.yllxh.wordcollector.data.Word
 import kotlinx.coroutines.*

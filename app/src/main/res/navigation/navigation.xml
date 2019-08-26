@@ -2,10 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/navigation" app:startDestination="@id/wordDisplayFragment">
-    <fragment android:id="@+id/wordDisplayFragment" android:name="com.yllxh.wordcollector.WordDisplayFragment"
+    <fragment android:id="@+id/wordDisplayFragment" android:name="com.yllxh.wordcollector.fragments.WordDisplayFragment"
               tools:layout="@layout/fragment_word_display"
               android:label="Word Collector"/>
-    <fragment android:id="@+id/manageCategoriesFragment" android:name="com.yllxh.wordcollector.ManageCategoriesFragment"
+    <fragment android:id="@+id/manageCategoriesFragment" android:name="com.yllxh.wordcollector.fragments.ManageCategoriesFragment"
               tools:layout="@layout/fragment_manage_categories"
               android:label="Manage Categories"/>
 </navigation>

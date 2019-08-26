@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector
+package com.yllxh.wordcollector.fragments
 
 
 import android.content.Context
@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
+import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
