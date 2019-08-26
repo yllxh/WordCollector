@@ -13,7 +13,7 @@
     <string name="add_category">Add Category</string>
     <string name="word_is_not_valid">No valid word was entered</string>
     <string name="default_category_name">All</string>
-    <string name="deleting">Deleting </string>
+    <string name="deleting">Deleting</string>
     <string name="look_again">Look again!</string>
     <string name="day_night_key">dayNightKey</string>
     <string name="night_mode_menu_title">Night Mode</string>
