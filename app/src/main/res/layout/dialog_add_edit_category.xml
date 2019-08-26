@@ -22,10 +22,11 @@
                 android:padding="8dp"
                 android:paddingLeft="16dp"/>
         <EditText
+                android:id="@+id/new_category_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_category_name"
-                android:id="@+id/new_category_et"
+                android:inputType="text"
         />
     </LinearLayout>
 </layout>

@@ -3,7 +3,6 @@ package com.yllxh.wordcollector
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +47,7 @@ class ManageCategoriesFragment : Fragment() {
                         }
                         // If the category is not updated/inserted display a toast to inform the user
                         if (!successful){
-                            toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
+                            toast(getString(R.string.category_name_alert), Toast.LENGTH_LONG)
                         }
                     }
                     setNegativeButton(R.string.cancel) { dialog, _ ->

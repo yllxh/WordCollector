@@ -6,7 +6,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import kotlinx.coroutines.*
 
 @Database(entities = [Word::class, Category::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
@@ -23,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
         private val dbCallback = object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                InsertMainCategoryAsync(INSTANCE).execute();
+                InsertMainCategoryAsync(INSTANCE).execute()
             }
         }
 

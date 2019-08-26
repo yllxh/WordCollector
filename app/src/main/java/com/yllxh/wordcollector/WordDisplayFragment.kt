@@ -1,7 +1,6 @@
 package com.yllxh.wordcollector
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.adapters.WordAdapter
-import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
@@ -269,7 +267,6 @@ class WordDisplayFragment : Fragment() {
      * If it does not have a current category saved it sets it to the default category ("All").
      */
     private fun initializePreferences() {
-        val viewModel = ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
         val preferences = activity?.getPreferences(Context.MODE_PRIVATE)
 
         preferences?.let {
