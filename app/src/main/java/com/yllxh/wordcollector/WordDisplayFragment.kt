@@ -51,6 +51,12 @@ class WordDisplayFragment : Fragment() {
         // Observing the categories for changes.
         viewModel.categories.observe(this, Observer {
             categoryAdapter.submitList(it)
+            val size = it.filter { category ->
+                category.name == viewModel.currentCategory.value
+            }.size
+            if (size < 1){
+                viewModel.currentCategory.value = viewModel.defaultCategory
+            }
         })
 
         val onEditClickListener: (Word) -> Unit = { word ->
