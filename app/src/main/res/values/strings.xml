@@ -20,7 +20,7 @@
     <string name="undo">Undo</string>
     <string name="search">Search</string>
     <string name="manage_categories">Manage Categories</string>
-    <string name="look_up_failed">Make sure that you have a browser installed.</string>
+    <string name="look_up_failed">You need to have a browser installed.</string>
     <string name="google_translate_site">
         <![CDATA[https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=]]></string>
 
