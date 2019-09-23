@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+                name="data"
+                type="com.yllxh.wordcollector.data.Word" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/title_edit_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:contentDescription="@string/edit_word"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:scaleType="center"
+                android:text="@string/edit_word"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        <EditText
+                android:id="@+id/edited_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginBottom="0dp"
+                android:hint="@string/example"
+                android:inputType="textMultiLine"
+                android:text="@{data.word}"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title_edit_word"
+                />
+
+        <EditText
+                android:id="@+id/edited_definition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="@string/definition"
+                android:inputType="textMultiLine"
+                android:text="@{data.definition}"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edited_word"
+                tools:layout_conversion_absoluteHeight="43dp"
+                tools:layout_conversion_absoluteWidth="395dp"
+                />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dialog_category_recycleview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edited_definition" />
+
+        <TextView
+                android:id="@+id/save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/save"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cancel_button"
+                app:layout_constraintTop_toBottomOf="@+id/dialog_category_recycleview" />
+
+        <TextView
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/cancel"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dialog_category_recycleview" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+

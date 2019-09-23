@@ -24,4 +24,9 @@
     <string name="google_translate_site">
         <![CDATA[https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text=]]></string>
 
+    <string name="deleting_category">Deleting Category</string>
+    <string name="about_to_delete_category_alert">Do you want to delete all items of this category?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>
