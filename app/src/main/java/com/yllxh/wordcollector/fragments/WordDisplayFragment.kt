@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -222,12 +223,12 @@ class WordDisplayFragment : Fragment() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.main_menu, menu)
+        inflater.inflate(R.menu.main_menu, menu)
 
         // Setup up the behaviour of the SearchView
-        val searchView = menu?.findItem(R.id.menu_item_search)?.actionView as SearchView
+        val searchView = menu.findItem(R.id.menu_item_search)?.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 wordAdapter.submitList(
@@ -257,12 +258,12 @@ class WordDisplayFragment : Fragment() {
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.night_mode_menu_item) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.night_mode_menu_item) {
             toggleNightMode()
             return true
         }
-        return NavigationUI.onNavDestinationSelected(item!!, view!!.findNavController())
+        return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
                 || super.onOptionsItemSelected(item)
     }
 
@@ -298,14 +299,9 @@ class WordDisplayFragment : Fragment() {
     /* Opens a browser to look up the new work on Google Translate. */
     private fun lookUpTheNewWord(str: String) {
         val url = getString(R.string.google_translate_site) + str
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-
-        if (i.resolveActivity(requireActivity().packageManager) != null) {
-            startActivity(i)
-        } else {
-            toast(getString(R.string.look_up_failed))
-        }
+        findNavController().navigate(
+            WordDisplayFragmentDirections.actionWordDisplayFragmentToLookUpFragment(url)
+        )
     }
 
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {

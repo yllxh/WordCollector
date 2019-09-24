@@ -9,10 +9,23 @@
             android:name="com.yllxh.wordcollector.fragments.WordDisplayFragment"
             android:label="@string/app_name"
             tools:layout="@layout/fragment_word_display"
-            />
+            >
+        <action
+                android:id="@+id/action_wordDisplayFragment_to_lookUpFragment"
+                app:destination="@id/lookUpFragment" />
+    </fragment>
     <fragment
             android:id="@+id/manageCategoriesFragment"
             android:name="com.yllxh.wordcollector.fragments.ManageCategoriesFragment"
             android:label="Manage Categories"
             tools:layout="@layout/fragment_manage_categories" />
+    <fragment
+            android:id="@+id/lookUpFragment"
+            android:name="com.yllxh.wordcollector.fragments.LookUpFragment"
+            android:label="Look Up"
+            tools:layout="@layout/fragment_look_up" >
+        <argument
+                android:name="url"
+                app:argType="string" />
+    </fragment>
 </navigation>
