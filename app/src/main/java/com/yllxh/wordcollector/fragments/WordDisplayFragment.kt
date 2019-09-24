@@ -2,8 +2,6 @@ package com.yllxh.wordcollector.fragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -18,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.AppPreferences.setDayNightMode
@@ -31,6 +28,7 @@ import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 
 class WordDisplayFragment : Fragment() {
+
     private val delayTime by lazy {
         resources.getInteger(R.integer.short_delay).toLong()
     }
@@ -296,9 +294,12 @@ class WordDisplayFragment : Fragment() {
         viewModel.setCurrentCategory(selectedCategory)
     }
 
-    /* Opens a browser to look up the new work on Google Translate. */
-    private fun lookUpTheNewWord(str: String) {
-        val url = getString(R.string.google_translate_site) + str
+    /**
+     * Navigates to the LookUpFragment and passes to it the word,
+     * that needs to be looked up.
+     */
+    private fun lookUpTheNewWord(wordStr: String) {
+        val url = getString(R.string.google_translate_site) + wordStr
         findNavController().navigate(
             WordDisplayFragmentDirections.actionWordDisplayFragmentToLookUpFragment(url)
         )

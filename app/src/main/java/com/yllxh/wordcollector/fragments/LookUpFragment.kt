@@ -23,7 +23,6 @@ class LookUpFragment : Fragment() {
             webViewClient = WebViewClient()
             loadUrl(url)
         }
-
         return binding.root
     }
 
