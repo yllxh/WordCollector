@@ -82,5 +82,12 @@ class AppRepository(application: Application) {
         }
     }
 
+    suspend fun deleteAllOfCategory(category: Category) {
+        withContext(Dispatchers.IO){
+            categoryDao.delete(category)
+            wordDao.deleteAllOfCategory(category.name)
+        }
+    }
+
 
 }

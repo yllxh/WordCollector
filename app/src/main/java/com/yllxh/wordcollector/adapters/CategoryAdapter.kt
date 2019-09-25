@@ -12,6 +12,12 @@ import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 
+/**
+ * CategoryAdapter class for presenting data in a RecycleView.
+ *
+ * @param widthMatchParent  used to determine whether the width of views should
+ *                          expand to match parent(RecycleView)
+ */
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,

@@ -18,7 +18,7 @@ import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
-import com.google.android.material.snackbar.Snackbar
+import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
 
 
 class ManageCategoriesFragment : Fragment() {
@@ -93,16 +93,7 @@ class ManageCategoriesFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val category = categoryAdapter.getCategoryAtPosition(position)
-                if (viewModel.deleteCategory(category)) {
-                    Snackbar.make(binding.root,
-                        getString(R.string.deleting) + category.name,
-                        Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo) {
-                            viewModel.insertCategory(category)
-                        }.show()
-                } else {
-                    toast(getString(R.string.look_again))
-                }
+                onDeleteCategory(category, container)
             }
         }).attachToRecyclerView(binding.categoryRecycleview)
 
@@ -118,5 +109,35 @@ class ManageCategoriesFragment : Fragment() {
      */
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(activity, s, lengthLong).show()
+    }
+
+    private fun onDeleteCategory(category: Category, container: ViewGroup?){
+        val dialogBinding = DialogDeletingCategoryBinding.inflate(layoutInflater, container, false)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .show()
+
+        // Set onClickListeners to dialog buttons.
+        dialogBinding.apply {
+            cancelButton.setOnClickListener {
+                dialog.cancel()
+            }
+
+            yesButton.setOnClickListener {
+                if(!viewModel.deleteAllOfCategory(category)) {
+                    toast(getString(R.string.look_again))
+                }
+                dialog.cancel()
+            }
+
+            noButton.setOnClickListener {
+                if(!viewModel.deleteCategory(category)) {
+                    toast(getString(R.string.look_again))
+                }
+                dialog.cancel()
+            }
+        }
+
     }
 }

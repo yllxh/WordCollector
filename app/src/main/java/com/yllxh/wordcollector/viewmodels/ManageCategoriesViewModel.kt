@@ -103,4 +103,17 @@ class ManageCategoriesViewModel(application: Application):
         // Cancels the job used by the coroutine.
         viewModelJob.cancel()
     }
+
+    /**
+     * Deletes the specified category, including all the words of this category.
+     */
+    fun deleteAllOfCategory(category: Category): Boolean {
+        return if (category.name != defaultCategory) {
+            coroutineScope.launch {
+                repository.deleteAllOfCategory(category)
+            }
+            true
+        }
+        else false
+    }
 }
