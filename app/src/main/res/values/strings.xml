@@ -29,5 +29,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="press_yes_3_times">(Press \'Yes\' 3 times.)</string>
+    <string name="to_go">to go.</string>
 
 </resources>

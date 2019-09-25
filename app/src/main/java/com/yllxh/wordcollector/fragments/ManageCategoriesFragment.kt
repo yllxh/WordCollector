@@ -143,6 +143,7 @@ class ManageCategoriesFragment : Fragment() {
                             viewModel.deleteAllWords()
                             dialog.cancel()
                         }
+                        toast("$clicks")
                     }
                 }
             }
