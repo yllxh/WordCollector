@@ -141,8 +141,8 @@ class ManageCategoriesFragment : Fragment() {
                         clicks++
                         if (clicks == 3 ) {
                             viewModel.deleteAllWords()
+                            dialog.cancel()
                         }
-                        dialog.cancel()
                     }
                 }
             }
