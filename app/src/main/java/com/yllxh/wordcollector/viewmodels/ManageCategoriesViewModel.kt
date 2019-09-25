@@ -116,4 +116,10 @@ class ManageCategoriesViewModel(application: Application):
         }
         else false
     }
+
+    fun deleteAllWords() {
+        coroutineScope.launch {
+            repository.deleteAllWords()
+        }
+    }
 }

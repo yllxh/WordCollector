@@ -30,4 +30,7 @@ interface WordDao{
     @Delete
     fun delete(vararg words: Word): Int
 
+    @Query("DELETE FROM word_table")
+    fun deleteAll(): Int
+
 }

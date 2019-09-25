@@ -118,6 +118,12 @@ class ManageCategoriesFragment : Fragment() {
             .setView(dialogBinding.root)
             .show()
 
+        var clicks = 0
+        val isDefaultCategory = category.name == viewModel.defaultCategory
+        if (isDefaultCategory){
+            dialogBinding.alertMessageTextView.append(getString(R.string.press_yes_3_times))
+        }
+
         // Set onClickListeners to dialog buttons.
         dialogBinding.apply {
             cancelButton.setOnClickListener {
@@ -125,10 +131,20 @@ class ManageCategoriesFragment : Fragment() {
             }
 
             yesButton.setOnClickListener {
-                if(!viewModel.deleteAllOfCategory(category)) {
-                    toast(getString(R.string.look_again))
+                when {
+                    !isDefaultCategory -> {
+                        viewModel.deleteAllOfCategory(category)
+                        viewModel.deleteCategory(category)
+                        dialog.cancel()
+                    }
+                    isDefaultCategory -> {
+                        clicks++
+                        if (clicks == 3 ) {
+                            viewModel.deleteAllWords()
+                        }
+                        dialog.cancel()
+                    }
                 }
-                dialog.cancel()
             }
 
             noButton.setOnClickListener {
@@ -138,6 +154,5 @@ class ManageCategoriesFragment : Fragment() {
                 dialog.cancel()
             }
         }
-
     }
 }

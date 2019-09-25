@@ -28,5 +28,6 @@
     <string name="about_to_delete_category_alert">Do you want to delete all items of this category?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="press_yes_3_times">(Press \'Yes\' 3 times.)</string>
 
 </resources>

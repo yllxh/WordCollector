@@ -61,7 +61,7 @@ class CategoryAdapter(
     private fun updateSelectedItemId() {
         if (itemCount > 0 && lastSelectedItemId == -1) {
             val selectedCategory = AppPreferences.getLastSelectedCategory(context)
-            for (i in 0..itemCount) {
+            for (i in 0 until itemCount) {
                 if (getItem(i).name == selectedCategory) {
                     lastSelectedItemId = i
                     break
