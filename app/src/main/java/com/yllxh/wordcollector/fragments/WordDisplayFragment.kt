@@ -54,6 +54,7 @@ class WordDisplayFragment : Fragment() {
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 
+
         val onEditClickListener: (Word) -> Unit = { word ->
             val binding = DialogEditWordBinding.inflate(inflater, container, false).apply {
                 data = word
@@ -86,6 +87,7 @@ class WordDisplayFragment : Fragment() {
         // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
         wordAdapter = WordAdapter(onEditClickListener)
         binding.wordRecycleview.adapter = wordAdapter
+
 
         // Enable the deletion of words, by swiping the item left or right.
         ItemTouchHelper(object : ItemTouchHelper
