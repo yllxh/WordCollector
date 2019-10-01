@@ -38,7 +38,7 @@ class AppRepository(application: Application) {
     /**
      * Suspend function used to insert a word.
      */
-    suspend fun insert(word: Word, isNewWord: Boolean){
+    suspend fun insert(word: Word){
         withContext(Dispatchers.IO){
             wordDao.insert(word)
         }
