@@ -1,7 +1,7 @@
 package com.yllxh.wordcollector
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
 private const val DAY_NIGHT_KEY = "dayNightKey"
 private const val LAST_SELECTED_CATEGORY = "lastSelectedCategory"

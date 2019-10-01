@@ -50,7 +50,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "android.arch.navigation:navigation-ui-ktx:$navigationVersion"
-
+    implementation "androidx.preference:preference-ktx:1.1.0"
     // Room and Lifecycle dependencies
     implementation "androidx.room:room-runtime:2.1.0"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
