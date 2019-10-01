@@ -60,7 +60,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     fun insert(word: Word, isNewWord: Boolean = true): Boolean {
         if (isValidWord(word)) {
             coroutineScope.launch {
-                repository.insert(word, isNewWord)
+                repository.insert(word)
                 newItemInserted = isNewWord
             }
             return true
