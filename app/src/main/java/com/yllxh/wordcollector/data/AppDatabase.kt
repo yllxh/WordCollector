@@ -16,12 +16,19 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-        private const val DEFAULT_CATEGORY_NAME = "All"
 
         private val dbCallback = object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                InsertMainCategoryAsync(INSTANCE).execute()
+                val categoryDao: CategoryDao? = INSTANCE?.categoryDao
+                Thread {
+                    categoryDao?.let {
+                        // If there are no categories in the database, insert a Category.
+                        if (categoryDao.getAnyCategory().isEmpty()) {
+                            categoryDao.insert(Category())
+                        }
+                    }
+                }.start()
             }
         }
 
@@ -42,21 +49,5 @@ abstract class AppDatabase : RoomDatabase() {
                 return instance
             }
         }
-
-        class InsertMainCategoryAsync(db: AppDatabase?): AsyncTask<Void, Void, Void>() {
-
-            private val categoryDao: CategoryDao? = db?.categoryDao
-
-            override fun doInBackground(vararg params: Void): Void? {
-                // If we have no Category, then create the main category DEFAULT_CATEGORY_NAME
-                if (categoryDao != null) {
-                    if (categoryDao.getAnyCategory().isEmpty()) {
-                        categoryDao.insert(Category(DEFAULT_CATEGORY_NAME))
-                    }
-                }
-                return null
-            }
-        }
     }
-
 }
