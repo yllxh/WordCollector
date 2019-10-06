@@ -28,6 +28,7 @@ class CategoryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent, widthMatchParent)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = getItem(position)
         holder.bind(
@@ -85,8 +86,8 @@ class CategoryAdapter(
             private set
     }
 
-    class ViewHolder private constructor(private val binding: CategoryListItemBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(private val binding: CategoryListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
             context: Context,
@@ -108,18 +109,39 @@ class CategoryAdapter(
                 when (lastSelectedItemId) {
                     adapterPosition -> {
                         // Highlight the selected category.
-                        cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
-                        categoryTextView.setTextColor(ContextCompat.getColor(context,R.color.categorySelectedTextColor))
-                    }else -> {
-                        cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.categoryBackground))
-                        categoryTextView.setTextColor(ContextCompat.getColor(context, R.color.categoryTextColor))
+                        cardView.setCardBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.colorAccent
+                            )
+                        )
+                        categoryTextView.setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.categorySelectedTextColor
+                            )
+                        )
+                    }
+                    else -> {
+                        cardView.setCardBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.categoryBackground
+                            )
+                        )
+                        categoryTextView.setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.categoryTextColor
+                            )
+                        )
                     }
                 }
 
                 val isCountVisible = categoryCountTextView.visibility == View.VISIBLE
 
-                if (widthMatchParent || isCountVisible){
-                    if (!isCountVisible){
+                if (widthMatchParent || isCountVisible) {
+                    if (!isCountVisible) {
                         categoryCountTextView.visibility = View.VISIBLE
                     }
                     categoryCountTextView.text = category.wordCount.toString()

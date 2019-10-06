@@ -13,7 +13,11 @@ import com.yllxh.wordcollector.databinding.FragmentLookUpBinding
 class LookUpFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentLookUpBinding.inflate(inflater, container, false)
         val url = LookUpFragmentArgs.fromBundle(arguments!!).url
         binding.webView.apply {

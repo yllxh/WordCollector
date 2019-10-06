@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
-interface CategoryDao{
+interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(category: Category)
 

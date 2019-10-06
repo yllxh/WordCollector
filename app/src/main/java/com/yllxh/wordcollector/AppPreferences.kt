@@ -5,6 +5,7 @@ import androidx.preference.PreferenceManager
 
 private const val DAY_NIGHT_KEY = "dayNightKey"
 private const val LAST_SELECTED_CATEGORY = "lastSelectedCategory"
+
 object AppPreferences {
 
     /**
@@ -13,7 +14,7 @@ object AppPreferences {
      * If there is no mode saved, then it will save and return
      * the defaultMode, which is saved in the apps resource file.
      */
-    fun getNightMode(context: Context): Boolean{
+    fun getNightMode(context: Context): Boolean {
         val defaultMode = context.resources.getBoolean(R.bool.default_night_mode)
         PreferenceManager.getDefaultSharedPreferences(context).apply {
 
@@ -29,7 +30,7 @@ object AppPreferences {
         }
     }
 
-    fun setDayNightMode(context: Context, mode: Boolean){
+    fun setDayNightMode(context: Context, mode: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(context).apply {
             edit().apply {
                 putBoolean(DAY_NIGHT_KEY, mode)
@@ -49,10 +50,10 @@ object AppPreferences {
 
         PreferenceManager.getDefaultSharedPreferences(context).apply {
 
-            return if (contains(LAST_SELECTED_CATEGORY)){
+            return if (contains(LAST_SELECTED_CATEGORY)) {
                 getString(LAST_SELECTED_CATEGORY, defaultCategoryName) ?: defaultCategoryName
-            } else{
-                edit().apply{
+            } else {
+                edit().apply {
                     putString(LAST_SELECTED_CATEGORY, defaultCategoryName)
                     apply()
                 }
@@ -61,9 +62,9 @@ object AppPreferences {
         }
     }
 
-    fun setLastSelectedCategory(context: Context, name: String){
+    fun setLastSelectedCategory(context: Context, name: String) {
         PreferenceManager.getDefaultSharedPreferences(context).apply {
-            edit().apply{
+            edit().apply {
                 putString(LAST_SELECTED_CATEGORY, name)
                 apply()
             }

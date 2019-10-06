@@ -44,7 +44,11 @@ class WordDisplayFragment : Fragment() {
     }
 
     @SuppressLint("RestrictedApi")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(true)
         binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
 
@@ -71,7 +75,8 @@ class WordDisplayFragment : Fragment() {
                         binding.editedWord.text.toString(),
                         binding.editedDefinition.text.toString(),
                         viewModel.currentCategory.value ?: word.category
-                    ), word)
+                    ), word
+                )
 
                 if (!wasWordValid) {
                     toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
@@ -91,7 +96,11 @@ class WordDisplayFragment : Fragment() {
         // Enable the deletion of words, by swiping the item left or right.
         ItemTouchHelper(object : ItemTouchHelper
         .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
                 return false
             }
 
@@ -203,7 +212,7 @@ class WordDisplayFragment : Fragment() {
     /**
      * Sets the correct visibility to views on the screen.
      */
-    private fun onSearchingStateChange(isSearching: Boolean){
+    private fun onSearchingStateChange(isSearching: Boolean) {
         when {
             isSearching -> {
                 binding.enterNewWordCardview.visibility = View.GONE
@@ -240,6 +249,7 @@ class WordDisplayFragment : Fragment() {
                 }
                 return true
             }
+
             override fun onQueryTextSubmit(query: String): Boolean {
                 return false
             }

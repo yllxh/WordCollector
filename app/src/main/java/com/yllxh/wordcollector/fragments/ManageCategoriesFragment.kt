@@ -26,6 +26,7 @@ class ManageCategoriesFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,7 +37,7 @@ class ManageCategoriesFragment : Fragment() {
         // Used to create a dialog in cases when a category needs to be is inserted/updated.
         // To insert a category the category parameter must be set to null, and to updateCategory a category
         // the category should be passed to it.
-        val onAddOrEditCategory: (category: Category) -> Unit= { category ->
+        val onAddOrEditCategory: (category: Category) -> Unit = { category ->
             val dialogBinding = DialogAddEditCategoryBinding.inflate(inflater, container, false)
 
             val dialog = AlertDialog.Builder(requireContext())
@@ -71,7 +72,7 @@ class ManageCategoriesFragment : Fragment() {
             }
         }
 
-        val categoryAdapter = CategoryAdapter(requireContext(),true, onAddOrEditCategory)
+        val categoryAdapter = CategoryAdapter(requireContext(), true, onAddOrEditCategory)
         binding.categoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
@@ -87,9 +88,14 @@ class ManageCategoriesFragment : Fragment() {
         // Enable the deletion of categories, by swiping the item left or right.
         ItemTouchHelper(object : ItemTouchHelper
         .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
                 return false
             }
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val category = categoryAdapter.getCategoryAtPosition(position)
@@ -111,7 +117,7 @@ class ManageCategoriesFragment : Fragment() {
         Toast.makeText(activity, s, lengthLong).show()
     }
 
-    private fun onDeleteCategory(category: Category, container: ViewGroup?){
+    private fun onDeleteCategory(category: Category, container: ViewGroup?) {
         val dialogBinding = DialogDeletingCategoryBinding.inflate(layoutInflater, container, false)
 
         val dialog = AlertDialog.Builder(requireContext())
@@ -120,7 +126,7 @@ class ManageCategoriesFragment : Fragment() {
 
         var clicks = 0
         val isDefaultCategory = category.name == viewModel.defaultCategory
-        if (isDefaultCategory){
+        if (isDefaultCategory) {
             dialogBinding.alertMessageTextView.append(getString(R.string.press_yes_3_times))
         }
 
@@ -139,7 +145,7 @@ class ManageCategoriesFragment : Fragment() {
                     }
                     isDefaultCategory -> {
                         clicks++
-                        if (clicks == 3 ) {
+                        if (clicks == 3) {
                             viewModel.deleteAllWords()
                             dialog.cancel()
                         }
@@ -149,7 +155,7 @@ class ManageCategoriesFragment : Fragment() {
             }
 
             noButton.setOnClickListener {
-                if(!viewModel.deleteCategory(category)) {
+                if (!viewModel.deleteCategory(category)) {
                     toast(getString(R.string.look_again))
                 }
                 dialog.cancel()

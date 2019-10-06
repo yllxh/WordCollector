@@ -10,8 +10,8 @@ import com.yllxh.wordcollector.data.Category
 import kotlinx.coroutines.*
 
 
-class ManageCategoriesViewModel(application: Application):
-        AndroidViewModel(application){
+class ManageCategoriesViewModel(application: Application) :
+    AndroidViewModel(application) {
     private val repository = AppRepository(application)
 
     val defaultCategory = repository.defaultCategory
@@ -43,10 +43,10 @@ class ManageCategoriesViewModel(application: Application):
      */
     private fun isValidCategory(newCategory: Category, oldCategory: Category? = null): Boolean {
         if (newCategory.name.isEmpty()
-                || newCategory.name == defaultCategory
-                    || oldCategory?.name == defaultCategory)
+            || newCategory.name == defaultCategory
+            || oldCategory?.name == defaultCategory
+        )
             return false
-
         else if (oldCategory != null) {
             if (newCategory.name != oldCategory.name)
                 return true
@@ -65,8 +65,7 @@ class ManageCategoriesViewModel(application: Application):
                 newItemInserted = true
             }
             true
-        }
-        else false
+        } else false
     }
 
     /**
@@ -79,14 +78,13 @@ class ManageCategoriesViewModel(application: Application):
                 repository.update(newCategory, oldCategory)
             }
             true
-        }
-        else false
+        } else false
     }
 
     /**
      * Used to delete the Category, unless it is the default category.
      */
-    fun deleteCategory(category: Category): Boolean{
+    fun deleteCategory(category: Category): Boolean {
         if (category.name != defaultCategory) {
             coroutineScope.launch {
                 repository.delete(category)
@@ -95,7 +93,6 @@ class ManageCategoriesViewModel(application: Application):
         }
         return false
     }
-
 
 
     override fun onCleared() {
@@ -113,8 +110,7 @@ class ManageCategoriesViewModel(application: Application):
                 repository.deleteAllOfCategory(category)
             }
             true
-        }
-        else false
+        } else false
     }
 
     fun deleteAllWords() {

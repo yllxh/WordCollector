@@ -45,7 +45,8 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
             return false
         else if (oldWord != null) {
             if (newWord.word != oldWord.word
-                || newWord.definition != oldWord.definition)
+                || newWord.definition != oldWord.definition
+            )
                 return true
         }
         return true
@@ -79,8 +80,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
                 repository.update(newWord, oldWord)
             }
             true
-        }
-        else false
+        } else false
     }
 
     fun delete(word: Word) {
