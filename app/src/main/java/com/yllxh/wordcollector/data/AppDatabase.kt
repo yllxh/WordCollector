@@ -1,13 +1,13 @@
 package com.yllxh.wordcollector.data
 
 import android.content.Context
-import android.os.AsyncTask
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Word::class, Category::class], version = 1, exportSchema = false)
+@Database(entities = [Word::class, Category::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract val wordDao: WordDao
@@ -41,7 +41,8 @@ abstract class AppDatabase : RoomDatabase() {
                         AppDatabase::class.java,
                         "app_database"
                     )
-                        .fallbackToDestructiveMigration()
+                        // Add the migration to the database
+                        .addMigrations(migration_1_2)
                         .addCallback(dbCallback)
                         .build()
                     INSTANCE = instance
@@ -49,5 +50,15 @@ abstract class AppDatabase : RoomDatabase() {
                 return instance
             }
         }
+
+        private val migration_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE category_table ADD COLUMN wordCount INTEGER NOT NULL DEFAULT 0"
+                )
+            }
+        }
     }
+
+
 }

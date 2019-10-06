@@ -6,5 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "category_table")
 data class Category(
     @PrimaryKey
-    var name: String = "All"
+    var name: String = "All",
+    var wordCount: Int = 0
 )
