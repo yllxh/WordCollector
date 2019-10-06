@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.AppPreferences
-import com.yllxh.wordcollector.AppPreferences.setDayNightMode
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
@@ -267,22 +266,26 @@ class WordDisplayFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
-    private fun toggleNightMode(){
+    private fun toggleNightMode() {
         val activity = requireActivity()
-        AppPreferences.getDayNightMode(activity).apply {
-            AppCompatDelegate.setDefaultNightMode(
-                when {
-                    this -> AppCompatDelegate.MODE_NIGHT_NO
-                    else -> AppCompatDelegate.MODE_NIGHT_YES
-                }
-            )
-            setDayNightMode(activity, !this)
+        val nightMode: Boolean
+
+        AppPreferences.apply {
+            nightMode = getNightMode(activity)
+            setDayNightMode(activity, !nightMode)
         }
+
+        AppCompatDelegate.setDefaultNightMode(
+            when {
+                nightMode -> AppCompatDelegate.MODE_NIGHT_NO
+                else -> AppCompatDelegate.MODE_NIGHT_YES
+            }
+        )
         activity.recreate()
     }
 
     private fun initializeNightMode() {
-        val isNightMode = AppPreferences.getDayNightMode(requireContext())
+        val isNightMode = AppPreferences.getNightMode(requireContext())
         AppCompatDelegate.setDefaultNightMode(
             when {
                 isNightMode -> AppCompatDelegate.MODE_NIGHT_YES

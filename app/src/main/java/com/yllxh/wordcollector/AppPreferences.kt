@@ -13,7 +13,7 @@ object AppPreferences {
      * If there is no mode saved, then it will save and return
      * the defaultMode, which is saved in the apps resource file.
      */
-    fun getDayNightMode(context: Context): Boolean{
+    fun getNightMode(context: Context): Boolean{
         val defaultMode = context.resources.getBoolean(R.bool.default_night_mode)
         PreferenceManager.getDefaultSharedPreferences(context).apply {
 
