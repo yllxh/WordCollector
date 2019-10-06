@@ -61,7 +61,16 @@ class WordDisplayFragment : Fragment() {
         val onEditClickListener: (Word) -> Unit = { word ->
             val binding = DialogEditWordBinding.inflate(inflater, container, false).apply {
                 data = word
-                dialogCategoryRecycleview.adapter = categoryAdapter
+                CategoryAdapter(requireContext(),
+                    widthMatchParent = false,
+                    forDialog = true
+                ) {
+                    viewModel.setCurrentCategory(it.name)
+
+                }.apply {
+                    submitList(viewModel.categories.value?.toMutableList())
+                    dialogCategoryRecycleview.adapter = this
+                }
             }
 
             val dialog = AlertDialog.Builder(activity)

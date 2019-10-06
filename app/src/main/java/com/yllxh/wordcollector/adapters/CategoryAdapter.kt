@@ -1,9 +1,11 @@
 package com.yllxh.wordcollector.adapters
 
 import android.content.Context
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,12 +18,15 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 /**
  * CategoryAdapter class for presenting data in a RecycleView.
  *
- * @param widthMatchParent  used to determine whether the width of views should
+ * @param widthMatchParent  Used to determine whether the width of views should
  *                          expand to match parent(RecycleView)
+ *
+ * @param forDialog         Used to inform the adapter whether it is used inside a dialog.
  */
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
+    private val forDialog: Boolean = false,
     private val onItemClickListener: (category: Category) -> Unit
 ) : ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
@@ -35,8 +40,9 @@ class CategoryAdapter(
             context,
             category,
             onItemClickListener,
-            onNewCategorySelected,
-            widthMatchParent
+            notifyNewSelection,
+            widthMatchParent,
+            forDialog
         )
     }
 
@@ -53,7 +59,7 @@ class CategoryAdapter(
      * Notifies the adapter that a new item is selected, and it informs the adapter
      * about the oldSelection and the newSelection positions in the adapter.
      */
-    private val onNewCategorySelected = { oldSelection: Int, newSelection: Int ->
+    private val notifyNewSelection = { oldSelection: Int, newSelection: Int ->
         notifyItemChanged(oldSelection)
         notifyItemChanged(newSelection)
     }
@@ -94,69 +100,98 @@ class CategoryAdapter(
             category: Category,
             onItemClickListener: (category: Category) -> Unit,
             itemChangedListener: (Int, Int) -> Unit,
-            widthMatchParent: Boolean
+            widthMatchParent: Boolean,
+            isDialog: Boolean
         ) {
-            binding.apply {
-                categoryTextView.text = category.name
-                root.setOnClickListener {
-                    onItemClickListener(category)
-                    AppPreferences.setLastSelectedCategory(context, category.name)
-                    itemChangedListener(lastSelectedItemId, adapterPosition)
-                    lastSelectedItemId = adapterPosition
-                }
 
-                // Paints the current view with the correct colors
-                when (lastSelectedItemId) {
-                    adapterPosition -> {
-                        // Highlight the selected category.
-                        cardView.setCardBackgroundColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.colorAccent
-                            )
-                        )
-                        categoryTextView.setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.categorySelectedTextColor
-                            )
-                        )
-                    }
-                    else -> {
-                        cardView.setCardBackgroundColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.categoryBackground
-                            )
-                        )
-                        categoryTextView.setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.categoryTextColor
-                            )
-                        )
-                    }
-                }
+            onViewHolderClickListener(category, onItemClickListener, context, itemChangedListener)
 
-                val isCountVisible = categoryCountTextView.visibility == View.VISIBLE
+            highlightSelectedCategory(context)
 
+            adaptViewHolderWidth(context, isDialog, widthMatchParent, category)
+
+        }
+
+        private fun onViewHolderClickListener(
+            category: Category,
+            onItemClickListener: (category: Category) -> Unit,
+            context: Context,
+            itemChangedListener: (Int, Int) -> Unit
+        ) {
+            binding.categoryTextView.text = category.name
+            binding.root.setOnClickListener {
+                onItemClickListener(category)
+                AppPreferences.setLastSelectedCategory(context, category.name)
+                itemChangedListener(lastSelectedItemId, adapterPosition)
+                lastSelectedItemId = adapterPosition
+            }
+        }
+
+        private fun adaptViewHolderWidth(
+            context: Context,
+            isDialog: Boolean,
+            widthMatchParent: Boolean,
+            category: Category
+        ) {
+            val isCountVisible = binding.categoryCountTextView.visibility == View.VISIBLE
+
+            val isLandscape =
+                context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            if (isLandscape && isDialog) {
+                binding.root.layoutParams.width = WRAP_CONTENT
+                binding.categoryCountTextView.visibility = View.GONE
+            } else {
                 if (widthMatchParent || isCountVisible) {
                     if (!isCountVisible) {
-                        categoryCountTextView.visibility = View.VISIBLE
+                        binding.categoryCountTextView.visibility = View.VISIBLE
                     }
-                    categoryCountTextView.text = category.wordCount.toString()
+                    binding.categoryCountTextView.text = category.wordCount.toString()
+                }
+            }
+        }
+
+        private fun highlightSelectedCategory(context: Context) {
+            // Paints the current view with the correct colors
+            when (lastSelectedItemId) {
+                adapterPosition -> {
+
+                    // Highlight the selected category.
+                    binding.cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.colorAccent
+                        )
+                    )
+                    binding.categoryTextView.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.categorySelectedTextColor
+                        )
+                    )
+                }
+                else -> {
+                    binding.cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.categoryBackground
+                        )
+                    )
+                    binding.categoryTextView.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.categoryTextColor
+                        )
+                    )
                 }
             }
         }
 
         companion object {
-            fun from(parent: ViewGroup, widthMatchParent: Boolean?): ViewHolder {
+            fun from(parent: ViewGroup, widthMatchParent: Boolean): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
-                if (widthMatchParent != null) {
-                    if (widthMatchParent) {
+                if (widthMatchParent) {
                         binding.categoryTextView.minimumWidth = parent.width
-                    }
                 }
                 return ViewHolder(binding)
             }

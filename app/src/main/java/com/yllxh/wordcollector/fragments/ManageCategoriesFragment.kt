@@ -72,7 +72,12 @@ class ManageCategoriesFragment : Fragment() {
             }
         }
 
-        val categoryAdapter = CategoryAdapter(requireContext(), true, onAddOrEditCategory)
+        val categoryAdapter = CategoryAdapter(
+            requireContext(),
+            true,
+            forDialog = false,
+            onItemClickListener = onAddOrEditCategory
+        )
         binding.categoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
