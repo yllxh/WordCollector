@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -29,7 +30,13 @@ class CategoryAdapter(
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = getItem(position)
-        holder.bind(context, category, onItemClickListener, onNewCategorySelected)
+        holder.bind(
+            context,
+            category,
+            onItemClickListener,
+            onNewCategorySelected,
+            widthMatchParent
+        )
     }
 
     /**
@@ -85,8 +92,9 @@ class CategoryAdapter(
             context: Context,
             category: Category,
             onItemClickListener: (category: Category) -> Unit,
-            itemChangedListener: (Int, Int) -> Unit
-            ) {
+            itemChangedListener: (Int, Int) -> Unit,
+            widthMatchParent: Boolean
+        ) {
             binding.apply {
                 categoryTextView.text = category.name
                 root.setOnClickListener {
@@ -107,15 +115,26 @@ class CategoryAdapter(
                         categoryTextView.setTextColor(ContextCompat.getColor(context, R.color.categoryTextColor))
                     }
                 }
+
+                val isCountVisible = categoryCountTextView.visibility == View.VISIBLE
+
+                if (widthMatchParent || isCountVisible){
+                    if (!isCountVisible){
+                        categoryCountTextView.visibility = View.VISIBLE
+                    }
+                    categoryCountTextView.text = category.wordCount.toString()
+                }
             }
         }
 
         companion object {
-            fun from(parent: ViewGroup, widthMatchParent: Boolean): ViewHolder {
+            fun from(parent: ViewGroup, widthMatchParent: Boolean?): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
-                if (widthMatchParent) {
-                    binding.categoryTextView.minimumWidth = parent.width
+                if (widthMatchParent != null) {
+                    if (widthMatchParent) {
+                        binding.categoryTextView.minimumWidth = parent.width
+                    }
                 }
                 return ViewHolder(binding)
             }

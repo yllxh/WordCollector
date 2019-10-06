@@ -76,7 +76,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         return if (isValidWord(newWord, oldWord)) {
             newWord.id = oldWord.id
             coroutineScope.launch {
-                repository.update(newWord)
+                repository.update(newWord, oldWord)
             }
             true
         }

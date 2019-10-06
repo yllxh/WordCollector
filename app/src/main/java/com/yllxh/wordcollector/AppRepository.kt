@@ -28,9 +28,22 @@ class AppRepository(application: Application) {
     /**
      * Suspend function used to updateCategory a word.
      */
-    suspend fun update(word: Word){
+    suspend fun update(new: Word, old: Word){
         withContext(Dispatchers.IO){
-            wordDao.update(word)
+            wordDao.update(new)
+
+            if (new.category != old.category) {
+                when {
+                    new.category == defaultCategory -> {
+                        categoryDao.decrementWordCount(old.category)
+                    }
+                    new.category != defaultCategory -> {
+                        categoryDao.incrementWordCount(new.category)
+                        if (old.category != defaultCategory)
+                            categoryDao.decrementWordCount(old.category)
+                    }
+                }
+            }
 
         }
     }
@@ -41,6 +54,10 @@ class AppRepository(application: Application) {
     suspend fun insert(word: Word){
         withContext(Dispatchers.IO){
             wordDao.insert(word)
+            categoryDao.incrementWordCount(word.category)
+            if (word.category != defaultCategory) {
+                categoryDao.incrementTotalWordCount()
+            }
         }
     }
 
@@ -50,6 +67,10 @@ class AppRepository(application: Application) {
     suspend fun delete(word: Word) {
         withContext(Dispatchers.IO) {
             wordDao.delete(word)
+            categoryDao.decrementWordCount(word.category)
+            if (word.category != defaultCategory) {
+                categoryDao.decrementTotalWordCount()
+            }
         }
     }
 
@@ -66,10 +87,10 @@ class AppRepository(application: Application) {
      * Suspend function used to updateCategory a category, and it updates
      * all the words of the category to with the newName of the category.
      */
-    suspend fun update(newName: String, oldName: String) {
+    suspend fun update(newCategory: Category, oldCategory: Category) {
         withContext(Dispatchers.IO) {
-            categoryDao.update(newName, oldName)
-            wordDao.updateCategory(newName, oldName)
+            categoryDao.update(newCategory.name, oldCategory.name)
+            wordDao.updateCategory(newCategory.name, oldCategory.name )
         }
     }
 
@@ -91,6 +112,7 @@ class AppRepository(application: Application) {
     suspend fun deleteAllWords() {
         withContext(Dispatchers.IO){
             wordDao.deleteAll()
+            categoryDao.setAllWordCountToZero()
         }
     }
 

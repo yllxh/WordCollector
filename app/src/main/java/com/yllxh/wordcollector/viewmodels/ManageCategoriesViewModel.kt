@@ -76,7 +76,7 @@ class ManageCategoriesViewModel(application: Application):
     fun updateCategory(newCategory: Category, oldCategory: Category): Boolean {
         return if (isValidCategory(newCategory, oldCategory)) {
             coroutineScope.launch {
-                repository.update(newCategory.name, oldCategory.name)
+                repository.update(newCategory, oldCategory)
             }
             true
         }
