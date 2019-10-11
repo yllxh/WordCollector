@@ -32,8 +32,8 @@ class ManageCategoriesFragment : Fragment() {
 
         val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
 
-        val categoryAdapter = CategoryAdapter(requireContext(), true){
-            AddEditCategoryDialog.newInstance(it)
+        val categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
+            AddEditCategoryDialog.newInstance(category)
                 .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }
         binding.categoryRecycleview.adapter = categoryAdapter

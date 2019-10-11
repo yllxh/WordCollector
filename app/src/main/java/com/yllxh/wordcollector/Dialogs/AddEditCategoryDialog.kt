@@ -47,7 +47,8 @@ class AddEditCategoryDialog : DialogFragment(){
         binding.saveButton.setOnClickListener {
             val newCategoryName = binding.newCategoryEt.text.toString()
 
-            val successful = if (category.name.isEmpty()) {
+            val successful =
+            if (category.name.isEmpty()) {
                 viewModel.insertCategory(Category(newCategoryName))
             } else {
                 viewModel.updateCategory(
@@ -59,7 +60,6 @@ class AddEditCategoryDialog : DialogFragment(){
             if (!successful) {
                 toast(getString(R.string.category_name_alert))
             } else {
-                AppPreferences.setLastSelectedCategory(requireContext(), newCategoryName)
                 toast(getString(R.string.category_saved))
             }
             dialog.cancel()

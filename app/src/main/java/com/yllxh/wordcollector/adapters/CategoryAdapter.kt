@@ -42,11 +42,10 @@ class CategoryAdapter(
 
 
     override fun onNewItemSelected(newItemId: Int, category: Category) {
-        notifyItemChanged(newItemId)
-        if (lastSelectedItemId >= 0) {
-            notifyItemChanged(lastSelectedItemId)
-        }
+        val oldItemId = lastSelectedItemId
         lastSelectedItemId = newItemId
+        notifyItemChanged(newItemId)
+        notifyItemChanged(oldItemId)
 
         onItemClickListener(category)
 

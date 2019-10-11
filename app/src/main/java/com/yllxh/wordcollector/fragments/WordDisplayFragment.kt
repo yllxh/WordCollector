@@ -38,9 +38,14 @@ class WordDisplayFragment : Fragment() {
     private lateinit var wordAdapter: WordAdapter
     private lateinit var categoryAdapter: CategoryAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+    }
+
     @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
 
         binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
 
@@ -204,11 +209,9 @@ class WordDisplayFragment : Fragment() {
                 floatingActionButton.hide()
             }
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
         initializeSelectedCategory()
+
     }
 
     /**
