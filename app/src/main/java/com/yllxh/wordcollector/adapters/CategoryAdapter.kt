@@ -1,11 +1,9 @@
 package com.yllxh.wordcollector.adapters
 
 import android.content.Context
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,50 +16,55 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 /**
  * CategoryAdapter class for presenting data in a RecycleView.
  *
- * @param widthMatchParent  Used to determine whether the width of views should
+ * @param widthMatchParent  used to determine whether the width of views should
  *                          expand to match parent(RecycleView)
- *
- * @param forDialog         Used to inform the adapter whether it is used inside a dialog.
  */
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
-    private val forDialog: Boolean = false,
     private val onItemClickListener: (category: Category) -> Unit
-) : ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
+) : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()),
+    CategoryViewHolder.SelectionListener{
+    override var lastSelectedItemId: Int = -1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent, widthMatchParent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
+        return CategoryViewHolder.from(parent, widthMatchParent)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = getItem(position)
         holder.bind(
-            context,
+            this,
             category,
-            onItemClickListener,
-            notifyNewSelection,
-            widthMatchParent,
-            forDialog
+            widthMatchParent
         )
     }
 
+
+    override fun onNewItemSelected(newItemId: Int, category: Category) {
+        notifyItemChanged(newItemId)
+        if (lastSelectedItemId >= 0) {
+            notifyItemChanged(lastSelectedItemId)
+        }
+        lastSelectedItemId = newItemId
+
+        onItemClickListener(category)
+
+        AppPreferences.setLastSelectedCategory(context, category.name)
+    }
+
+    override fun getContext(): Context {
+        return context
+    }
+
+
     /**
      * Overriding the submitList function, in order to inform the recycleView
-     * about the last item which was selected, so that it is highlighted properly by the ViewHolder.
+     * about the last item which was selected, so that it is highlighted properly by the CategoryViewHolder.
      */
     override fun submitList(list: MutableList<Category>?) {
         super.submitList(list)
         updateSelectedItemId()
-    }
-
-    /**
-     * Notifies the adapter that a new item is selected, and it informs the adapter
-     * about the oldSelection and the newSelection positions in the adapter.
-     */
-    private val notifyNewSelection = { oldSelection: Int, newSelection: Int ->
-        notifyItemChanged(oldSelection)
-        notifyItemChanged(newSelection)
     }
 
     /**
@@ -83,122 +86,74 @@ class CategoryAdapter(
             }
         }
     }
+}
+class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    companion object {
-        /**
-         * It is used to highlight the correct ViewHolder.
-         */
-        var lastSelectedItemId: Int = -1
-            private set
+    interface SelectionListener {
+        var lastSelectedItemId: Int
+
+        fun onNewItemSelected(
+            newItemId: Int,
+            category: Category
+        )
+        fun getContext(): Context
     }
 
-    class ViewHolder private constructor(private val binding: CategoryListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(
-            context: Context,
-            category: Category,
-            onItemClickListener: (category: Category) -> Unit,
-            itemChangedListener: (Int, Int) -> Unit,
-            widthMatchParent: Boolean,
-            isDialog: Boolean
-        ) {
-
-            onViewHolderClickListener(category, onItemClickListener, context, itemChangedListener)
-
-            highlightSelectedCategory(context)
-
-            adaptViewHolderWidth(context, isDialog, widthMatchParent, category)
-
-        }
-
-        private fun onViewHolderClickListener(
-            category: Category,
-            onItemClickListener: (category: Category) -> Unit,
-            context: Context,
-            itemChangedListener: (Int, Int) -> Unit
-        ) {
-            binding.categoryTextView.text = category.name
-            binding.root.setOnClickListener {
-                onItemClickListener(category)
-                AppPreferences.setLastSelectedCategory(context, category.name)
-                itemChangedListener(lastSelectedItemId, adapterPosition)
-                lastSelectedItemId = adapterPosition
+    fun bind(
+        listener: SelectionListener,
+        category: Category,
+        widthMatchParent: Boolean
+    ) {
+        binding.apply {
+            categoryTextView.text = category.name
+            root.setOnClickListener {
+                listener.onNewItemSelected(adapterPosition, category)
             }
-        }
 
-        private fun adaptViewHolderWidth(
-            context: Context,
-            isDialog: Boolean,
-            widthMatchParent: Boolean,
-            category: Category
-        ) {
-            val isCountVisible = binding.categoryCountTextView.visibility == View.VISIBLE
-
-            val isLandscape =
-                context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-            if (isLandscape && isDialog) {
-                binding.root.layoutParams.width = WRAP_CONTENT
-                binding.categoryCountTextView.visibility = View.GONE
-            } else {
-                if (widthMatchParent || isCountVisible) {
-                    if (!isCountVisible) {
-                        binding.categoryCountTextView.visibility = View.VISIBLE
-                    }
-                    binding.categoryCountTextView.text = category.wordCount.toString()
-                }
-            }
-        }
-
-        private fun highlightSelectedCategory(context: Context) {
             // Paints the current view with the correct colors
-            when (lastSelectedItemId) {
+            when (listener.lastSelectedItemId) {
                 adapterPosition -> {
-
                     // Highlight the selected category.
-                    binding.cardView.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.colorAccent
-                        )
+                    cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.colorAccent)
                     )
-                    binding.categoryTextView.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.categorySelectedTextColor
-                        )
+                    categoryTextView.setTextColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.categorySelectedTextColor)
                     )
                 }
                 else -> {
-                    binding.cardView.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.categoryBackground
-                        )
+                    cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.categoryBackground)
                     )
-                    binding.categoryTextView.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.categoryTextColor
-                        )
+                    categoryTextView.setTextColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.categoryTextColor)
                     )
                 }
             }
-        }
 
-        companion object {
-            fun from(parent: ViewGroup, widthMatchParent: Boolean): ViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
-                if (widthMatchParent) {
-                        binding.categoryTextView.minimumWidth = parent.width
+            val isCountVisible = categoryCountTextView.visibility == View.VISIBLE
+
+            if (widthMatchParent || isCountVisible) {
+                if (!isCountVisible) {
+                    categoryCountTextView.visibility = View.VISIBLE
                 }
-                return ViewHolder(binding)
+                categoryCountTextView.text = category.wordCount.toString()
             }
         }
     }
-}
 
+    companion object {
+        fun from(parent: ViewGroup, widthMatchParent: Boolean): CategoryViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
+            if (widthMatchParent) {
+                binding.categoryTextView.minimumWidth = parent.width
+            }
+            return CategoryViewHolder(binding)
+        }
+    }
+}
 private class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
 
     override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
