@@ -77,7 +77,7 @@ class ManageCategoriesViewModel(application: Application) :
             coroutineScope.launch {
                 repository.update(newCategory, oldCategory)
             }
-            if (oldCategory.name == defaultCategory) {
+            if (oldCategory.name == currentCategory.value) {
                 AppPreferences.setLastSelectedCategory(getApplication(), newCategory.name)
             }
             true

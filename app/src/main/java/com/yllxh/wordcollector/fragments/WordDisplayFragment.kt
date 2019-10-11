@@ -271,6 +271,7 @@ class WordDisplayFragment : Fragment() {
     private fun initializeSelectedCategory() {
         val selectedCategory = AppPreferences.getLastSelectedCategory(requireContext())
         viewModel.setCurrentCategory(selectedCategory)
+        toast(selectedCategory)
     }
 
     /**
