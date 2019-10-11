@@ -37,11 +37,7 @@ class CategoryAdapter(
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = getItem(position)
-        holder.bind(
-            this,
-            category,
-            widthMatchParent
-        )
+        holder.bind(this, category, widthMatchParent)
     }
 
 

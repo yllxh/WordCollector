@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.yllxh.wordcollector.Dialogs.AddEditCategoryDialog
 import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
@@ -33,50 +34,9 @@ class ManageCategoriesFragment : Fragment() {
     ): View? {
         binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
 
-
-        // Used to create a dialog in cases when a category needs to be is inserted/updated.
-        // To insert a category the category parameter must be set to null, and to updateCategory a category
-        // the category should be passed to it.
-        val onAddOrEditCategory: (category: Category) -> Unit = { category ->
-            val dialogBinding = DialogAddEditCategoryBinding.inflate(inflater, container, false)
-
-            val dialog = AlertDialog.Builder(requireContext())
-                .setView(dialogBinding.root)
-                .show()
-
-            // Set onClickListeners to dialog buttons.
-            dialogBinding.apply {
-                val oldCategoryName = category.name
-                newCategoryEt.setText(oldCategoryName)
-
-                cancelButton.setOnClickListener {
-                    dialog.cancel()
-                }
-
-                saveButton.setOnClickListener {
-                    val newCategoryName = dialogBinding.newCategoryEt.text.toString()
-                    val successful = if (category.name.isEmpty()) {
-                        viewModel.insertCategory(Category(newCategoryName))
-                    } else {
-                        viewModel.updateCategory(
-                            Category(newCategoryName),
-                            Category(oldCategoryName)
-                        )
-                    }
-                    // If the category is not updated/inserted display a toast to inform the user.
-                    if (!successful) {
-                        toast(getString(R.string.category_name_alert), Toast.LENGTH_LONG)
-                    }
-                    dialog.cancel()
-                }
-            }
+        val categoryAdapter = CategoryAdapter(requireContext(), true){
+            AddEditCategoryDialog.newInstance(it).show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }
-
-        val categoryAdapter = CategoryAdapter(
-            requireContext(),
-            true,
-            onItemClickListener = onAddOrEditCategory
-        )
         binding.categoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
@@ -109,7 +69,8 @@ class ManageCategoriesFragment : Fragment() {
 
         // Fab button used to pop up a dialog, for inserting a new category.
         binding.fab.setOnClickListener {
-            onAddOrEditCategory(Category(""))
+            AddEditCategoryDialog.newInstance()
+                .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }
         return binding.root
     }
