@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
+import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
@@ -26,7 +27,14 @@ class DeleteCategoryDialog : DialogFragment(){
         if (savedInstanceState != null){
             clicks = savedInstanceState.getInt(CLICKS)
         }
+
+
+
         val category: Category = arguments?.getParcelable(KEY) ?: Category("")
+
+        val currentCategory = AppPreferences.getLastSelectedCategory(requireContext())
+        val isCurrentCategory = currentCategory == category.name
+
 
         val binding: DialogDeletingCategoryBinding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
@@ -55,13 +63,13 @@ class DeleteCategoryDialog : DialogFragment(){
                     !isDefaultCategory -> {
                         viewModel.deleteAllOfCategory(category)
                         viewModel.deleteCategory(category)
-                        dialog.cancel()
+                        dismissDialog(isCurrentCategory, dialog)
                     }
                     isDefaultCategory -> {
                         clicks++
                         if (clicks == 3) {
                             viewModel.deleteAllWords()
-                            dialog.cancel()
+                            dismissDialog(isCurrentCategory, dialog)
                         }
                         toast("$clicks")
                     }
@@ -76,6 +84,16 @@ class DeleteCategoryDialog : DialogFragment(){
             }
         }
         return dialog
+    }
+
+    private fun dismissDialog(isCurrentCategory: Boolean, dialog: AlertDialog) {
+        if (isCurrentCategory) {
+            AppPreferences.setLastSelectedCategory(
+                requireContext(),
+                viewModel.defaultCategory
+            )
+        }
+        dialog.cancel()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
