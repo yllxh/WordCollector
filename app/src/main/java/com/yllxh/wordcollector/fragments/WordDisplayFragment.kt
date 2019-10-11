@@ -38,18 +38,10 @@ class WordDisplayFragment : Fragment() {
     private lateinit var wordAdapter: WordAdapter
     private lateinit var categoryAdapter: CategoryAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initializeNightMode()
-    }
-
     @SuppressLint("RestrictedApi")
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
+
         binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
 
         categoryAdapter = CategoryAdapter(requireContext()) {
@@ -304,15 +296,7 @@ class WordDisplayFragment : Fragment() {
         activity.recreate()
     }
 
-    private fun initializeNightMode() {
-        val isNightMode = AppPreferences.getNightMode(requireContext())
-        AppCompatDelegate.setDefaultNightMode(
-            when {
-                isNightMode -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
-    }
+
 
     private fun initializeSelectedCategory() {
         val selectedCategory = AppPreferences.getLastSelectedCategory(requireContext())

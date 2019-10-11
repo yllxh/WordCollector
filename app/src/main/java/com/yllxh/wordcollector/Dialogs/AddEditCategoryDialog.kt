@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
+import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
@@ -21,7 +22,7 @@ class AddEditCategoryDialog : DialogFragment(){
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val category: Category = arguments?.getParcelable(KEY) ?: Category()
+        val category: Category = arguments?.getParcelable(KEY) ?: Category("")
         val binding: DialogAddEditCategoryBinding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
             R.layout.dialog_add_edit_category,
@@ -61,6 +62,8 @@ class AddEditCategoryDialog : DialogFragment(){
                     getString(R.string.category_name_alert),
                     Toast.LENGTH_LONG
                 ).show()
+            } else {
+                AppPreferences.setLastSelectedCategory(requireContext(), category.name)
             }
             dialog.cancel()
         }
