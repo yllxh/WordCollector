@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector.Dialogs
+package com.yllxh.wordcollector.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
@@ -8,7 +8,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
-import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding

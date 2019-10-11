@@ -1,8 +1,8 @@
 package com.yllxh.wordcollector.fragments
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -23,8 +23,9 @@ import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.adapters.WordAdapter
 import com.yllxh.wordcollector.data.Word
-import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
+import com.yllxh.wordcollector.dialogs.EditWordDialog
+
 
 class WordDisplayFragment : Fragment() {
 
@@ -41,7 +42,12 @@ class WordDisplayFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        Log.d("AAAAA", "onCreate")
+    }
 
+    override fun onResume() {
+        super.onResume()
+        initializeSelectedCategory()
     }
 
     @SuppressLint("RestrictedApi")
@@ -54,85 +60,23 @@ class WordDisplayFragment : Fragment() {
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 
-
-        val onEditClickListener: (Word) -> Unit = { word ->
-            val binding = DialogEditWordBinding.inflate(inflater, container, false).apply {
-                data = word
-                CategoryAdapter(
-                    requireContext(),
-                    widthMatchParent = false,
-                    inDialog = true
-                ) {
-                    viewModel.setCurrentCategory(it.name)
-
-                }.apply {
-                    submitList(viewModel.categories.value?.toMutableList())
-                    dialogCategoryRecycleview.adapter = this
-                }
-            }
-
-            val dialog = AlertDialog.Builder(activity)
-                .setView(binding.root)
-                .show()
-
-            binding.saveButton.setOnClickListener {
-                // If the word is not updated display a toast to inform the user
-                val wasWordValid = viewModel.update(
-                    Word(
-                        binding.editedWord.text.toString(),
-                        binding.editedDefinition.text.toString(),
-                        viewModel.currentCategory.value ?: word.category
-                    ), word
-                )
-
-                if (!wasWordValid) {
-                    toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
-                }
-                dialog.cancel()
-            }
-            binding.cancelButton.setOnClickListener {
-                dialog.cancel()
-            }
-        }
-
         // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
-        wordAdapter = WordAdapter(onEditClickListener)
+        wordAdapter = WordAdapter{ word ->
+            EditWordDialog.newInstance(word).show(requireFragmentManager(), EditWordDialog.TAG)
+        }
         binding.wordRecycleview.adapter = wordAdapter
 
 
-        // Enable the deletion of words, by swiping the item left or right.
-        ItemTouchHelper(object : ItemTouchHelper
-        .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val word = wordAdapter.getWordAtPosition(position)
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.deleting) + word.word,
-                    Snackbar.LENGTH_LONG
-                ).setAction(R.string.undo) {
-                    viewModel.insert(word, false)
-                }.show()
-
-                viewModel.delete(word)
-            }
-        }).attachToRecyclerView(binding.wordRecycleview)
-
+        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
+        Log.d("AAAAA", "onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("AAAAA", "onViewCreated")
 
-        // Observing the categories for changes.
         viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
             categoryAdapter.submitList(list.toMutableList())
 
@@ -142,7 +86,6 @@ class WordDisplayFragment : Fragment() {
                 }
             }
         })
-
         // Observes changes to the current category, in case it changes
         // the list of words shown in updated to the correct category.
         viewModel.currentCategory.observe(this, Observer {
@@ -168,10 +111,9 @@ class WordDisplayFragment : Fragment() {
         })
 
 
-        // Setting necessary onClickListeners to views
+        // Setting click listener for the Save textView button
+        // if the EditTexts have valid content the word will be saved
         binding.apply {
-            // Setting click listener for the Save textView button
-            // if the EditTexts have valid content the word will be saved
             saveTextview.setOnClickListener {
                 val word = Word(
                     newWordEditText.text.toString(),
@@ -186,7 +128,8 @@ class WordDisplayFragment : Fragment() {
                     toast(getString(R.string.word_is_not_valid))
                 }
             }
-
+        }
+        binding.apply {
             lookUpTextview.setOnClickListener {
                 val str = newWordEditText.text.toString().trim()
                 if (str.isEmpty()) {
@@ -195,29 +138,29 @@ class WordDisplayFragment : Fragment() {
                     lookUpTheNewWord(str)
                 }
             }
+        }
 
+        binding.apply {
             // Sets onClickListener for the hideHeader imageButton,
             // to hide the header on this fragment and show a fab instead.
             hideHeaderButton.setOnClickListener {
                 enterNewWordCardview.visibility = View.GONE
                 floatingActionButton.show()
             }
-
+        }
+        binding.apply {
             // Hide the itself and show the header of this fragment.
             floatingActionButton.setOnClickListener {
                 enterNewWordCardview.visibility = View.VISIBLE
                 floatingActionButton.hide()
             }
         }
-
-        initializeSelectedCategory()
-
     }
 
     /**
      * Sets the correct visibility to views on the screen.
      */
-    private fun onSearchingStateChange(isSearching: Boolean) {
+    private fun onSearchStateChange(isSearching: Boolean) {
         when {
             isSearching -> {
                 binding.enterNewWordCardview.visibility = View.GONE
@@ -262,10 +205,10 @@ class WordDisplayFragment : Fragment() {
         searchView.apply {
             this.imeOptions = EditorInfo.IME_ACTION_DONE
             setOnSearchClickListener {
-                onSearchingStateChange(true)
+                onSearchStateChange(true)
             }
             setOnCloseListener {
-                onSearchingStateChange(false)
+                onSearchStateChange(false)
                 false
             }
         }
@@ -299,7 +242,31 @@ class WordDisplayFragment : Fragment() {
         activity.recreate()
     }
 
+    // Enable the deletion of words, by swiping the item left or right.
+    private val itemTouchHelper = object : ItemTouchHelper
+    .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
 
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.adapterPosition
+            val word = wordAdapter.getWordAtPosition(position)
+            Snackbar.make(
+                binding.root,
+                getString(R.string.deleting) + word.word,
+                Snackbar.LENGTH_LONG
+            ).setAction(R.string.undo) {
+                viewModel.insert(word, false)
+            }.show()
+
+            viewModel.delete(word)
+        }
+    }
 
     private fun initializeSelectedCategory() {
         val selectedCategory = AppPreferences.getLastSelectedCategory(requireContext())

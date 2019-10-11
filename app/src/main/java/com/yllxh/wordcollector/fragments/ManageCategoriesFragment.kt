@@ -7,20 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.yllxh.wordcollector.Dialogs.AddEditCategoryDialog
-import com.yllxh.wordcollector.Dialogs.DeleteCategoryDialog
+import com.yllxh.wordcollector.dialogs.AddEditCategoryDialog
+import com.yllxh.wordcollector.dialogs.DeleteCategoryDialog
 import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
-import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
-import com.yllxh.wordcollector.data.Category
-import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
-import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
 
 
 class ManageCategoriesFragment : Fragment() {

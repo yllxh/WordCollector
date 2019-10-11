@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector.Dialogs
+package com.yllxh.wordcollector.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
