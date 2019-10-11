@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -21,16 +22,17 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
  * @param widthMatchParent  used to determine whether the width of views should
  *                          expand to match parent(RecycleView)
  */
-open class CategoryAdapter(
+class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
+    private val inDialog: Boolean = false,
     private val onItemClickListener: (category: Category) -> Unit
 ) : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()),
     CategoryViewHolder.SelectionListener{
     override var lastSelectedItemId: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        return CategoryViewHolder.from(parent, widthMatchParent)
+        return CategoryViewHolder.from(parent, widthMatchParent, inDialog)
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
@@ -89,7 +91,7 @@ open class CategoryAdapter(
         }
     }
 }
-open class CategoryViewHolder protected constructor(private val binding: CategoryListItemBinding) :
+class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     interface SelectionListener {
@@ -150,13 +152,14 @@ open class CategoryViewHolder protected constructor(private val binding: Categor
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
 
-            val isLandscape =
-                parent.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            val orientation = parent.context.resources.configuration.orientation
+
+            val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
             if (isLandscape && inDialog) {
                 binding.root.layoutParams.width = WRAP_CONTENT
                 binding.categoryCountTextView.visibility = View.GONE
             } else if (widthMatchParent) {
-                binding.categoryTextView.minimumWidth = parent.width
+                binding.root.layoutParams.width = MATCH_PARENT
             }
             return CategoryViewHolder(binding)
         }
