@@ -31,5 +31,6 @@
     <string name="press_yes_3_times">(Press \'Yes\' 3 times.)</string>
     <string name="to_go">to go.</string>
     <string name="fake_word_count">75</string>
+    <string name="category_saved">Category Saved</string>
 
 </resources>

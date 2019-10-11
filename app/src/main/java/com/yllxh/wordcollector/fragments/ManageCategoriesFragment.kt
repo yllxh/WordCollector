@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yllxh.wordcollector.Dialogs.AddEditCategoryDialog
+import com.yllxh.wordcollector.Dialogs.DeleteCategoryDialog
 import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
@@ -23,19 +24,17 @@ import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
 
 
 class ManageCategoriesFragment : Fragment() {
-    private lateinit var binding: FragmentManageCategoriesBinding
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
 
         val categoryAdapter = CategoryAdapter(requireContext(), true){
-            AddEditCategoryDialog.newInstance(it).show(requireFragmentManager(), AddEditCategoryDialog.TAG)
+            AddEditCategoryDialog.newInstance(it)
+                .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }
         binding.categoryRecycleview.adapter = categoryAdapter
 
@@ -63,7 +62,8 @@ class ManageCategoriesFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val category = categoryAdapter.getCategoryAtPosition(position)
-                onDeleteCategory(category, container)
+                DeleteCategoryDialog.newInstance(category)
+                    .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
             }
         }).attachToRecyclerView(binding.categoryRecycleview)
 
@@ -82,49 +82,4 @@ class ManageCategoriesFragment : Fragment() {
         Toast.makeText(activity, s, lengthLong).show()
     }
 
-    private fun onDeleteCategory(category: Category, container: ViewGroup?) {
-        val dialogBinding = DialogDeletingCategoryBinding.inflate(layoutInflater, container, false)
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogBinding.root)
-            .show()
-
-        var clicks = 0
-        val isDefaultCategory = category.name == viewModel.defaultCategory
-        if (isDefaultCategory) {
-            dialogBinding.alertMessageTextView.append(getString(R.string.press_yes_3_times))
-        }
-
-        // Set onClickListeners to dialog buttons.
-        dialogBinding.apply {
-            cancelButton.setOnClickListener {
-                dialog.cancel()
-            }
-
-            yesButton.setOnClickListener {
-                when {
-                    !isDefaultCategory -> {
-                        viewModel.deleteAllOfCategory(category)
-                        viewModel.deleteCategory(category)
-                        dialog.cancel()
-                    }
-                    isDefaultCategory -> {
-                        clicks++
-                        if (clicks == 3) {
-                            viewModel.deleteAllWords()
-                            dialog.cancel()
-                        }
-                        toast("$clicks")
-                    }
-                }
-            }
-
-            noButton.setOnClickListener {
-                if (!viewModel.deleteCategory(category)) {
-                    toast(getString(R.string.look_again))
-                }
-                dialog.cancel()
-            }
-        }
-    }
 }

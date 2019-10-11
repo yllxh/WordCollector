@@ -57,13 +57,10 @@ class AddEditCategoryDialog : DialogFragment(){
             }
             // If the category is not updated/inserted display a toast to inform the user.
             if (!successful) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.category_name_alert),
-                    Toast.LENGTH_LONG
-                ).show()
+                toast(getString(R.string.category_name_alert))
             } else {
-                AppPreferences.setLastSelectedCategory(requireContext(), category.name)
+                AppPreferences.setLastSelectedCategory(requireContext(), newCategoryName)
+                toast(getString(R.string.category_saved))
             }
             dialog.cancel()
         }
@@ -72,12 +69,20 @@ class AddEditCategoryDialog : DialogFragment(){
         return dialog
     }
 
+    private fun toast(msg: String){
+        Toast.makeText(
+            requireContext(),
+            msg,
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
     companion object {
         const val TAG: String = "AddEditCategoryDialog"
 
         fun newInstance(category: Category? = null): AddEditCategoryDialog {
             val bundle = Bundle()
-            bundle.putParcelable(KEY, category)
+            bundle.putParcelable(KEY, category ?: Category(""))
 
             val newDialog = AddEditCategoryDialog()
             newDialog.arguments = bundle

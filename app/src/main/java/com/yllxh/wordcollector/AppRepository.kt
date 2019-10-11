@@ -1,7 +1,6 @@
 package com.yllxh.wordcollector
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,10 +17,7 @@ class AppRepository(application: Application) {
         categoryDao = db.categoryDao
     }
 
-    /* Gets all the words as a List of LiveData */
     var words = wordDao.getAll()
-
-    /* Gets all the categories as a List of LiveData */
     var categories = categoryDao.getAll()
 
 
