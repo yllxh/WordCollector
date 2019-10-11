@@ -75,7 +75,6 @@ class ManageCategoriesFragment : Fragment() {
         val categoryAdapter = CategoryAdapter(
             requireContext(),
             true,
-            forDialog = false,
             onItemClickListener = onAddOrEditCategory
         )
         binding.categoryRecycleview.adapter = categoryAdapter

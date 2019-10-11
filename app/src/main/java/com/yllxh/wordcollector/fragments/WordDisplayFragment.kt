@@ -21,6 +21,7 @@ import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
+import com.yllxh.wordcollector.adapters.DialogCategoryAdapter
 import com.yllxh.wordcollector.adapters.WordAdapter
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
@@ -61,9 +62,9 @@ class WordDisplayFragment : Fragment() {
         val onEditClickListener: (Word) -> Unit = { word ->
             val binding = DialogEditWordBinding.inflate(inflater, container, false).apply {
                 data = word
-                CategoryAdapter(requireContext(),
-                    widthMatchParent = false,
-                    forDialog = true
+                DialogCategoryAdapter(
+                    requireContext(),
+                    widthMatchParent = false
                 ) {
                     viewModel.setCurrentCategory(it.name)
 
