@@ -23,39 +23,48 @@ class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
     private val onItemClickListener: (category: Category) -> Unit
-) : ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
+) : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()),
+    CategoryViewHolder.SelectionListener{
+    override var lastSelectedItemId: Int = -1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent, widthMatchParent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
+        return CategoryViewHolder.from(parent, widthMatchParent)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = getItem(position)
         holder.bind(
-            context,
+            this,
             category,
-            onItemClickListener,
-            onNewCategorySelected,
             widthMatchParent
         )
     }
 
+
+    override fun onNewItemSelected(newItemId: Int, category: Category) {
+        notifyItemChanged(newItemId)
+        if (lastSelectedItemId >= 0) {
+            notifyItemChanged(lastSelectedItemId)
+        }
+        lastSelectedItemId = newItemId
+
+        onItemClickListener(category)
+
+        AppPreferences.setLastSelectedCategory(context, category.name)
+    }
+
+    override fun getContext(): Context {
+        return context
+    }
+
+
     /**
      * Overriding the submitList function, in order to inform the recycleView
-     * about the last item which was selected, so that it is highlighted properly by the ViewHolder.
+     * about the last item which was selected, so that it is highlighted properly by the CategoryViewHolder.
      */
     override fun submitList(list: MutableList<Category>?) {
         super.submitList(list)
         updateSelectedItemId()
-    }
-
-    /**
-     * Notifies the adapter that a new item is selected, and it informs the adapter
-     * about the oldSelection and the newSelection positions in the adapter.
-     */
-    private val onNewCategorySelected = { oldSelection: Int, newSelection: Int ->
-        notifyItemChanged(oldSelection)
-        notifyItemChanged(newSelection)
     }
 
     /**
@@ -77,93 +86,74 @@ class CategoryAdapter(
             }
         }
     }
+}
+class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    companion object {
-        /**
-         * It is used to highlight the correct ViewHolder.
-         */
-        var lastSelectedItemId: Int = -1
-            private set
+    interface SelectionListener {
+        var lastSelectedItemId: Int
+
+        fun onNewItemSelected(
+            newItemId: Int,
+            category: Category
+        )
+        fun getContext(): Context
     }
 
-    class ViewHolder private constructor(private val binding: CategoryListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    fun bind(
+        listener: SelectionListener,
+        category: Category,
+        widthMatchParent: Boolean
+    ) {
+        binding.apply {
+            categoryTextView.text = category.name
+            root.setOnClickListener {
+                listener.onNewItemSelected(adapterPosition, category)
+            }
 
-        fun bind(
-            context: Context,
-            category: Category,
-            onItemClickListener: (category: Category) -> Unit,
-            itemChangedListener: (Int, Int) -> Unit,
-            widthMatchParent: Boolean
-        ) {
-            binding.apply {
-                categoryTextView.text = category.name
-                root.setOnClickListener {
-                    onItemClickListener(category)
-                    AppPreferences.setLastSelectedCategory(context, category.name)
-                    itemChangedListener(lastSelectedItemId, adapterPosition)
-                    lastSelectedItemId = adapterPosition
+            // Paints the current view with the correct colors
+            when (listener.lastSelectedItemId) {
+                adapterPosition -> {
+                    // Highlight the selected category.
+                    cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.colorAccent)
+                    )
+                    categoryTextView.setTextColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.categorySelectedTextColor)
+                    )
                 }
-
-                // Paints the current view with the correct colors
-                when (lastSelectedItemId) {
-                    adapterPosition -> {
-                        // Highlight the selected category.
-                        cardView.setCardBackgroundColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.colorAccent
-                            )
-                        )
-                        categoryTextView.setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.categorySelectedTextColor
-                            )
-                        )
-                    }
-                    else -> {
-                        cardView.setCardBackgroundColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.categoryBackground
-                            )
-                        )
-                        categoryTextView.setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.categoryTextColor
-                            )
-                        )
-                    }
+                else -> {
+                    cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.categoryBackground)
+                    )
+                    categoryTextView.setTextColor(
+                        ContextCompat.getColor(listener.getContext(), R.color.categoryTextColor)
+                    )
                 }
+            }
 
-                val isCountVisible = categoryCountTextView.visibility == View.VISIBLE
+            val isCountVisible = categoryCountTextView.visibility == View.VISIBLE
 
-                if (widthMatchParent || isCountVisible) {
-                    if (!isCountVisible) {
-                        categoryCountTextView.visibility = View.VISIBLE
-                    }
-                    categoryCountTextView.text = category.wordCount.toString()
+            if (widthMatchParent || isCountVisible) {
+                if (!isCountVisible) {
+                    categoryCountTextView.visibility = View.VISIBLE
                 }
+                categoryCountTextView.text = category.wordCount.toString()
             }
         }
+    }
 
-        companion object {
-            fun from(parent: ViewGroup, widthMatchParent: Boolean?): ViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
-                if (widthMatchParent != null) {
-                    if (widthMatchParent) {
-                        binding.categoryTextView.minimumWidth = parent.width
-                    }
-                }
-                return ViewHolder(binding)
+    companion object {
+        fun from(parent: ViewGroup, widthMatchParent: Boolean): CategoryViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
+            if (widthMatchParent) {
+                binding.categoryTextView.minimumWidth = parent.width
             }
+            return CategoryViewHolder(binding)
         }
     }
 }
-
 private class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
 
     override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
