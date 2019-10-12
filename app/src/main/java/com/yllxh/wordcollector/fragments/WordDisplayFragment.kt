@@ -50,7 +50,6 @@ class WordDisplayFragment : Fragment() {
         initializeSelectedCategory()
     }
 
-    @SuppressLint("RestrictedApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
