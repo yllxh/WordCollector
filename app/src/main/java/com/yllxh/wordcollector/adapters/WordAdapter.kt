@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.WordListItemBinding
-import kotlinx.coroutines.Deferred
 
 
 class WordAdapter(private var onEditClickListener: (Word) -> Unit) :

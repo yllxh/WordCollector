@@ -18,9 +18,6 @@ interface WordDao {
     @Query("SELECT * FROM word_table ORDER BY id DESC")
     fun getAll(): LiveData<List<Word>>
 
-    @Query("SELECT * FROM word_table WHERE id = :id")
-    fun get(id: Long): Word
-
     @Query("SELECT * FROM word_table WHERE category = :category ORDER BY id DESC")
     fun getWordsOfCategory(category: String): LiveData<List<Word>>
 

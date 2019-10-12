@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.yllxh.wordcollector.AppUtils.Companion.DATABASE_NAME
 
 @Database(entities = [Word::class, Category::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
@@ -39,7 +40,7 @@ abstract class AppDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
-                        "app_database"
+                        DATABASE_NAME
                     )
                         // Add the migration to the database
                         .addMigrations(migration_1_2)

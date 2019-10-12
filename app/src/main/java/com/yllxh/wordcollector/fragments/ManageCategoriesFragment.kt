@@ -19,6 +19,7 @@ import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
 
 
 class ManageCategoriesFragment : Fragment() {
+    lateinit var categoryAdapter: CategoryAdapter
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
     }
@@ -27,7 +28,7 @@ class ManageCategoriesFragment : Fragment() {
 
         val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
 
-        val categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
+        categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
             viewModel.setCurrentCategory(category.name)
             AddEditCategoryDialog.newInstance(category)
                 .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
@@ -44,24 +45,8 @@ class ManageCategoriesFragment : Fragment() {
             }
         })
 
-        // Enable the deletion of categories, by swiping the item left or right.
-        ItemTouchHelper(object : ItemTouchHelper
-        .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val category = categoryAdapter.getCategoryAtPosition(position)
-                DeleteCategoryDialog.newInstance(category)
-                    .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
-            }
-        }).attachToRecyclerView(binding.categoryRecycleview)
+        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
 
         // Fab button used to pop up a dialog, for inserting a new category.
         binding.fab.setOnClickListener {
@@ -69,6 +54,25 @@ class ManageCategoriesFragment : Fragment() {
                 .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }
         return binding.root
+    }
+
+    // Enable the deletion of categories, by swiping the item left or right.
+    private val itemTouchHelper = object : ItemTouchHelper
+    .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.adapterPosition
+            val category = categoryAdapter.getCategoryAtPosition(position)
+            DeleteCategoryDialog.newInstance(category)
+                .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
+        }
     }
 
     /**

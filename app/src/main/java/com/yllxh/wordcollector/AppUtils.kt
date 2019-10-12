@@ -5,6 +5,7 @@ import com.yllxh.wordcollector.data.Word
 class AppUtils {
 
     companion object {
+        const val DATABASE_NAME = "app_database"
 
         /**
          * Used to check if a word is valid to perform operations with it.

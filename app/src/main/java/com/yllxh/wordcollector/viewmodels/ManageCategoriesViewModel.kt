@@ -26,8 +26,6 @@ class ManageCategoriesViewModel(application: Application) :
         }
 
     }
-    val currentCategory: LiveData<String>
-        get() = _currentCategory
 
     // Job needed by the coroutine scope.
     private val viewModelJob = Job()
@@ -77,7 +75,7 @@ class ManageCategoriesViewModel(application: Application) :
             coroutineScope.launch {
                 repository.update(newCategory, oldCategory)
             }
-            if (oldCategory.name == currentCategory.value) {
+            if (oldCategory.name == _currentCategory.value) {
                 AppPreferences.setLastSelectedCategory(getApplication(), newCategory.name)
             }
             true
