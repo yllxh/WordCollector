@@ -7,16 +7,17 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
-import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
+import com.yllxh.wordcollector.viewmodels.EditWordViewModel
 
 class EditWordDialog : DialogFragment(){
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        ViewModelProviders.of(this).get(EditWordViewModel::class.java)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -31,17 +32,14 @@ class EditWordDialog : DialogFragment(){
         val word: Word = arguments!!.getParcelable(KEY) ?: Word()
 
         binding.data = word
-        binding.dialogCategoryRecycleview.adapter = CategoryAdapter(
-            requireContext(),
-            widthMatchParent = false,
-            inDialog = true
-        ) {
+        val adapter = CategoryAdapter(requireContext(), false, inDialog = true) {
             viewModel.setCurrentCategory(it.name)
-
-        }.apply {
-            submitList(viewModel.categories.value?.toMutableList())
         }
-
+        binding.dialogCategoryRecycleview.adapter = adapter
+        viewModel.categories.observe(this, Observer {
+            adapter.submitList(it?.toMutableList())
+        })
+        toast(viewModel.categories.value?.size.toString())
         val dialog = AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
