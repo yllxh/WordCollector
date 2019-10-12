@@ -15,7 +15,6 @@ import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
 import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 
 
-private const val CLICKS = "CLICKS"
 class DeleteCategoryDialog : DialogFragment(){
     private var clicks = 0
 
@@ -103,6 +102,7 @@ class DeleteCategoryDialog : DialogFragment(){
     }
 
     companion object {
+        private const val CLICKS = "CLICKS"
         private const val KEY = "DeleteCategoryDialog"
         const val TAG: String = KEY
 
