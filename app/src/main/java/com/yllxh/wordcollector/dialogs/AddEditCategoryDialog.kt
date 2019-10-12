@@ -13,7 +13,6 @@ import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
 import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 
-private const val KEY = "AddEditCategoryDialog"
 
 class AddEditCategoryDialog : DialogFragment(){
     private val viewModel by lazy {
@@ -63,21 +62,17 @@ class AddEditCategoryDialog : DialogFragment(){
             }
             dialog.cancel()
         }
-
-
         return dialog
     }
 
-    private fun toast(msg: String){
-        Toast.makeText(
-            requireContext(),
-            msg,
-            Toast.LENGTH_LONG
-        ).show()
+    private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(activity, s, lengthLong).show()
     }
 
     companion object {
-        const val TAG: String = "AddEditCategoryDialog"
+        private const val KEY = "AddEditCategoryDialog"
+
+        const val TAG: String = KEY
 
         fun newInstance(category: Category? = null): AddEditCategoryDialog {
             val bundle = Bundle()

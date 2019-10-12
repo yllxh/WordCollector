@@ -47,7 +47,6 @@ class CategoryAdapter(
         notifyItemChanged(newItemId)
         notifyItemChanged(oldItemId)
         onItemClickListener(category)
-
     }
 
     override fun getContext(): Context {
@@ -55,16 +54,38 @@ class CategoryAdapter(
     }
 
 
+
+
     /**
      * Overriding the submitList function, in order to inform the recycleView
      * about the last item which was selected, so that it is highlighted properly by the CategoryViewHolder.
      */
     override fun submitList(list: MutableList<Category>?) {
+        val selectedCategory = AppPreferences.getLastSelectedCategory(context)
+        updateSelectedItemPosition(list, selectedCategory)
         super.submitList(list)
-        if (itemCount > 0) {
-            updateSelectedItemPosition()
-        }
+    }
 
+    private fun updateSelectedItemPosition(
+        list: MutableList<Category>?,
+        selectedCategory: String
+    ) {
+        list?.let {
+            for (i in 0 until list.size) {
+                if (list[i].name == selectedCategory) {
+                    selectedItemPosition = i
+                    break
+                }
+                if (i == list.size) {
+                    selectedItemPosition = 0
+                }
+            }
+        }
+    }
+
+    fun submitList(list: MutableList<Category>?, selectedCategory: String) {
+        updateSelectedItemPosition(list, selectedCategory)
+        super.submitList(list)
     }
 
     /**
@@ -72,25 +93,6 @@ class CategoryAdapter(
      */
     fun getCategoryAtPosition(position: Int): Category {
         return getItem(position)
-    }
-
-
-    private fun updateSelectedItemPosition() {
-        val selectedCategory = AppPreferences.getLastSelectedCategory(context)
-        updateSelectedItemPosition(selectedCategory)
-    }
-
-    private fun updateSelectedItemPosition(selectedCategory: String) {
-        for (i in 0 until itemCount) {
-            if (getItem(i).name == selectedCategory) {
-                selectedItemPosition = i
-                break
-            }
-        }
-    }
-
-    fun newItemSelected(name: String) {
-        updateSelectedItemPosition(name)
     }
 }
 class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :

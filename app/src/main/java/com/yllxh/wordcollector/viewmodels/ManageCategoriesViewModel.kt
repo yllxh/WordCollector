@@ -85,7 +85,7 @@ class ManageCategoriesViewModel(application: Application) :
     }
 
     /**
-     * Used to delete the Category, unless it is the default category.
+     * Used to deleteWord the Category, unless it is the default category.
      */
     fun deleteCategory(category: Category): Boolean {
         if (category.name != defaultCategory) {

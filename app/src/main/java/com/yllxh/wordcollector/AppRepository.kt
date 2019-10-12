@@ -45,7 +45,7 @@ class AppRepository(application: Application) {
     }
 
     /**
-     * Suspend function used to insert a word.
+     * Suspend function used to insertWord a word.
      */
     suspend fun insert(word: Word) {
         withContext(Dispatchers.IO) {
@@ -58,7 +58,7 @@ class AppRepository(application: Application) {
     }
 
     /**
-     * Suspend function used to delete a word.
+     * Suspend function used to deleteWord a word.
      */
     suspend fun delete(word: Word) {
         withContext(Dispatchers.IO) {
@@ -71,7 +71,7 @@ class AppRepository(application: Application) {
     }
 
     /**
-     * Suspend function used to insert a category.
+     * Suspend function used to insertWord a category.
      */
     suspend fun insert(category: Category) {
         withContext(Dispatchers.IO) {
@@ -91,7 +91,7 @@ class AppRepository(application: Application) {
     }
 
     /**
-     * Suspend function used to delete a category.
+     * Suspend function used to deleteWord a category.
      */
     suspend fun delete(category: Category) {
         withContext(Dispatchers.IO) {

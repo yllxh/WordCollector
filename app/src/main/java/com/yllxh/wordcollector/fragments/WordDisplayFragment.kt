@@ -90,7 +90,7 @@ class WordDisplayFragment : Fragment() {
                 newWordEditText.setText("")
                 newDefinitionEditText.setText("")
                 // If the word is not inserted, than it means that it is not valid
-                if (!viewModel.insert(word)) {
+                if (!viewModel.insertWord(word)) {
                     toast(getString(R.string.word_is_not_valid))
                 }
             }
@@ -156,7 +156,6 @@ class WordDisplayFragment : Fragment() {
         })
 
         viewModel.currentCategory.observe(this, Observer {
-            categoryAdapter.newItemSelected(it)
             wordAdapter.submitList(
                 viewModel.filterWordsToCategory(it)
             )
@@ -266,10 +265,10 @@ class WordDisplayFragment : Fragment() {
                 getString(R.string.deleting) + word.word,
                 Snackbar.LENGTH_LONG
             ).setAction(R.string.undo) {
-                viewModel.insert(word, false)
+                viewModel.insertWord(word, false)
             }.show()
 
-            viewModel.delete(word)
+            viewModel.deleteWord(word)
         }
     }
 

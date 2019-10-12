@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.AppRepository
+import com.yllxh.wordcollector.AppUtils.Companion.isValidWord
 import com.yllxh.wordcollector.data.Word
 import kotlinx.coroutines.*
 
@@ -37,28 +38,12 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     var categories = repository.categories
 
     /**
-     * Used to check if a word is valid to perform operations with it.
-     * @param oldWord  Can be used in cases where the newWord needs to be compared with it.
-     */
-    private fun isValidWord(newWord: Word, oldWord: Word? = null): Boolean {
-        if (newWord.word.isEmpty() && newWord.definition.isEmpty())
-            return false
-        else if (oldWord != null) {
-            if (newWord.word != oldWord.word
-                || newWord.definition != oldWord.definition
-            )
-                return true
-        }
-        return true
-    }
-
-    /**
      * Inserts a word in the database,
      * if the word is inserted it returns true and false otherwise.
      *
      * @param isNewWord  Indicates if this word existed before.
      */
-    fun insert(word: Word, isNewWord: Boolean = true): Boolean {
+    fun insertWord(word: Word, isNewWord: Boolean = true): Boolean {
         if (isValidWord(word)) {
             coroutineScope.launch {
                 repository.insert(word)
@@ -69,21 +54,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         return false
     }
 
-    /**
-     * Updates a word in the database,
-     * it returns true if the word is updated and false otherwise.
-     */
-    fun update(newWord: Word, oldWord: Word): Boolean {
-        return if (isValidWord(newWord, oldWord)) {
-            newWord.id = oldWord.id
-            coroutineScope.launch {
-                repository.update(newWord, oldWord)
-            }
-            true
-        } else false
-    }
-
-    fun delete(word: Word) {
+    fun deleteWord(word: Word) {
         coroutineScope.launch {
             repository.delete(word)
         }

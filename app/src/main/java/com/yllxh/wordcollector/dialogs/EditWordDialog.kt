@@ -37,9 +37,9 @@ class EditWordDialog : DialogFragment(){
         }
         binding.dialogCategoryRecycleview.adapter = adapter
         viewModel.categories.observe(this, Observer {
-            adapter.submitList(it?.toMutableList())
+            adapter.submitList(it?.toMutableList(), word.category)
+            viewModel.setCurrentCategory(word.category)
         })
-        toast(viewModel.categories.value?.size.toString())
         val dialog = AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
@@ -66,12 +66,8 @@ class EditWordDialog : DialogFragment(){
         return dialog
     }
 
-    private fun toast(msg: String){
-        Toast.makeText(
-            requireContext(),
-            msg,
-            Toast.LENGTH_LONG
-        ).show()
+    private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(activity, s, lengthLong).show()
     }
 
     companion object{

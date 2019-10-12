@@ -101,12 +101,8 @@ class DeleteCategoryDialog : DialogFragment(){
         outState.putInt(CLICKS, clicks)
     }
 
-    private fun toast(msg: String){
-        Toast.makeText(
-            requireContext(),
-            msg,
-            Toast.LENGTH_LONG
-        ).show()
+    private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(activity, s, lengthLong).show()
     }
 
     companion object {

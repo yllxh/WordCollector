@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.AppRepository
+import com.yllxh.wordcollector.AppUtils.Companion.isValidWord
 import com.yllxh.wordcollector.data.Word
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,6 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
     fun setCurrentCategory(name: String?) {
         val selectedCategory = name ?: defaultCategory
         _currentCategory.value = selectedCategory
-        AppPreferences.setLastSelectedCategory(getApplication(), selectedCategory)
     }
 
     /**
@@ -57,19 +57,5 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
         } else false
     }
 
-    /**
-     * Used to check if a word is valid to perform operations with it.
-     * @param oldWord  Can be used in cases where the newWord needs to be compared with it.
-     */
-    private fun isValidWord(newWord: Word, oldWord: Word? = null): Boolean {
-        if (newWord.word.isEmpty() && newWord.definition.isEmpty())
-            return false
-        else if (oldWord != null) {
-            if (newWord.word != oldWord.word
-                || newWord.definition != oldWord.definition
-            )
-                return true
-        }
-        return true
-    }
+
 }

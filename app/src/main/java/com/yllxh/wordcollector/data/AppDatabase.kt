@@ -23,7 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val categoryDao: CategoryDao? = INSTANCE?.categoryDao
                 Thread {
                     categoryDao?.let {
-                        // If there are no categories in the database, insert a Category.
+                        // If there are no categories in the database, insertWord a Category.
                         if (categoryDao.getAnyCategory().isEmpty()) {
                             categoryDao.insert(Category())
                         }
