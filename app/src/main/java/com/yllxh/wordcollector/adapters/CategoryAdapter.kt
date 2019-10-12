@@ -29,7 +29,7 @@ class CategoryAdapter(
     private val onItemClickListener: (category: Category) -> Unit
 ) : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()),
     CategoryViewHolder.SelectionListener{
-    override var lastSelectedItemId: Int = -1
+    override var selectedItemId: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder.from(parent, widthMatchParent, inDialog)
@@ -42,8 +42,8 @@ class CategoryAdapter(
 
 
     override fun onNewItemSelected(newItemId: Int, category: Category) {
-        val oldItemId = lastSelectedItemId
-        lastSelectedItemId = newItemId
+        val oldItemId = selectedItemId
+        selectedItemId = newItemId
         notifyItemChanged(newItemId)
         notifyItemChanged(oldItemId)
 
@@ -63,7 +63,7 @@ class CategoryAdapter(
      */
     override fun submitList(list: MutableList<Category>?) {
         super.submitList(list)
-        if (itemCount > 0 && lastSelectedItemId == -1) {
+        if (itemCount > 0 && selectedItemId == -1) {
             updateSelectedItemId()
         }
 
@@ -81,7 +81,7 @@ class CategoryAdapter(
         val selectedCategory = AppPreferences.getLastSelectedCategory(context)
         for (i in 0 until itemCount) {
             if (getItem(i).name == selectedCategory) {
-                lastSelectedItemId = i
+                selectedItemId = i
                 break
             }
         }
@@ -91,7 +91,7 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
     RecyclerView.ViewHolder(binding.root) {
 
     interface SelectionListener {
-        var lastSelectedItemId: Int
+        var selectedItemId: Int
 
         fun onNewItemSelected(
             newItemId: Int,
@@ -112,7 +112,7 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
             }
 
             // Paints the current view with the correct colors
-            when (listener.lastSelectedItemId) {
+            when (listener.selectedItemId) {
                 adapterPosition -> {
                     // Highlight the selected category.
                     cardView.setCardBackgroundColor(
