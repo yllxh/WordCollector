@@ -50,6 +50,7 @@ class ManageCategoriesViewModel(application: Application) :
             coroutineScope.launch {
                 repository.deleteAllOfCategory(category)
             }
+            deleteCategory(category)
             true
         } else false
     }

@@ -20,8 +20,8 @@ interface CategoryDao {
     @Query("UPDATE category_table SET wordCount = wordCount + 1 WHERE name = 'All'")
     fun incrementTotalWordCount()
 
-    @Query("UPDATE category_table SET wordCount = wordCount - 1 WHERE name = 'All'")
-    fun decrementTotalWordCount()
+    @Query("UPDATE category_table SET wordCount = wordCount - :count WHERE name = 'All'")
+    fun decrementTotalWordCount(count: Int = 1)
 
     @Query("UPDATE category_table SET wordCount = 0")
     fun setAllWordCountToZero()

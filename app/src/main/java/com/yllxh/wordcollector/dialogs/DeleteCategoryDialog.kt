@@ -28,8 +28,6 @@ class DeleteCategoryDialog : DialogFragment(){
             clicks = savedInstanceState.getInt(CLICKS)
         }
 
-
-
         val category: Category = arguments?.getParcelable(KEY) ?: Category("")
 
         val currentCategory = AppPreferences.getLastSelectedCategory(requireContext())
@@ -62,7 +60,6 @@ class DeleteCategoryDialog : DialogFragment(){
                 when {
                     !isDefaultCategory -> {
                         viewModel.deleteAllOfCategory(category)
-                        viewModel.deleteCategory(category)
                         dismissDialog(isCurrentCategory, dialog)
                     }
                     isDefaultCategory -> {
