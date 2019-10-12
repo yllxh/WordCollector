@@ -1,8 +1,6 @@
 package com.yllxh.wordcollector.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -42,7 +40,19 @@ class WordDisplayFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Log.d("AAAAA", "onCreate")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
+
+        initAdapters()
+
+        startObservingData()
+
+        setOnClickListeners()
+
+        return binding.root
     }
 
     override fun onResume() {
@@ -50,70 +60,25 @@ class WordDisplayFragment : Fragment() {
         initializeSelectedCategory()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
 
-        binding = FragmentWordDisplayBinding.inflate(inflater, container, false)
+        val searchView = menu.findItem(R.id.menu_item_search)?.actionView as SearchView
+        setSearchBehavior(searchView)
 
-        categoryAdapter = CategoryAdapter(requireContext()) {
-            viewModel.setCurrentCategory(it.name)
-        }
-        binding.categoryRecycleview.adapter = categoryAdapter
-
-        // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
-        wordAdapter = WordAdapter{ word ->
-            EditWordDialog.newInstance(word)
-                .show(requireFragmentManager(), EditWordDialog.TAG)
-        }
-        binding.wordRecycleview.adapter = wordAdapter
-
-
-
-        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
-        Log.d("AAAAA", "onCreateView")
-        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d("AAAAA", "onViewCreated")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.night_mode_menu_item) {
+            toggleNightMode()
+            return true
+        }
+        return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
+                || super.onOptionsItemSelected(item)
+    }
 
-        viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
-            categoryAdapter.submitList(list.toMutableList())
-
-            viewModel.apply {
-                if (list.none { it.name == currentCategory.value }) {
-                    setCurrentCategory(defaultCategory)
-                }
-            }
-        })
-        // Observes changes to the current category, in case it changes
-        // the list of words shown in updated to the correct category.
-        viewModel.currentCategory.observe(this, Observer {
-            categoryAdapter.newItemSelected(it)
-            wordAdapter.submitList(
-                viewModel.filterWordsToCategory(it)
-            )
-        })
-
-        // Observes the list of words for changes. In case it changes it only need
-        viewModel.words.observe(this, Observer {
-            wordAdapter.submitList(
-                viewModel.filterWordsToCategory()
-            )
-
-            // If the new word was inserted to the list, scroll to the Top of the recycleView
-            if (viewModel.newItemInserted || viewModel.isUserSearching) {
-                binding.wordRecycleview.smoothScrollToPosition(0)
-
-                if (viewModel.isUserSearching) {
-                    viewModel.newItemInserted = false
-                }
-            }
-        })
-
-
-        // Setting click listener for the Save textView button
-        // if the EditTexts have valid content the word will be saved
+    private fun setOnClickListeners() {
         binding.apply {
             saveTextview.setOnClickListener {
                 val word = Word(
@@ -142,20 +107,75 @@ class WordDisplayFragment : Fragment() {
         }
 
         binding.apply {
-            // Sets onClickListener for the hideHeader imageButton,
-            // to hide the header on this fragment and show a fab instead.
+
             hideHeaderButton.setOnClickListener {
                 enterNewWordCardview.visibility = View.GONE
                 floatingActionButton.show()
             }
         }
         binding.apply {
-            // Hide the itself and show the header of this fragment.
             floatingActionButton.setOnClickListener {
-                enterNewWordCardview.visibility = View.VISIBLE
                 floatingActionButton.hide()
+                enterNewWordCardview.visibility = View.VISIBLE
             }
         }
+    }
+
+    /**
+     * Initializes the recycleViews with adapters.
+     * Must be called before startObservingData()
+     */
+    private fun initAdapters() {
+        categoryAdapter = CategoryAdapter(requireContext()) {
+            viewModel.setCurrentCategory(it.name)
+        }
+        binding.categoryRecycleview.adapter = categoryAdapter
+
+        wordAdapter = WordAdapter { word ->
+            EditWordDialog.newInstance(word)
+                .show(requireFragmentManager(), EditWordDialog.TAG)
+        }
+        binding.wordRecycleview.adapter = wordAdapter
+
+        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
+    }
+
+    /**
+     * Subscribes the fragment to observe LiveData that are defined in the ViewModel.
+     * Must be called after initAdapter().
+     */
+    private fun startObservingData() {
+        viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
+            categoryAdapter.submitList(list.toMutableList())
+
+            viewModel.apply {
+                if (list.none { it.name == currentCategory.value }) {
+                    setCurrentCategory(defaultCategory)
+                }
+            }
+        })
+
+        viewModel.currentCategory.observe(this, Observer {
+            categoryAdapter.newItemSelected(it)
+            wordAdapter.submitList(
+                viewModel.filterWordsToCategory(it)
+            )
+        })
+
+        viewModel.words.observe(this, Observer {
+            wordAdapter.submitList(
+                viewModel.filterWordsToCategory()
+            )
+
+            // If the new word was inserted to the list, scroll to the Top of the recycleView
+            if (viewModel.newItemInserted || viewModel.isUserSearching) {
+                binding.wordRecycleview.smoothScrollToPosition(0)
+
+                if (viewModel.isUserSearching) {
+                    viewModel.newItemInserted = false
+                }
+            }
+        })
     }
 
     /**
@@ -180,12 +200,7 @@ class WordDisplayFragment : Fragment() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.main_menu, menu)
-
-        // Setup up the behaviour of the SearchView
-        val searchView = menu.findItem(R.id.menu_item_search)?.actionView as SearchView
+    private fun setSearchBehavior(searchView: SearchView) {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 wordAdapter.submitList(
@@ -213,17 +228,8 @@ class WordDisplayFragment : Fragment() {
                 false
             }
         }
-
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.night_mode_menu_item) {
-            toggleNightMode()
-            return true
-        }
-        return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
-                || super.onOptionsItemSelected(item)
-    }
 
     private fun toggleNightMode() {
         val activity = requireActivity()
@@ -243,14 +249,12 @@ class WordDisplayFragment : Fragment() {
         activity.recreate()
     }
 
-    // Enable the deletion of words, by swiping the item left or right.
+    /**
+     * Enable the deletion of words, by swiping the item left or right.
+     */
     private val itemTouchHelper = object : ItemTouchHelper
     .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             return false
         }
 
@@ -272,7 +276,6 @@ class WordDisplayFragment : Fragment() {
     private fun initializeSelectedCategory() {
         val selectedCategory = AppPreferences.getLastSelectedCategory(requireContext())
         viewModel.setCurrentCategory(selectedCategory)
-        toast(selectedCategory)
     }
 
     /**
