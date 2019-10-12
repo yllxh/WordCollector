@@ -1,5 +1,6 @@
 package com.yllxh.wordcollector
 
+import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 
 class AppUtils {
@@ -18,6 +19,24 @@ class AppUtils {
                 if (newWord.word != oldWord.word
                     || newWord.definition != oldWord.definition
                 )
+                    return true
+            }
+            return true
+        }
+
+        /**
+         * Used to check if a category is valid to perform operations with it.
+         * oldCategory can be used in cases where the newCategory needs to be compared
+         * with it.
+         */
+        fun isValidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category? = null): Boolean {
+            if (newCategory.name.isEmpty()
+                || newCategory.name == defaultCategory
+                || oldCategory?.name == defaultCategory
+            )
+                return false
+            else if (oldCategory != null) {
+                if (newCategory.name != oldCategory.name)
                     return true
             }
             return true

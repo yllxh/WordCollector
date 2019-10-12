@@ -11,12 +11,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
-import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
+import com.yllxh.wordcollector.viewmodels.AddEditCategoryViewModel
 
 
 class AddEditCategoryDialog : DialogFragment(){
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
+        ViewModelProviders.of(this).get(AddEditCategoryViewModel::class.java)
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
