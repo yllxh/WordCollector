@@ -109,8 +109,10 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun setCurrentCategory(selectedCategory: String?) {
-        _currentCategory.value = selectedCategory ?: defaultCategory
+    fun setCurrentCategory(name: String?) {
+        val selectedCategory = name ?: defaultCategory
+        _currentCategory.value = selectedCategory
+        AppPreferences.setLastSelectedCategory(getApplication(), selectedCategory)
     }
 
     override fun onCleared() {

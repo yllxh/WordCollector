@@ -28,6 +28,7 @@ class ManageCategoriesFragment : Fragment() {
         val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
 
         val categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
+            viewModel.setCurrentCategory(category.name)
             AddEditCategoryDialog.newInstance(category)
                 .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }

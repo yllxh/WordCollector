@@ -121,4 +121,8 @@ class ManageCategoriesViewModel(application: Application) :
             repository.deleteAllWords()
         }
     }
+
+    fun setCurrentCategory(name: String) {
+        AppPreferences.setLastSelectedCategory(getApplication(), name)
+    }
 }

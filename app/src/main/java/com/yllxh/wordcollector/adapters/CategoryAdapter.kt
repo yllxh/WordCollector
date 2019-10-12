@@ -29,7 +29,7 @@ class CategoryAdapter(
     private val onItemClickListener: (category: Category) -> Unit
 ) : ListAdapter<Category, CategoryViewHolder>(CategoryDiffCallback()),
     CategoryViewHolder.SelectionListener{
-    override var selectedItemId: Int = -1
+    override var selectedItemPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder.from(parent, widthMatchParent, inDialog)
@@ -42,14 +42,12 @@ class CategoryAdapter(
 
 
     override fun onNewItemSelected(newItemId: Int, category: Category) {
-        val oldItemId = selectedItemId
-        selectedItemId = newItemId
+        val oldItemId = selectedItemPosition
+        selectedItemPosition = newItemId
         notifyItemChanged(newItemId)
         notifyItemChanged(oldItemId)
-
         onItemClickListener(category)
 
-        AppPreferences.setLastSelectedCategory(context, category.name)
     }
 
     override fun getContext(): Context {
@@ -63,8 +61,8 @@ class CategoryAdapter(
      */
     override fun submitList(list: MutableList<Category>?) {
         super.submitList(list)
-        if (itemCount > 0 && selectedItemId == -1) {
-            updateSelectedItemId()
+        if (itemCount > 0) {
+            updateSelectedItemPosition()
         }
 
     }
@@ -77,21 +75,29 @@ class CategoryAdapter(
     }
 
 
-    private fun updateSelectedItemId() {
+    private fun updateSelectedItemPosition() {
         val selectedCategory = AppPreferences.getLastSelectedCategory(context)
+        updateSelectedItemPosition(selectedCategory)
+    }
+
+    private fun updateSelectedItemPosition(selectedCategory: String) {
         for (i in 0 until itemCount) {
             if (getItem(i).name == selectedCategory) {
-                selectedItemId = i
+                selectedItemPosition = i
                 break
             }
         }
+    }
+
+    fun newItemSelected(name: String) {
+        updateSelectedItemPosition(name)
     }
 }
 class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     interface SelectionListener {
-        var selectedItemId: Int
+        var selectedItemPosition: Int
 
         fun onNewItemSelected(
             newItemId: Int,
@@ -112,7 +118,7 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
             }
 
             // Paints the current view with the correct colors
-            when (listener.selectedItemId) {
+            when (listener.selectedItemPosition) {
                 adapterPosition -> {
                     // Highlight the selected category.
                     cardView.setCardBackgroundColor(

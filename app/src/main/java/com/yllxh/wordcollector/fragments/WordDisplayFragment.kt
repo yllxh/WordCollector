@@ -61,7 +61,8 @@ class WordDisplayFragment : Fragment() {
 
         // Creating an instance of the WordAdapter class and setting a clickListener for the Edit ImageButton.
         wordAdapter = WordAdapter{ word ->
-            EditWordDialog.newInstance(word).show(requireFragmentManager(), EditWordDialog.TAG)
+            EditWordDialog.newInstance(word)
+                .show(requireFragmentManager(), EditWordDialog.TAG)
         }
         binding.wordRecycleview.adapter = wordAdapter
 
@@ -88,6 +89,7 @@ class WordDisplayFragment : Fragment() {
         // Observes changes to the current category, in case it changes
         // the list of words shown in updated to the correct category.
         viewModel.currentCategory.observe(this, Observer {
+            categoryAdapter.newItemSelected(it)
             wordAdapter.submitList(
                 viewModel.filterWordsToCategory(it)
             )
