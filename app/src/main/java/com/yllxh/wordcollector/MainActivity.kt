@@ -8,7 +8,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.yllxh.wordcollector.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
+
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {

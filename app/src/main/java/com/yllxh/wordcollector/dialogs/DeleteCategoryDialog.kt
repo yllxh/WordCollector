@@ -12,14 +12,16 @@ import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
-import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
+import com.yllxh.wordcollector.viewmodels.DeleteCategoryViewModel
 
 
 class DeleteCategoryDialog : DialogFragment(){
-    private var clicks = 0
 
+    private var clicks = 0
+    private var wasCategoryDeleted = false
+    lateinit var category: Category
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
+        ViewModelProviders.of(this).get(DeleteCategoryViewModel::class.java)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -27,7 +29,7 @@ class DeleteCategoryDialog : DialogFragment(){
             clicks = savedInstanceState.getInt(CLICKS)
         }
 
-        val category: Category = arguments?.getParcelable(KEY) ?: Category("")
+        category = arguments?.getParcelable(KEY) ?: Category("")
 
         val currentCategory = AppPreferences.getLastSelectedCategory(requireContext())
         val isCurrentCategory = currentCategory == category.name
@@ -52,6 +54,7 @@ class DeleteCategoryDialog : DialogFragment(){
         // Set onClickListeners to dialog buttons.
         binding.apply {
             cancelButton.setOnClickListener {
+                wasCategoryDeleted = false
                 dialog.cancel()
             }
 
@@ -59,11 +62,14 @@ class DeleteCategoryDialog : DialogFragment(){
                 when {
                     !isDefaultCategory -> {
                         viewModel.deleteAllOfCategory(category)
+                        wasCategoryDeleted = true
                         dismissDialog(isCurrentCategory, dialog)
                     }
                     isDefaultCategory -> {
                         clicks++
+
                         if (clicks == 3) {
+                            wasCategoryDeleted = true
                             viewModel.deleteAllWords()
                             dismissDialog(isCurrentCategory, dialog)
                         }
@@ -73,8 +79,11 @@ class DeleteCategoryDialog : DialogFragment(){
             }
 
             noButton.setOnClickListener {
-                if (!viewModel.deleteCategory(category)) {
+                wasCategoryDeleted = if (!viewModel.deleteCategory(category)) {
                     toast(getString(R.string.look_again))
+                    false
+                } else {
+                    true
                 }
                 dialog.cancel()
             }

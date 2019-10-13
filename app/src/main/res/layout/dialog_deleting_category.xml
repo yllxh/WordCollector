@@ -7,7 +7,7 @@
             android:layout_height="match_parent">
 
         <TextView
-                android:id="@+id/alert_message_text_view"
+            android:id="@+id/alert_message_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/about_to_delete_category_alert"
@@ -30,6 +30,7 @@
                     android:text="@string/yes"
                     android:textColor="@color/colorAccent"
                     android:textSize="18sp"
+                    android:padding="8dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginRight="32dp"
                     />
@@ -40,6 +41,7 @@
                     android:text="@string/no"
                     android:textColor="@color/colorAccent"
                     android:textSize="18sp"
+                    android:padding="8dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginRight="32dp"
                     />
@@ -50,6 +52,7 @@
                     android:text="@string/cancel"
                     android:textColor="@color/colorAccent"
                     android:textSize="18sp"
+                    android:padding="8dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginRight="32dp"
                     />

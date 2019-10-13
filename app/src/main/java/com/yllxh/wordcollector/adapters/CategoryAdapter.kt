@@ -19,8 +19,10 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 /**
  * CategoryAdapter class for presenting data in a RecycleView.
  *
- * @param widthMatchParent  used to determine whether the width of views should
- *                          expand to match parent(RecycleView)
+ * @param widthMatchParent  Used to determine whether the width of views should
+ *                          expand to match parent(RecycleView).
+ *
+ * @param inDialog          Used to indicate whether the adapter is used in a Dialog.
  */
 class CategoryAdapter(
     private val context: Context,
@@ -52,9 +54,6 @@ class CategoryAdapter(
     override fun getContext(): Context {
         return context
     }
-
-
-
 
     /**
      * Overriding the submitList function, in order to inform the recycleView

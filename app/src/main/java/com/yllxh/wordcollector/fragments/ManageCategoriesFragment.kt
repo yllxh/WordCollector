@@ -1,12 +1,12 @@
 package com.yllxh.wordcollector.fragments
 
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,15 +17,16 @@ import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
 
+const val DELETE_REQUEST: Int = 1
 
-class ManageCategoriesFragment : Fragment() {
+class ManageCategoriesFragment : Fragment(){
+
     lateinit var categoryAdapter: CategoryAdapter
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         val binding = FragmentManageCategoriesBinding.inflate(inflater, container, false)
 
         categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
@@ -34,26 +35,25 @@ class ManageCategoriesFragment : Fragment() {
                 .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
         }
         binding.categoryRecycleview.adapter = categoryAdapter
+        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
 
         viewModel.categories.observe(this, Observer {
             categoryAdapter.submitList(it.toMutableList())
-
-            // If the new category was inserted to the list, scroll to the Top of the recycleView.
-            if (viewModel.newItemInserted) {
-                binding.categoryRecycleview.smoothScrollToPosition(0)
-                viewModel.newItemInserted = false
-            }
         })
-
-
-        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
 
         // Fab button used to pop up a dialog, for inserting a new category.
         binding.fab.setOnClickListener {
             AddEditCategoryDialog.newInstance()
                 .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
+
         }
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == DELETE_REQUEST){
+            categoryAdapter.notifyDataSetChanged()
+        }
     }
 
     // Enable the deletion of categories, by swiping the item left or right.
@@ -74,12 +74,4 @@ class ManageCategoriesFragment : Fragment() {
                 .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
         }
     }
-
-    /**
-     * Function used as shortcut the Toast.makeText() function.
-     */
-    private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
-        Toast.makeText(activity, s, lengthLong).show()
-    }
-
 }
