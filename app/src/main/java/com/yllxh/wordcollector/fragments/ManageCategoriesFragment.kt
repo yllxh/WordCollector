@@ -17,8 +17,6 @@ import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
 
-const val DELETE_REQUEST: Int = 1
-
 class ManageCategoriesFragment : Fragment(){
 
     lateinit var categoryAdapter: CategoryAdapter
@@ -51,7 +49,7 @@ class ManageCategoriesFragment : Fragment(){
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == DELETE_REQUEST){
+        if (requestCode == DeleteCategoryDialog.DELETE_CATEGORY_REQUEST){
             categoryAdapter.notifyDataSetChanged()
         }
     }
@@ -70,7 +68,7 @@ class ManageCategoriesFragment : Fragment(){
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             val category = categoryAdapter.getCategoryAtPosition(position)
-            DeleteCategoryDialog.newInstance(category)
+            DeleteCategoryDialog.newInstance(this@ManageCategoriesFragment, category)
                 .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
         }
     }

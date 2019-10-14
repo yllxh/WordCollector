@@ -1,12 +1,15 @@
 package com.yllxh.wordcollector.dialogs
 
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.yllxh.wordcollector.AppPreferences
 import com.yllxh.wordcollector.R
@@ -48,7 +51,7 @@ class DeleteCategoryDialog : DialogFragment(){
 
         val isDefaultCategory = category.name == viewModel.defaultCategory
         if (isDefaultCategory) {
-            binding.alertMessageTextView.append(getString(R.string.press_yes_3_times))
+            binding.alertMessageTextView.text = getString(R.string.delete_all_items)
         }
 
         // Set onClickListeners to dialog buttons.
@@ -91,6 +94,13 @@ class DeleteCategoryDialog : DialogFragment(){
         return dialog
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        // Calling the onActivityResult on the target fragment,
+        // to allow it to execute any necessary UI refreshing.
+        targetFragment?.onActivityResult(DELETE_CATEGORY_REQUEST, RESULT_OK, Intent())
+    }
+
     private fun dismissDialog(isCurrentCategory: Boolean, dialog: AlertDialog) {
         if (isCurrentCategory) {
             AppPreferences.setLastSelectedCategory(
@@ -114,17 +124,20 @@ class DeleteCategoryDialog : DialogFragment(){
         private const val CLICKS = "CLICKS"
         private const val KEY = "DeleteCategoryDialog"
         const val TAG: String = KEY
+        const val DELETE_CATEGORY_REQUEST = 101
 
-        fun newInstance(category: Category): DeleteCategoryDialog {
+        fun newInstance(fragment: Fragment, category: Category): DeleteCategoryDialog {
+
             val bundle = Bundle()
             bundle.putParcelable(KEY, category)
 
             val newDialog = DeleteCategoryDialog()
+            newDialog.setTargetFragment(fragment, DELETE_CATEGORY_REQUEST)
             newDialog.arguments = bundle
-
             return newDialog
 
         }
     }
 
 }
+
