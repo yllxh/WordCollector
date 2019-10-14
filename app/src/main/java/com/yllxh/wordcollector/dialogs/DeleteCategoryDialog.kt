@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.dialogs
 
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -76,14 +77,14 @@ class DeleteCategoryDialog : DialogFragment(){
                             viewModel.deleteAllWords()
                             dismissDialog(isCurrentCategory, dialog)
                         }
-                        toast("$clicks")
+                        Toast.makeText(activity, "$clicks", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
             noButton.setOnClickListener {
                 wasCategoryDeleted = if (!viewModel.deleteCategory(category)) {
-                    toast(getString(R.string.look_again))
+                    Toast.makeText(activity, getString(R.string.look_again), Toast.LENGTH_SHORT).show()
                     false
                 } else {
                     true
@@ -94,12 +95,13 @@ class DeleteCategoryDialog : DialogFragment(){
         return dialog
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         // Calling the onActivityResult on the target fragment,
         // to allow it to execute any necessary UI refreshing.
         targetFragment?.onActivityResult(DELETE_CATEGORY_REQUEST, RESULT_OK, Intent())
     }
+
 
     private fun dismissDialog(isCurrentCategory: Boolean, dialog: AlertDialog) {
         if (isCurrentCategory) {
@@ -114,10 +116,6 @@ class DeleteCategoryDialog : DialogFragment(){
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(CLICKS, clicks)
-    }
-
-    private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
-        Toast.makeText(activity, s, lengthLong).show()
     }
 
     companion object {
