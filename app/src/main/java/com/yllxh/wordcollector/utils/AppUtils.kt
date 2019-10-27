@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector
+package com.yllxh.wordcollector.utils
 
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
@@ -13,7 +13,10 @@ class AppUtils {
             return if (isWordEmpty(newWord))
                 false
             else {
-                areContentDifferent(newWord, oldWord)
+                areContentDifferent(
+                    newWord,
+                    oldWord
+                )
             }
         }
 
@@ -30,7 +33,12 @@ class AppUtils {
             newWord.word.isEmpty() && newWord.definition.isEmpty()
 
         fun isValidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category): Boolean {
-            return if (isInvalidCategory(defaultCategory, newCategory, oldCategory))
+            return if (isInvalidCategory(
+                    defaultCategory,
+                    newCategory,
+                    oldCategory
+                )
+            )
                 false
             else {
                 newCategory.name != oldCategory.name
@@ -38,7 +46,10 @@ class AppUtils {
         }
 
         fun isValidCategory(defaultCategory: String, newCategory: Category): Boolean{
-            return !(isInvalidCategory(defaultCategory, newCategory))
+            return !(isInvalidCategory(
+                defaultCategory,
+                newCategory
+            ))
         }
 
 

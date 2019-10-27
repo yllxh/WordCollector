@@ -1,7 +1,7 @@
 package com.yllxh.wordcollector
 
-import com.yllxh.wordcollector.AppUtils.Companion.isValidCategory
-import com.yllxh.wordcollector.AppUtils.Companion.isValidWord
+import com.yllxh.wordcollector.utils.AppUtils.Companion.isValidCategory
+import com.yllxh.wordcollector.utils.AppUtils.Companion.isValidWord
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import org.junit.Assert.*
