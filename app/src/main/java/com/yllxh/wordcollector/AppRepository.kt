@@ -2,11 +2,12 @@ package com.yllxh.wordcollector
 
 import android.app.Application
 import com.yllxh.wordcollector.data.*
+import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class AppRepository(application: Application) {
-    val defaultCategory: String = application.getString(R.string.default_category_name)
+    val defaultCategory: String = DEFAULT_CATEGORY_NAME
 
     private val wordDao: WordDao
     private val categoryDao: CategoryDao

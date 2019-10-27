@@ -2,6 +2,7 @@ package com.yllxh.wordcollector
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
 
 
 private const val DAY_NIGHT_KEY = "dayNightKey"
@@ -48,18 +49,17 @@ object AppPreferences {
      * the defaultCategoryName, which is saved in the apps resource file.
      */
     fun getLastSelectedCategory(context: Context): String {
-        val defaultCategoryName = context.getString(R.string.default_category_name)
 
         PreferenceManager.getDefaultSharedPreferences(context).apply {
 
             return if (contains(LAST_SELECTED_CATEGORY)) {
-                getString(LAST_SELECTED_CATEGORY, defaultCategoryName) ?: defaultCategoryName
+                getString(LAST_SELECTED_CATEGORY, DEFAULT_CATEGORY_NAME) ?: DEFAULT_CATEGORY_NAME
             } else {
                 edit().apply {
-                    putString(LAST_SELECTED_CATEGORY, defaultCategoryName)
+                    putString(LAST_SELECTED_CATEGORY, DEFAULT_CATEGORY_NAME)
                     apply()
                 }
-                defaultCategoryName
+                DEFAULT_CATEGORY_NAME
             }
         }
     }

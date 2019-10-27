@@ -6,8 +6,6 @@ import com.yllxh.wordcollector.data.Word
 class AppUtils {
 
     companion object {
-        const val DATABASE_NAME = "app_database"
-
 
         fun isValidWord(newWord: Word, oldWord: Word): Boolean {
             return if (isWordEmpty(newWord))

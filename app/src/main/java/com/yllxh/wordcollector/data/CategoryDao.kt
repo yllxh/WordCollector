@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
 
 @Dao
 interface CategoryDao {
@@ -17,10 +18,10 @@ interface CategoryDao {
     @Query("UPDATE category_table SET wordCount = wordCount - 1 WHERE name = :name")
     fun decrementWordCount(name: String)
 
-    @Query("UPDATE category_table SET wordCount = wordCount + 1 WHERE name = 'All'")
+    @Query("UPDATE category_table SET wordCount = wordCount + 1 WHERE name = '$DEFAULT_CATEGORY_NAME'")
     fun incrementTotalWordCount()
 
-    @Query("UPDATE category_table SET wordCount = wordCount - :count WHERE name = 'All'")
+    @Query("UPDATE category_table SET wordCount = wordCount - :count WHERE name = '$DEFAULT_CATEGORY_NAME'")
     fun decrementTotalWordCount(count: Int = 1)
 
     @Query("UPDATE category_table SET wordCount = 0")

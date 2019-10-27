@@ -2,14 +2,13 @@ package com.yllxh.wordcollector.data
 
 import android.content.Context
 import android.database.Cursor
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.yllxh.wordcollector.utils.AppUtils.Companion.DATABASE_NAME
-import java.lang.Exception
+import com.yllxh.wordcollector.utils.DataUtils.Companion.DATABASE_NAME
+import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
 
 @Database(entities = [Word::class, Category::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
@@ -76,7 +75,7 @@ abstract class AppDatabase : RoomDatabase() {
                             val categoryName = categoryCursor.getString(0)
                             val countCursor = countWordsOfCategory(database, categoryName)
                             countCursor?.use {
-                                if (it.moveToFirst()) {
+                                if (countCursor.moveToFirst()) {
                                     updateCategoryWordCount(countCursor, database, categoryName)
                                 }
                             }
@@ -90,7 +89,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val countCursor = database.query("SELECT COUNT(*) FROM word_table")
                 countCursor?.use {
                     if (countCursor.moveToFirst()) {
-                        updateCategoryWordCount(countCursor, database, "All")
+                        updateCategoryWordCount(countCursor, database, DEFAULT_CATEGORY_NAME)
                     }
                 }
             }
