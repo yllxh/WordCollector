@@ -8,20 +8,18 @@ class AppUtils {
     companion object {
         const val DATABASE_NAME = "app_database"
 
-        /**
-         * Used to check if a word is valid to perform operations with it.
-         * @param oldWord  Can be used in cases where the newWord needs to be compared with it.
-         */
-        fun isValidWord(newWord: Word, oldWord: Word? = null): Boolean {
-            if (isWordEmpty(newWord))
-                return false
-            else if (oldWord != null){
-                if (areContentDifferent(newWord, oldWord))
-                    return true
+
+        fun isValidWord(newWord: Word, oldWord: Word): Boolean {
+            return if (isWordEmpty(newWord))
+                false
+            else {
+                areContentDifferent(newWord, oldWord)
             }
-            return true
         }
 
+        fun isValidWord(newWord: Word):Boolean{
+            return !isWordEmpty(newWord)
+        }
         private fun areContentDifferent(
             newWord: Word,
             oldWord: Word

@@ -35,4 +35,9 @@ class AppUtilsTest{
     fun returnsTrueWhenComparingWordsWithDifferentContent(){
         assertTrue(isValidWord(wordWithEmptyTerm, wordWithEmptyDefinition))
     }
+
+    @Test
+    fun returnsFalseWhenComparingWordsThatAreTheSame(){
+        assertFalse(isValidWord(wordWithEmptyTerm, wordWithEmptyTerm))
+    }
 }
