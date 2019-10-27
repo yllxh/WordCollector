@@ -1,6 +1,8 @@
 package com.yllxh.wordcollector
 
+import com.yllxh.wordcollector.AppUtils.Companion.isValidCategory
 import com.yllxh.wordcollector.AppUtils.Companion.isValidWord
+import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import org.junit.Assert.*
 import org.junit.Before
@@ -9,6 +11,9 @@ import org.junit.Test
 class AppUtilsTest{
     private lateinit var wordWithEmptyTerm: Word
     private lateinit var wordWithEmptyDefinition: Word
+    private lateinit var defaultCategory: Category
+    private lateinit var validCategory: Category
+    private val defaultCategoryName = "defaultCategoryName"
 
     @Before
     fun initWords(){
@@ -44,6 +49,33 @@ class AppUtilsTest{
     @Test
     fun falseWhenComparingWordsThatAreTheSame(){
         assertFalse(isValidWord(wordWithEmptyTerm, wordWithEmptyTerm))
+    }
+
+
+    @Before
+    fun initCategories(){
+        defaultCategory = Category(defaultCategoryName)
+        validCategory = Category("anyName")
+    }
+
+    @Test
+    fun falseWhenCategoryNameIsEmpty(){
+        assertFalse(isValidCategory(defaultCategoryName, Category("")))
+    }
+
+    @Test
+    fun falseWhenCategoryNameIsSameAsDefaultCategory(){
+        assertFalse(isValidCategory(defaultCategoryName, defaultCategory))
+    }
+
+    @Test
+    fun trueWhenCategoryNameIsNotDefaultCategory(){
+        assertTrue(isValidCategory(defaultCategoryName, validCategory))
+    }
+
+    @Test
+    fun falseWhenOneCategoryNamesIsDefaultCategory(){
+        assertFalse(isValidCategory(defaultCategoryName, defaultCategory, defaultCategory))
     }
 
 }
