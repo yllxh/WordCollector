@@ -13,16 +13,22 @@ class AppUtils {
          * @param oldWord  Can be used in cases where the newWord needs to be compared with it.
          */
         fun isValidWord(newWord: Word, oldWord: Word? = null): Boolean {
-            if (newWord.word.isEmpty() && newWord.definition.isEmpty())
+            if (isWordEmpty(newWord))
                 return false
-            else if (oldWord != null) {
-                if (newWord.word != oldWord.word
-                    || newWord.definition != oldWord.definition
-                )
+            else if (oldWord != null){
+                if (areContentDifferent(newWord, oldWord))
                     return true
             }
             return true
         }
+
+        private fun areContentDifferent(
+            newWord: Word,
+            oldWord: Word
+        ) = newWord.word != oldWord.word || newWord.definition != oldWord.definition
+
+        private fun isWordEmpty(newWord: Word) =
+            newWord.word.isEmpty() && newWord.definition.isEmpty()
 
         /**
          * Used to check if a category is valid to perform operations with it.
@@ -30,16 +36,23 @@ class AppUtils {
          * with it.
          */
         fun isValidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category? = null): Boolean {
-            if (newCategory.name.isEmpty()
-                || newCategory.name == defaultCategory
-                || oldCategory?.name == defaultCategory
-            )
+            if (isInvalidCategory(newCategory, defaultCategory, oldCategory))
                 return false
             else if (oldCategory != null) {
                 if (newCategory.name != oldCategory.name)
                     return true
             }
             return true
+        }
+
+        private fun isInvalidCategory(
+            newCategory: Category,
+            defaultCategory: String,
+            oldCategory: Category?
+        ): Boolean {
+            return newCategory.name.isEmpty()
+                    || newCategory.name == defaultCategory
+                    || oldCategory?.name == defaultCategory
         }
     }
 }
