@@ -19,10 +19,13 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 /**
  * CategoryAdapter class for presenting data in a RecycleView.
  *
- * @param widthMatchParent  Used to determine whether the width of views should
- *                          expand to match parent(RecycleView).
  *
- * @param inDialog          Used to indicate whether the adapter is used in a Dialog.
+ *  @param context              Context needed for the AppPreferences and the ViewHolder
+ *  @param widthMatchParent     Used to determine whether the width of views should
+ *                              expand to match parent(RecycleView).
+ *
+ *  @param inDialog             Used to indicate whether the adapter is used in a Dialog.
+ *  @param onItemClickListener  Determines what should happen when an item is clicked.
  */
 class CategoryAdapter(
     private val context: Context,
