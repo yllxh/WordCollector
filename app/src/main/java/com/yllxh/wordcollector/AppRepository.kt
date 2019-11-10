@@ -22,32 +22,40 @@ class AppRepository(application: Application) {
     var categories = categoryDao.getAll()
 
 
-    /**
-     * Suspend function used to updateCategory a word.
-     */
     suspend fun update(new: Word, old: Word) {
         withContext(Dispatchers.IO) {
             wordDao.update(new)
 
-            if (new.category != old.category) {
-                when {
-                    new.category == defaultCategory -> {
-                        categoryDao.decrementWordCount(old.category)
-                    }
-                    new.category != defaultCategory -> {
-                        categoryDao.incrementWordCount(new.category)
-                        if (old.category != defaultCategory)
-                            categoryDao.decrementWordCount(old.category)
-                    }
-                }
+            val isCategoryUpdated = new.category != old.category
+            if (isCategoryUpdated) {
+                updateCategoryWordCount(new, old)
             }
 
         }
     }
 
+
     /**
-     * Suspend function used to insertWord a word.
+     * Handlers the updating of the word count of new and old category.
+     *
+     * @param new   The new word updated word.
+     * @param old   The old version of the new word.
      */
+    private fun updateCategoryWordCount(new: Word, old: Word) {
+        when {
+            new.category == defaultCategory -> {
+                categoryDao.decrementWordCount(old.category)
+            }
+            new.category != defaultCategory -> {
+                categoryDao.incrementWordCount(new.category)
+
+                val wasDefaultCategory = old.category == defaultCategory
+                if (!wasDefaultCategory)
+                    categoryDao.decrementWordCount(old.category)
+            }
+        }
+    }
+
     suspend fun insert(word: Word) {
         withContext(Dispatchers.IO) {
             wordDao.insert(word)
@@ -58,22 +66,16 @@ class AppRepository(application: Application) {
         }
     }
 
-    /**
-     * Suspend function used to deleteWord a word.
-     */
     suspend fun delete(word: Word) {
         withContext(Dispatchers.IO) {
             wordDao.delete(word)
             categoryDao.decrementWordCount(word.category)
             if (word.category != defaultCategory) {
-                categoryDao.decrementTotalWordCount()
+                categoryDao.decreaseTotalWordCount()
             }
         }
     }
 
-    /**
-     * Suspend function used to insertWord a category.
-     */
     suspend fun insert(category: Category) {
         withContext(Dispatchers.IO) {
             categoryDao.insert(category)
@@ -81,7 +83,7 @@ class AppRepository(application: Application) {
     }
 
     /**
-     * Suspend function used to updateCategory a category, and it updates
+     * Function used to updateCategory a category, and it updates
      * all the words of the category to with the newName of the category.
      */
     suspend fun update(newCategory: Category, oldCategory: Category) {
@@ -91,19 +93,22 @@ class AppRepository(application: Application) {
         }
     }
 
-    /**
-     * Suspend function used to deleteWord a category.
-     */
     suspend fun delete(category: Category) {
         withContext(Dispatchers.IO) {
             categoryDao.delete(category)
         }
     }
 
+    /**
+     * Function used to delete All the word of a category, and decreases total word count
+     * by se number of words in that category.
+     *
+     * @param   category The category of the words that need to be deleted.
+     */
     suspend fun deleteAllOfCategory(category: Category) {
         withContext(Dispatchers.IO) {
             wordDao.deleteAllOfCategory(category.name)
-            categoryDao.decrementTotalWordCount(category.wordCount)
+            categoryDao.decreaseTotalWordCount(category.wordCount)
         }
     }
 

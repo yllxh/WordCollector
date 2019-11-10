@@ -22,7 +22,7 @@ interface CategoryDao {
     fun incrementTotalWordCount()
 
     @Query("UPDATE category_table SET wordCount = wordCount - :count WHERE name = '$DEFAULT_CATEGORY_NAME'")
-    fun decrementTotalWordCount(count: Int = 1)
+    fun decreaseTotalWordCount(count: Int = 1)
 
     @Query("UPDATE category_table SET wordCount = 0")
     fun setAllWordCountToZero()
