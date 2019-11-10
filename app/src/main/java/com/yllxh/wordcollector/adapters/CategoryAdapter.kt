@@ -62,18 +62,18 @@ class CategoryAdapter(
      * Overriding the submitList function, in order to inform the recycleView
      * about the last item which was selected, so that it is highlighted properly by the CategoryViewHolder.
      */
-    override fun submitList(list: MutableList<Category>?) {
+    override fun submitList(list: List<Category>?) {
         val selectedCategory = AppPreferences.getLastSelectedCategory(context)
         updateSelectedItemPosition(list, selectedCategory)
         super.submitList(list)
     }
 
     private fun updateSelectedItemPosition(
-        list: MutableList<Category>?,
+        list: List<Category>?,
         selectedCategory: String
     ) {
         list?.let {
-            for (i in 0 until list.size) {
+            for (i in list.indices) {
                 if (list[i].name == selectedCategory) {
                     selectedItemPosition = i
                     break

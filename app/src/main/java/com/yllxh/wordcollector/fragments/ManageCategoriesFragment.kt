@@ -36,7 +36,7 @@ class ManageCategoriesFragment : Fragment(){
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
 
         viewModel.categories.observe(this, Observer {
-            categoryAdapter.submitList(it.toMutableList())
+            categoryAdapter.submitList(it)
         })
 
         // Fab button used to pop up a dialog, for inserting a new category.

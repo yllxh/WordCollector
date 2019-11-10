@@ -78,6 +78,9 @@ class WordDisplayFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
+    /**
+     * Helper function together the initialization of OnClickListeners of Views.
+     */
     private fun setOnClickListeners() {
         binding.apply {
             saveTextview.setOnClickListener {
@@ -141,12 +144,11 @@ class WordDisplayFragment : Fragment() {
     }
 
     /**
-     * Subscribes the fragment to observe LiveData that are defined in the ViewModel.
-     * Must be called after initAdapter().
+     * Helper function used to group together subscriptions to observe data changes.
      */
     private fun startObservingData() {
         viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
-            categoryAdapter.submitList(list.toMutableList())
+            categoryAdapter.submitList(list)
 
             viewModel.apply {
                 if (list.none { it.name == currentCategory.value }) {
@@ -183,12 +185,10 @@ class WordDisplayFragment : Fragment() {
     private fun onSearchStateChange(isSearching: Boolean) {
         when {
             isSearching -> {
-                binding.enterNewWordCardview.visibility = View.GONE
-                binding.categoryRecycleview.visibility = View.GONE
+                setVisibilityHeaderAndCategoryAdapter(View.GONE)
             }
             else -> {
-                binding.enterNewWordCardview.visibility = View.VISIBLE
-                binding.categoryRecycleview.visibility = View.VISIBLE
+                setVisibilityHeaderAndCategoryAdapter(View.VISIBLE)
                 viewModel.apply {
                     setCurrentCategory(currentCategory.value)
                 }
@@ -197,6 +197,11 @@ class WordDisplayFragment : Fragment() {
         binding.floatingActionButton.hide()
         viewModel.isUserSearching = isSearching
 
+    }
+
+    private fun setVisibilityHeaderAndCategoryAdapter(visibility: Int) {
+        binding.enterNewWordCardview.visibility = visibility
+        binding.categoryRecycleview.visibility = visibility
     }
 
     private fun setSearchBehavior(searchView: SearchView) {
@@ -260,6 +265,12 @@ class WordDisplayFragment : Fragment() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             val word = wordAdapter.getWordAtPosition(position)
+            notifyWordDeletion(word)
+
+            viewModel.deleteWord(word)
+        }
+
+        private fun notifyWordDeletion(word: Word) {
             Snackbar.make(
                 binding.root,
                 getString(R.string.deleting) + word.word,
@@ -267,8 +278,6 @@ class WordDisplayFragment : Fragment() {
             ).setAction(R.string.undo) {
                 viewModel.insertWord(word, false)
             }.show()
-
-            viewModel.deleteWord(word)
         }
     }
 
