@@ -23,8 +23,7 @@ class AppUtils {
         }
 
         private fun areContentDifferent(newWord: Word, oldWord: Word): Boolean {
-            return newWord.word != oldWord.word
-                    || newWord.definition != oldWord.definition
+            return newWord != oldWord
         }
 
         private fun isWordEmpty(newWord: Word) =
