@@ -65,7 +65,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      */
     fun filterWordsToMatchQuery(queryString: String): List<Word>? {
         return words.value?.filter {
-            it.term.contains(queryString, true)
+            it.word.contains(queryString, true)
                     || it.definition.contains(queryString, true)
         }
     }

@@ -25,7 +25,7 @@ private fun areContentDifferent(newWord: Word, oldWord: Word): Boolean {
 }
 
 private fun isWordEmpty(newWord: Word) =
-    newWord.term.isEmpty() && newWord.definition.isEmpty()
+    newWord.word.isEmpty() && newWord.definition.isEmpty()
 
 fun isValidCategory(newCategory: Category, oldCategory: Category): Boolean {
 

@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "word_table")
 @Parcelize
 data class Word(
-    var term: String = "",
+    var word: String = "",
     var definition: String = "",
     var category: String = DEFAULT_CATEGORY_NAME,
     @PrimaryKey(autoGenerate = true)
