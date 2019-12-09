@@ -1,14 +1,14 @@
 package com.yllxh.wordcollector
 
-import com.yllxh.wordcollector.utils.AppUtils.Companion.isValidCategory
-import com.yllxh.wordcollector.utils.AppUtils.Companion.isValidWord
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
+import com.yllxh.wordcollector.utils.isValidCategory
+import com.yllxh.wordcollector.utils.isValidWord
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class AppUtilsTest{
+class ValidationUtilsTest{
     private lateinit var wordWithEmptyTerm: Word
     private lateinit var wordWithEmptyDefinition: Word
     private lateinit var defaultCategory: Category

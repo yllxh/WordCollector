@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Word
-import com.yllxh.wordcollector.utils.AppUtils.isValidWord
+import com.yllxh.wordcollector.utils.isValidWord
 import kotlinx.coroutines.*
 
 
