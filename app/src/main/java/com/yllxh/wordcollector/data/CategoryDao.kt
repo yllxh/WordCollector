@@ -2,7 +2,7 @@ package com.yllxh.wordcollector.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
+import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 
 @Dao
 interface CategoryDao {

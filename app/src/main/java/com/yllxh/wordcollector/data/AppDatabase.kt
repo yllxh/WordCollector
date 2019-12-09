@@ -7,8 +7,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.yllxh.wordcollector.utils.DataUtils.Companion.DATABASE_NAME
-import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
+import com.yllxh.wordcollector.utils.DataUtils.DATABASE_NAME
+import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 
 @Database(entities = [Word::class, Category::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {

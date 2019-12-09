@@ -2,7 +2,7 @@ package com.yllxh.wordcollector
 
 import android.app.Application
 import com.yllxh.wordcollector.data.*
-import com.yllxh.wordcollector.utils.DataUtils.Companion.DEFAULT_CATEGORY_NAME
+import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
