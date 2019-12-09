@@ -2,6 +2,7 @@ package com.yllxh.wordcollector
 
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
+import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 import com.yllxh.wordcollector.utils.isValidCategory
 import com.yllxh.wordcollector.utils.isValidWord
 import org.junit.Assert.*
@@ -14,12 +15,12 @@ class ValidationUtilTest{
     private lateinit var wordWithEmptyDefinition: Word
     private lateinit var defaultCategory: Category
     private lateinit var validCategory: Category
-    private val defaultCategoryName = "defaultCategoryName"
+
 
 
     @Before
     fun initCategories(){
-        defaultCategory = Category(defaultCategoryName)
+        defaultCategory = Category(DEFAULT_CATEGORY_NAME)
         validCategory = Category("anyName")
     }
 
@@ -63,22 +64,22 @@ class ValidationUtilTest{
 
     @Test
     fun falseWhenCategoryNameIsEmpty(){
-        assertFalse(isValidCategory(defaultCategoryName, Category("")))
+        assertFalse(isValidCategory(Category("")))
     }
 
     @Test
     fun falseWhenCategoryNameIsSameAsDefaultCategory(){
-        assertFalse(isValidCategory(defaultCategoryName, defaultCategory))
+        assertFalse(isValidCategory(defaultCategory))
     }
 
     @Test
     fun trueWhenCategoryNameIsNotDefaultCategory(){
-        assertTrue(isValidCategory(defaultCategoryName, validCategory))
+        assertTrue(isValidCategory(validCategory))
     }
 
     @Test
     fun falseWhenOneCategoryNamesIsDefaultCategory(){
-        assertFalse(isValidCategory(defaultCategoryName, defaultCategory, defaultCategory))
+        assertFalse(isValidCategory(defaultCategory, defaultCategory))
     }
 
 }

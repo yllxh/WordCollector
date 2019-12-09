@@ -19,8 +19,6 @@ class AddEditCategoryViewModel(application: Application) : AndroidViewModel(appl
 
     private val repository = AppRepository(application)
 
-    private val defaultCategory = repository.defaultCategory
-
     /**
      * Used to keep track of the current category
      */
@@ -33,7 +31,7 @@ class AddEditCategoryViewModel(application: Application) : AndroidViewModel(appl
      * if the category is inserted it returns true and false otherwise.
      */
     fun insertCategory(category: Category): Boolean {
-        return if (isValidCategory(defaultCategory, category)) {
+        return if (isValidCategory(category)) {
             coroutineScope.launch {
                 repository.insert(category)
             }
@@ -46,7 +44,7 @@ class AddEditCategoryViewModel(application: Application) : AndroidViewModel(appl
      * it returns true if the category is updated and false otherwise.
      */
     fun updateCategory(newCategory: Category, oldCategory: Category): Boolean {
-        return if (isValidCategory(defaultCategory, newCategory, oldCategory)) {
+        return if (isValidCategory(newCategory, oldCategory)) {
             coroutineScope.launch {
                 repository.update(newCategory, oldCategory)
             }

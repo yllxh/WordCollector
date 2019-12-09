@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.utils
 
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
+import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 
 
 fun isValidWord(newWord: Word, oldWord: Word): Boolean {
@@ -26,25 +27,22 @@ private fun areContentDifferent(newWord: Word, oldWord: Word): Boolean {
 private fun isWordEmpty(newWord: Word) =
     newWord.term.isEmpty() && newWord.definition.isEmpty()
 
-fun isValidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category): Boolean {
+fun isValidCategory(newCategory: Category, oldCategory: Category): Boolean {
 
-    return if (isInvalidCategory(defaultCategory, newCategory, oldCategory)) {
+    return if (isInvalidCategory(newCategory, oldCategory)) {
         false
     } else {
         newCategory.name != oldCategory.name
     }
 }
 
-fun isValidCategory(defaultCategory: String, newCategory: Category): Boolean {
-    return !(isInvalidCategory(
-        defaultCategory,
-        newCategory
-    ))
+fun isValidCategory(newCategory: Category): Boolean {
+    return !(isInvalidCategory(newCategory))
 }
 
 
-private fun isInvalidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category? = null): Boolean {
+private fun isInvalidCategory(newCategory: Category, oldCategory: Category? = null): Boolean {
     return newCategory.name.isEmpty()
-            || newCategory.name == defaultCategory
-            || oldCategory?.name == defaultCategory
+            || newCategory.name == DEFAULT_CATEGORY_NAME
+            || oldCategory?.name == DEFAULT_CATEGORY_NAME
 }
