@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yllxh.wordcollector.AppPreferences
+import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.CategoryListItemBinding

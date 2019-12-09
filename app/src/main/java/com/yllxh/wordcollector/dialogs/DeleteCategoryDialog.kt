@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.yllxh.wordcollector.AppPreferences
+import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding

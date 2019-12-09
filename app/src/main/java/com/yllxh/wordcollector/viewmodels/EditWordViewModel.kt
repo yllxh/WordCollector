@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.yllxh.wordcollector.AppPreferences
+import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.utils.AppUtils.Companion.isValidWord
 import com.yllxh.wordcollector.data.Word

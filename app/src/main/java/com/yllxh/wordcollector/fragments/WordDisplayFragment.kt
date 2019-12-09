@@ -15,7 +15,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.yllxh.wordcollector.AppPreferences
+import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter

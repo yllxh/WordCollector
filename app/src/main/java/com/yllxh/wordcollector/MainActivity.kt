@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.yllxh.wordcollector.databinding.ActivityMainBinding
+import com.yllxh.wordcollector.utils.AppPreferences
 
 class MainActivity : AppCompatActivity(){
 

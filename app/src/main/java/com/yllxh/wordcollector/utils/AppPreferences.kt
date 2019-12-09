@@ -1,7 +1,8 @@
-package com.yllxh.wordcollector
+package com.yllxh.wordcollector.utils
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 
 
