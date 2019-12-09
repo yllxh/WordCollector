@@ -20,7 +20,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="@{word.word}"
+                    android:text="@{word.term}"
                     tools:text="@string/example"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toStartOf="@+id/edit_button"

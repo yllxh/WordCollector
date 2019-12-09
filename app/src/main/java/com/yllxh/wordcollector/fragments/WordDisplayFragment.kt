@@ -273,7 +273,7 @@ class WordDisplayFragment : Fragment() {
         private fun notifyWordDeletion(word: Word) {
             Snackbar.make(
                 binding.root,
-                getString(R.string.deleting) + word.word,
+                getString(R.string.deleting) + word.term,
                 Snackbar.LENGTH_LONG
             ).setAction(R.string.undo) {
                 viewModel.insertWord(word, false)
