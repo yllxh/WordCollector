@@ -26,19 +26,11 @@ private fun areContentDifferent(newWord: Word, oldWord: Word): Boolean {
 private fun isWordEmpty(newWord: Word) =
     newWord.term.isEmpty() && newWord.definition.isEmpty()
 
-fun isValidCategory(
-    defaultCategory: String,
-    newCategory: Category,
-    oldCategory: Category
-): Boolean {
-    return if (isInvalidCategory(
-            defaultCategory,
-            newCategory,
-            oldCategory
-        )
-    )
+fun isValidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category): Boolean {
+
+    return if (isInvalidCategory(defaultCategory, newCategory, oldCategory)) {
         false
-    else {
+    } else {
         newCategory.name != oldCategory.name
     }
 }
@@ -51,11 +43,7 @@ fun isValidCategory(defaultCategory: String, newCategory: Category): Boolean {
 }
 
 
-private fun isInvalidCategory(
-    defaultCategory: String,
-    newCategory: Category,
-    oldCategory: Category? = null
-): Boolean {
+private fun isInvalidCategory(defaultCategory: String, newCategory: Category, oldCategory: Category? = null): Boolean {
     return newCategory.name.isEmpty()
             || newCategory.name == defaultCategory
             || oldCategory?.name == defaultCategory
