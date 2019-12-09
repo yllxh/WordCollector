@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.AppRepository
-import com.yllxh.wordcollector.utils.AppUtils.Companion.isValidCategory
 import com.yllxh.wordcollector.data.Category
+import com.yllxh.wordcollector.utils.AppUtils.isValidCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
