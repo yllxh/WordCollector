@@ -28,7 +28,7 @@ class ValidationUtilTest{
     fun initWords(){
         wordWithEmptyDefinition = Word("word", "")
         wordWithEmptyTerm = Word("","definition")
-        nonEmptyWord = Word("term","definition")
+        nonEmptyWord = Word("word","definition")
     }
 
     @Test
@@ -61,24 +61,23 @@ class ValidationUtilTest{
         assertFalse(isValidWord(wordWithEmptyTerm, wordWithEmptyTerm))
     }
 
-
     @Test
-    fun falseWhenCategoryNameIsEmpty(){
+    fun notValidCategory_WhenNameIsEmpty(){
         assertFalse(isValidCategory(Category("")))
     }
 
     @Test
-    fun falseWhenCategoryNameIsSameAsDefaultCategory(){
+    fun notValidCategory_WhenNameEqualsDefaultCategoryName(){
         assertFalse(isValidCategory(defaultCategory))
     }
 
     @Test
-    fun trueWhenCategoryNameIsNotDefaultCategory(){
+    fun validCategory_WhenNameNotEqualToDefaultCategoryName(){
         assertTrue(isValidCategory(validCategory))
     }
 
     @Test
-    fun falseWhenOneCategoryNamesIsDefaultCategory(){
+    fun notValidCategory_WhenOneHasNameEqualDefaultCategoryName(){
         assertFalse(isValidCategory(defaultCategory, defaultCategory))
     }
 
