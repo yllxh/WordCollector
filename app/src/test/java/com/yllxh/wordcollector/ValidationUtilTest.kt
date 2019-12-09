@@ -8,7 +8,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class ValidationUtilsTest{
+class ValidationUtilTest{
     private lateinit var wordWithEmptyTerm: Word
     private lateinit var wordWithEmptyDefinition: Word
     private lateinit var defaultCategory: Category
