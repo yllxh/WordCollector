@@ -1,6 +1,7 @@
 package com.yllxh.wordcollector.utils
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
@@ -41,6 +42,16 @@ fun setDayNightMode(context: Context, mode: Boolean) {
             apply()
         }
     }
+}
+
+fun initializeNightMode(context: Context) {
+    val isNightMode = getNightMode(context)
+    AppCompatDelegate.setDefaultNightMode(
+        when {
+            isNightMode -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_NO
+        }
+    )
 }
 
 
