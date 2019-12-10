@@ -68,18 +68,12 @@ class CategoryAdapter(
         super.submitList(list)
     }
 
-    private fun updateSelectedItemPosition(
-        list: List<Category>?,
-        selectedCategory: String
-    ) {
+    private fun updateSelectedItemPosition(list: List<Category>?, selectedCategory: String) {
         list?.let {
             for (i in list.indices) {
                 if (list[i].name == selectedCategory) {
                     selectedItemPosition = i
                     break
-                }
-                if (i == list.size) {
-                    selectedItemPosition = 0
                 }
             }
         }
@@ -158,17 +152,29 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = CategoryListItemBinding.inflate(layoutInflater, parent, false)
 
-            val orientation = parent.context.resources.configuration.orientation
-
-            val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
-            if (isLandscape && inDialog) {
-                binding.root.layoutParams.width = WRAP_CONTENT
-                binding.categoryCountTextView.visibility = View.GONE
+            if (isOrientationLandscape(parent)
+                && inDialog) {
+                setViewHolderWidth(binding, WRAP_CONTENT)
+                hideWordCountNumber(binding)
             } else if (widthMatchParent) {
-                binding.root.layoutParams.width = MATCH_PARENT
+                setViewHolderWidth(binding, MATCH_PARENT)
             }
             return CategoryViewHolder(binding)
         }
+
+        private fun hideWordCountNumber(binding: CategoryListItemBinding) {
+            binding.categoryCountTextView.visibility = View.GONE
+        }
+
+        private fun setViewHolderWidth(
+            binding: CategoryListItemBinding,
+            width: Int
+        ) {
+            binding.root.layoutParams.width = width
+        }
+
+        private fun isOrientationLandscape(parent: ViewGroup) =
+            parent.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 }
 private class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {

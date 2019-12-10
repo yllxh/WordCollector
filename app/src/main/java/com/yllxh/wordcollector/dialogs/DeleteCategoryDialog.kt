@@ -83,9 +83,12 @@ class DeleteCategoryDialog : DialogFragment(){
 
             noButton.setOnClickListener {
                 val wasCategoryDeleted = viewModel.deleteCategory(category)
-                if (!wasCategoryDeleted) {
+                if (!wasCategoryDeleted && isDefaultCategory) {
                     Toast.makeText(activity, getString(R.string.look_again), Toast.LENGTH_SHORT)
                         .show()
+                }
+                if (isCurrentCategory){
+                    dismissDialog(isCurrentCategory, dialog)
                 }
                 dialog.cancel()
             }
