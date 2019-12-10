@@ -67,7 +67,7 @@ class ManageCategoriesFragment : Fragment(){
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            val category = categoryAdapter.getCategoryAtPosition(position)
+            val category = viewModel.categories.value!![position]
             DeleteCategoryDialog.newInstance(this@ManageCategoriesFragment, category)
                 .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
         }

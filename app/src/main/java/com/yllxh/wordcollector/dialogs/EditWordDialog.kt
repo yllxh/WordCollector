@@ -37,7 +37,7 @@ class EditWordDialog : DialogFragment(){
         }
         binding.dialogCategoryRecycleview.adapter = adapter
         viewModel.categories.observe(this, Observer {
-            adapter.submitList(it?.toMutableList(), word.category)
+            adapter.submitList(it, word.category)
             viewModel.setCurrentCategory(word.category)
         })
         val dialog = AlertDialog.Builder(requireContext())

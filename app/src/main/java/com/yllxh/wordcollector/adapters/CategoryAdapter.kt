@@ -16,17 +16,7 @@ import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 import com.yllxh.wordcollector.utils.getLastSelectedCategory
 
-/**
- * CategoryAdapter class for presenting data in a RecycleView.
- *
- *
- *  @param context              Context needed for the AppPreferences and the ViewHolder
- *  @param widthMatchParent     Used to determine whether the width of views should
- *                              expand to match parent(RecycleView).
- *
- *  @param inDialog             Used to indicate whether the adapter is used in a Dialog.
- *  @param onItemClickListener  Determines what should happen when an item is clicked.
- */
+
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
@@ -68,6 +58,17 @@ class CategoryAdapter(
         super.submitList(list)
     }
 
+
+    /**
+     * Overloaded submitList method that updates the selected category
+     * and directly updates the list using the super class method.
+     *
+     *
+     */
+    fun submitList(list: List<Category>?, selectedCategory: String) {
+        updateSelectedItemPosition(list, selectedCategory)
+        super.submitList(list)
+    }
     private fun updateSelectedItemPosition(list: List<Category>?, selectedCategory: String) {
         list?.let {
             for (i in list.indices) {
@@ -79,17 +80,7 @@ class CategoryAdapter(
         }
     }
 
-    fun submitList(list: MutableList<Category>?, selectedCategory: String) {
-        updateSelectedItemPosition(list, selectedCategory)
-        super.submitList(list)
-    }
 
-    /**
-     * Gives access to the items of the adapter to classes outside the adapter.
-     */
-    fun getCategoryAtPosition(position: Int): Category {
-        return getItem(position)
-    }
 }
 class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
