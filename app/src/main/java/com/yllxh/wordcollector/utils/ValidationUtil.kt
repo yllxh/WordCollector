@@ -6,7 +6,7 @@ import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 
 
 fun isValidNewWord(newWord: Word, oldWord: Word): Boolean {
-    return if (isWordEmpty(newWord))
+    return if (isContentEmpty(newWord))
         false
     else {
         areContentDifferent(
@@ -17,10 +17,10 @@ fun isValidNewWord(newWord: Word, oldWord: Word): Boolean {
 }
 
 fun isValidWord(newWord: Word): Boolean {
-    return !isWordEmpty(newWord)
+    return !isContentEmpty(newWord)
 }
 
-private fun isWordEmpty(newWord: Word) =
+private fun isContentEmpty(newWord: Word) =
     newWord.word.isEmpty() && newWord.definition.isEmpty()
 
 private fun areContentDifferent(newWord: Word, oldWord: Word): Boolean {
