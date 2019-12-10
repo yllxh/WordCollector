@@ -22,8 +22,7 @@ import com.yllxh.wordcollector.viewmodels.DeleteCategoryViewModel
 
 class DeleteCategoryDialog : DialogFragment(){
 
-    private var clicks = 0
-    private var wasCategoryDeleted = false
+    private var clicksCount = 0
     lateinit var category: Category
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(DeleteCategoryViewModel::class.java)
@@ -31,14 +30,8 @@ class DeleteCategoryDialog : DialogFragment(){
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState != null){
-            clicks = savedInstanceState.getInt(CLICKS)
+            clicksCount = savedInstanceState.getInt(CLICKS_KEY)
         }
-
-        category = arguments?.getParcelable(KEY) ?: Category("")
-
-        val currentCategory = getLastSelectedCategory(requireContext())
-        val isCurrentCategory = currentCategory == category.name
-
 
         val binding: DialogDeletingCategoryBinding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
@@ -47,19 +40,26 @@ class DeleteCategoryDialog : DialogFragment(){
             false
         )
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(binding.root)
-            .create()
+        category = arguments?.getParcelable(KEY) ?: Category("")
+
+        val currentCategory = getLastSelectedCategory(requireContext())
+        val isCurrentCategory = currentCategory == category.name
 
         val isDefaultCategory = category.name == viewModel.defaultCategory
         if (isDefaultCategory) {
             binding.alertMessageTextView.text = getString(R.string.delete_all_items)
         }
 
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(binding.root)
+            .create()
+
+
+
         // Set onClickListeners to dialog buttons.
         binding.apply {
             cancelButton.setOnClickListener {
-                wasCategoryDeleted = false
                 dialog.cancel()
             }
 
@@ -67,28 +67,25 @@ class DeleteCategoryDialog : DialogFragment(){
                 when {
                     !isDefaultCategory -> {
                         viewModel.deleteAllOfCategory(category)
-                        wasCategoryDeleted = true
                         dismissDialog(isCurrentCategory, dialog)
                     }
                     isDefaultCategory -> {
-                        clicks++
+                        clicksCount++
 
-                        if (clicks == 3) {
-                            wasCategoryDeleted = true
+                        if (clicksCount == 3) {
                             viewModel.deleteAllWords()
                             dismissDialog(isCurrentCategory, dialog)
                         }
-                        Toast.makeText(activity, "$clicks", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "$clicksCount", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
             noButton.setOnClickListener {
-                wasCategoryDeleted = if (!viewModel.deleteCategory(category)) {
-                    Toast.makeText(activity, getString(R.string.look_again), Toast.LENGTH_SHORT).show()
-                    false
-                } else {
-                    true
+                val wasCategoryDeleted = viewModel.deleteCategory(category)
+                if (!wasCategoryDeleted) {
+                    Toast.makeText(activity, getString(R.string.look_again), Toast.LENGTH_SHORT)
+                        .show()
                 }
                 dialog.cancel()
             }
@@ -116,11 +113,11 @@ class DeleteCategoryDialog : DialogFragment(){
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(CLICKS, clicks)
+        outState.putInt(CLICKS_KEY, clicksCount)
     }
 
     companion object {
-        private const val CLICKS = "CLICKS"
+        private const val CLICKS_KEY = "CLICKS"
         private const val KEY = "DeleteCategoryDialog"
         const val TAG: String = KEY
         const val DELETE_CATEGORY_REQUEST = 101
