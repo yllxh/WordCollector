@@ -11,10 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.CategoryListItemBinding
+import com.yllxh.wordcollector.utils.getLastSelectedCategory
 
 /**
  * CategoryAdapter class for presenting data in a RecycleView.
@@ -63,7 +63,7 @@ class CategoryAdapter(
      * about the last item which was selected, so that it is highlighted properly by the CategoryViewHolder.
      */
     override fun submitList(list: List<Category>?) {
-        val selectedCategory = AppPreferences.getLastSelectedCategory(context)
+        val selectedCategory = getLastSelectedCategory(context)
         updateSelectedItemPosition(list, selectedCategory)
         super.submitList(list)
     }

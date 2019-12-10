@@ -4,6 +4,8 @@ import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 import com.yllxh.wordcollector.utils.isValidCategory
+import com.yllxh.wordcollector.utils.isValidNewCategory
+import com.yllxh.wordcollector.utils.isValidNewWord
 import com.yllxh.wordcollector.utils.isValidWord
 import org.junit.Assert.*
 import org.junit.Before
@@ -48,17 +50,17 @@ class ValidationUtilTest{
 
     @Test
     fun notValidWord_WhenComparingWithEmptyWord(){
-        assertFalse(isValidWord(Word(), nonEmptyWord))
+        assertFalse(isValidNewWord(Word(), nonEmptyWord))
     }
 
     @Test
     fun validWord_WhenComparingDifferentWords(){
-        assertTrue(isValidWord(wordWithEmptyTerm, wordWithEmptyDefinition))
+        assertTrue(isValidNewWord(wordWithEmptyTerm, wordWithEmptyDefinition))
     }
 
     @Test
     fun notValidWord_WhenComparingWordWithSameContent(){
-        assertFalse(isValidWord(wordWithEmptyTerm, wordWithEmptyTerm))
+        assertFalse(isValidNewWord(wordWithEmptyTerm, wordWithEmptyTerm))
     }
 
     @Test
@@ -78,7 +80,7 @@ class ValidationUtilTest{
 
     @Test
     fun notValidCategory_WhenOneHasNameEqualDefaultCategoryName(){
-        assertFalse(isValidCategory(defaultCategory, defaultCategory))
+        assertFalse(isValidNewCategory(defaultCategory, defaultCategory))
     }
 
 }

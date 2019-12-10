@@ -4,10 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Word
+import com.yllxh.wordcollector.utils.getLastSelectedCategory
 import com.yllxh.wordcollector.utils.isValidWord
+import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import kotlinx.coroutines.*
 
 
@@ -28,7 +29,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
      */
     private val _currentCategory by lazy {
         MutableLiveData<String>().apply {
-            value = AppPreferences.getLastSelectedCategory(application)
+            value = getLastSelectedCategory(application)
         }
     }
     val currentCategory: LiveData<String>
@@ -83,7 +84,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     fun setCurrentCategory(name: String?) {
         val selectedCategory = name ?: defaultCategory
         _currentCategory.value = selectedCategory
-        AppPreferences.setLastSelectedCategory(getApplication(), selectedCategory)
+        setLastSelectedCategory(getApplication(), selectedCategory)
     }
 
     override fun onCleared() {

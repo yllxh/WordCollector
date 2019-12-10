@@ -2,10 +2,9 @@ package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Category
-import com.yllxh.wordcollector.utils.isValidCategory
+import com.yllxh.wordcollector.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,7 +22,7 @@ class AddEditCategoryViewModel(application: Application) : AndroidViewModel(appl
      * Used to keep track of the current category
      */
     private val currentCategory: String by lazy {
-            AppPreferences.getLastSelectedCategory(application)
+            getLastSelectedCategory(application)
     }
 
     /**
@@ -44,12 +43,12 @@ class AddEditCategoryViewModel(application: Application) : AndroidViewModel(appl
      * it returns true if the category is updated and false otherwise.
      */
     fun updateCategory(newCategory: Category, oldCategory: Category): Boolean {
-        return if (isValidCategory(newCategory, oldCategory)) {
+        return if (isValidNewCategory(newCategory, oldCategory)) {
             coroutineScope.launch {
                 repository.update(newCategory, oldCategory)
             }
             if (oldCategory.name == currentCategory) {
-                AppPreferences.setLastSelectedCategory(getApplication(), newCategory.name)
+                setLastSelectedCategory(getApplication(), newCategory.name)
             }
             true
         } else false

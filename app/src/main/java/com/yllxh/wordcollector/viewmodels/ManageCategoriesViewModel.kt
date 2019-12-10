@@ -2,8 +2,8 @@ package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.AppRepository
+import com.yllxh.wordcollector.utils.setLastSelectedCategory
 
 
 class ManageCategoriesViewModel(application: Application) :
@@ -14,6 +14,6 @@ class ManageCategoriesViewModel(application: Application) :
     var categories = repository.categories
 
     fun setCurrentCategory(name: String) {
-        AppPreferences.setLastSelectedCategory(getApplication(), name)
+        setLastSelectedCategory(getApplication(), name)
     }
 }

@@ -15,7 +15,6 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
@@ -23,6 +22,9 @@ import com.yllxh.wordcollector.adapters.WordAdapter
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 import com.yllxh.wordcollector.dialogs.EditWordDialog
+import com.yllxh.wordcollector.utils.getLastSelectedCategory
+import com.yllxh.wordcollector.utils.getNightMode
+import com.yllxh.wordcollector.utils.setDayNightMode
 
 
 class WordDisplayFragment : Fragment() {
@@ -237,12 +239,9 @@ class WordDisplayFragment : Fragment() {
 
     private fun toggleNightMode() {
         val activity = requireActivity()
-        val nightMode: Boolean
+        val nightMode: Boolean = getNightMode(activity)
 
-        AppPreferences.apply {
-            nightMode = getNightMode(activity)
-            setDayNightMode(activity, !nightMode)
-        }
+        setDayNightMode(activity, !nightMode)
 
         AppCompatDelegate.setDefaultNightMode(
             when {
@@ -282,7 +281,7 @@ class WordDisplayFragment : Fragment() {
     }
 
     private fun initializeSelectedCategory() {
-        val selectedCategory = AppPreferences.getLastSelectedCategory(requireContext())
+        val selectedCategory = getLastSelectedCategory(requireContext())
         viewModel.setCurrentCategory(selectedCategory)
     }
 

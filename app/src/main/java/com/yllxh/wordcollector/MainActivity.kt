@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.yllxh.wordcollector.databinding.ActivityMainBinding
-import com.yllxh.wordcollector.utils.AppPreferences
+import com.yllxh.wordcollector.utils.getNightMode
 
 class MainActivity : AppCompatActivity(){
 
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun initializeNightMode() {
-        val isNightMode = AppPreferences.getNightMode(this)
+        val isNightMode = getNightMode(this)
         AppCompatDelegate.setDefaultNightMode(
             when {
                 isNightMode -> AppCompatDelegate.MODE_NIGHT_YES

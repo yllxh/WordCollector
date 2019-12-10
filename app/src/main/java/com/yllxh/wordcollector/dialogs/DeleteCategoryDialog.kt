@@ -12,10 +12,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.yllxh.wordcollector.utils.AppPreferences
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
+import com.yllxh.wordcollector.utils.getLastSelectedCategory
+import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import com.yllxh.wordcollector.viewmodels.DeleteCategoryViewModel
 
 
@@ -35,7 +36,7 @@ class DeleteCategoryDialog : DialogFragment(){
 
         category = arguments?.getParcelable(KEY) ?: Category("")
 
-        val currentCategory = AppPreferences.getLastSelectedCategory(requireContext())
+        val currentCategory = getLastSelectedCategory(requireContext())
         val isCurrentCategory = currentCategory == category.name
 
 
@@ -105,7 +106,7 @@ class DeleteCategoryDialog : DialogFragment(){
 
     private fun dismissDialog(isCurrentCategory: Boolean, dialog: AlertDialog) {
         if (isCurrentCategory) {
-            AppPreferences.setLastSelectedCategory(
+            setLastSelectedCategory(
                 requireContext(),
                 viewModel.defaultCategory
             )

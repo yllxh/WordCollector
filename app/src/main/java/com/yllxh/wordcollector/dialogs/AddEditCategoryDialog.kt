@@ -33,7 +33,6 @@ class AddEditCategoryDialog : DialogFragment(){
             .create()
 
         val oldCategoryName = category.name
-        // Set onClickListeners to dialog buttons.
 
 
         binding.newCategoryEt.setText(oldCategoryName)
