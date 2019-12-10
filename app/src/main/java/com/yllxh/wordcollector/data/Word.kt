@@ -18,8 +18,8 @@ data class Word(
 
     @Ignore
     constructor(
-        term: String = "",
+        word: String = "",
         definition: String = "",
         category: String = DEFAULT_CATEGORY_NAME
-    ):this(term, definition, category, 0)
+    ):this(word, definition, category, 0)
 }
