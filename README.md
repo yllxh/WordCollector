@@ -1,6 +1,6 @@
 # Word Collector
 
-Word Collector is a simple android, that allows you to make your own dictionary by collection word and their definitions.
+Word Collector is a simple android, that allows you to make your own dictionary by collection words and their definitions.
 
 Word Collector is the first android app that i have build, with it i wanted to put into practice some of the things that i have learned 
 about building android app.
