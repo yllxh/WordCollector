@@ -3,7 +3,6 @@ package com.yllxh.wordcollector.data
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "category_table")

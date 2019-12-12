@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.yllxh.wordcollector.R
-import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
+import com.yllxh.wordcollector.data.DEFAULT_CATEGORY_NAME
 
 
 private const val DAY_NIGHT_KEY = "dayNightKey"

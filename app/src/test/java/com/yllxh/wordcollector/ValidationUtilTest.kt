@@ -1,8 +1,8 @@
 package com.yllxh.wordcollector
 
 import com.yllxh.wordcollector.data.Category
+import com.yllxh.wordcollector.data.DEFAULT_CATEGORY_NAME
 import com.yllxh.wordcollector.data.Word
-import com.yllxh.wordcollector.utils.DataUtils.DEFAULT_CATEGORY_NAME
 import com.yllxh.wordcollector.utils.isValidCategory
 import com.yllxh.wordcollector.utils.isValidNewCategory
 import com.yllxh.wordcollector.utils.isValidNewWord
