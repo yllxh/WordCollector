@@ -39,6 +39,26 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     var words = repository.words
     var categories = repository.categories
 
+    fun setCurrentCategory(name: String?) {
+        val selectedCategory = name ?: defaultCategory
+        _selectedCategory.value = selectedCategory
+        setLastSelectedCategory(getApplication(), selectedCategory)
+    }
+
+    fun filterWordsToMatchQuery(queryString: String): List<Word>? {
+        return words.value?.filter {
+            it.word.contains(queryString, true)
+                    || it.definition.contains(queryString, true)
+        }
+    }
+
+    fun filterWordsToCategory(s: String? = _selectedCategory.value): List<Word>? {
+        return when (s ?: defaultCategory) {
+            defaultCategory -> words.value
+            else -> words.value?.filter { it.category == _selectedCategory.value }
+        }
+    }
+
     fun insertWord(word: Word, isNewWord: Boolean = true): Boolean {
         if (isValidWord(word)) {
             coroutineScope.launch {
@@ -54,28 +74,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         coroutineScope.launch {
             repository.delete(word)
         }
-    }
-
-
-    fun filterWordsToMatchQuery(queryString: String): List<Word>? {
-        return words.value?.filter {
-            it.word.contains(queryString, true)
-                    || it.definition.contains(queryString, true)
-        }
-    }
-
-
-    fun filterWordsToCategory(s: String? = _selectedCategory.value): List<Word>? {
-        return when (s ?: defaultCategory) {
-            defaultCategory -> words.value
-            else -> words.value?.filter { it.category == _selectedCategory.value }
-        }
-    }
-
-    fun setCurrentCategory(name: String?) {
-        val selectedCategory = name ?: defaultCategory
-        _selectedCategory.value = selectedCategory
-        setLastSelectedCategory(getApplication(), selectedCategory)
     }
 
     override fun onCleared() {
