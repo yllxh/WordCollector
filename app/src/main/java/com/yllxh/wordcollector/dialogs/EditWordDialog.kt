@@ -16,54 +16,61 @@ import com.yllxh.wordcollector.databinding.DialogEditWordBinding
 import com.yllxh.wordcollector.viewmodels.EditWordViewModel
 
 class EditWordDialog : DialogFragment(){
+    private lateinit var binding: DialogEditWordBinding
+    private lateinit var oldWord: Word
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(EditWordViewModel::class.java)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        oldWord = arguments!!.getParcelable(KEY) ?: Word()
 
-        val binding: DialogEditWordBinding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
             R.layout.dialog_edit_word,
             null,
             false
         )
+        binding.data = oldWord
 
-        val word: Word = arguments!!.getParcelable(KEY) ?: Word()
-
-        binding.data = word
-        val adapter = CategoryAdapter(requireContext(), false, inDialog = true) {
-            viewModel.setCurrentCategory(it.name)
+        val categoryAdapter = CategoryAdapter(requireContext(), inDialog = true) {
+            viewModel.setSelectedCategory(it.name)
         }
-        binding.dialogCategoryRecycleview.adapter = adapter
+        binding.dialogCategoryRecycleview.adapter = categoryAdapter
+
         viewModel.categories.observe(this, Observer {
-            adapter.submitList(it, word.category)
-            viewModel.setCurrentCategory(word.category)
+            categoryAdapter.submitList(it, oldWord.category)
+            viewModel.setSelectedCategory(oldWord.category)
         })
         val dialog = AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
+        setOnClickListeners(dialog)
+
+        return dialog
+    }
+
+    private fun setOnClickListeners(dialog: AlertDialog) {
         binding.saveButton.setOnClickListener {
             // If the word is not updated display a toast to inform the user
-            val wasWordValid = viewModel.update(
-                Word(
-                    binding.editedWord.text.toString(),
-                    binding.editedDefinition.text.toString(),
-                    viewModel.currentCategory.value ?: word.category
-                ),
-                word
-            )
+            val newWord = extractNewWord()
+            val wasWordValid = viewModel.update(newWord, oldWord)
 
             if (!wasWordValid) {
-                toast(getString(R.string.word_is_not_valid))
+                toast(getString(R.string.word_was_not_edited))
             }
             dialog.cancel()
         }
         binding.cancelButton.setOnClickListener {
             dialog.cancel()
         }
+    }
 
-        return dialog
+    private fun extractNewWord(): Word {
+        val selectedCategory = viewModel.selectedCategory.value ?: oldWord.category
+        val definitionText = binding.editedDefinition.text.toString()
+        val wordText = binding.editedWord.text.toString()
+        return Word(wordText, definitionText, selectedCategory)
     }
 
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {

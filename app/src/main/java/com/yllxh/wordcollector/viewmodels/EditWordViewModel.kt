@@ -25,28 +25,21 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
     private val defaultCategory = repository.defaultCategory
 
 
-    /**
-     * Used to keep track of the current category
-     */
-    private val _currentCategory by lazy {
+    private val _selectedCategory by lazy {
         MutableLiveData<String>().apply {
             value = getLastSelectedCategory(application)
         }
     }
-    val currentCategory: LiveData<String>
-        get() = _currentCategory
+    val selectedCategory: LiveData<String>
+        get() = _selectedCategory
 
     var categories = repository.categories
 
-    fun setCurrentCategory(name: String?) {
+    fun setSelectedCategory(name: String?) {
         val selectedCategory = name ?: defaultCategory
-        _currentCategory.value = selectedCategory
+        _selectedCategory.value = selectedCategory
     }
 
-    /**
-     * Updates a word in the database,
-     * it returns true if the word is updated and false otherwise.
-     */
     fun update(newWord: Word, oldWord: Word): Boolean {
         return if (isValidNewWord(newWord, oldWord)) {
             newWord.id = oldWord.id

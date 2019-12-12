@@ -30,5 +30,6 @@
     <string name="category_saved">Category Saved</string>
     <string name="fake_word_count">75</string>
     <string name="word_field_is_empty">Word Field Is Empty.</string>
+    <string name="word_was_not_edited">Word is not edited.</string>
 
 </resources>
