@@ -1,14 +1,12 @@
 package com.yllxh.wordcollector.utils
 
 import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.DEFAULT_CATEGORY_NAME
 
 
-private const val TAG: String = "AppPreference"
 private const val DAY_NIGHT_KEY = "dayNightKey"
 private const val LAST_SELECTED_CATEGORY = "lastSelectedCategory"
 
@@ -67,7 +65,7 @@ fun getLastSelectedCategory(context: Context): String {
 
     PreferenceManager.getDefaultSharedPreferences(context).apply {
 
-        val name = if (contains(LAST_SELECTED_CATEGORY)) {
+        return if (contains(LAST_SELECTED_CATEGORY)) {
             getString(LAST_SELECTED_CATEGORY, DEFAULT_CATEGORY_NAME) ?: DEFAULT_CATEGORY_NAME
         } else {
             edit().apply {
@@ -76,13 +74,10 @@ fun getLastSelectedCategory(context: Context): String {
             }
             DEFAULT_CATEGORY_NAME
         }
-        Log.d(TAG, "returning selected category: $name")
-        return name
     }
 }
 
 fun setLastSelectedCategory(context: Context, name: String) {
-    Log.d(TAG, "saving selected category: $name")
     PreferenceManager.getDefaultSharedPreferences(context).apply {
         edit().apply {
             putString(LAST_SELECTED_CATEGORY, name)

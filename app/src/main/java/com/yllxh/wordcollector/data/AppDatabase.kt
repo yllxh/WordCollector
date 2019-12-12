@@ -11,7 +11,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 const val DATABASE_NAME = "app_database"
 const val DEFAULT_CATEGORY_NAME = "All"
 
-
 @Database(entities = [Word::class, Category::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 

@@ -46,9 +46,7 @@ class WordAdapter(private var onEditClickListener: (Word) -> Unit) :
     fun getWordAtPosition(position: Int): Word {
         return getItem(position)
     }
-
 }
-
 
 private class WordDiffCallback : DiffUtil.ItemCallback<Word>() {
 

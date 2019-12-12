@@ -1,7 +1,6 @@
 package com.yllxh.wordcollector.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -15,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.savedstate.SavedStateRegistry
 import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
@@ -29,7 +27,6 @@ import com.yllxh.wordcollector.utils.getNightMode
 import com.yllxh.wordcollector.utils.setDayNightMode
 
 
-    private const val TAG = "AAAAAWORDDISPLAY"
 class WordDisplayFragment : Fragment() {
 
 

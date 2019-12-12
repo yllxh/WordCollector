@@ -19,7 +19,6 @@ import com.yllxh.wordcollector.utils.getLastSelectedCategory
 
 
 
-const val TAG = "AAAAACategory Adap"
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
@@ -69,8 +68,6 @@ class CategoryAdapter(
     }
 
     fun notifySelectedCategoryChanged(categoryName: String?) {
-        Log.d(TAG,categoryName ?: "NONE")
-
         notifyItemChanged(selectedItemPosition)
         updateSelectedItemPosition(categoryName)
         notifyItemChanged(selectedItemPosition)

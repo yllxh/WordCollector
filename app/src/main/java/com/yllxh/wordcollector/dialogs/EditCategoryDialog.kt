@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
-import com.yllxh.wordcollector.utils.getLastSelectedCategory
 import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import com.yllxh.wordcollector.viewmodels.EditCategoryViewModel
 
