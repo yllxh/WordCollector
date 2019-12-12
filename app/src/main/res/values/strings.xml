@@ -29,5 +29,6 @@
     <string name="no">No</string>
     <string name="category_saved">Category Saved</string>
     <string name="fake_word_count">75</string>
+    <string name="word_field_is_empty">Word Field Is Empty.</string>
 
 </resources>

@@ -81,11 +81,7 @@ class WordDisplayFragment : Fragment() {
     private fun setOnClickListeners() {
         binding.apply {
             saveTextview.setOnClickListener {
-                val word = Word(
-                    newWordEditText.text.toString(),
-                    newDefinitionEditText.text.toString(),
-                    viewModel.currentCategory.value ?: viewModel.defaultCategory
-                )
+                val word = extrackedWordFromHeader()
 
                 newWordEditText.setText("")
                 newDefinitionEditText.setText("")
@@ -94,31 +90,33 @@ class WordDisplayFragment : Fragment() {
                     toast(getString(R.string.word_is_not_valid))
                 }
             }
-        }
-        binding.apply {
             lookUpTextview.setOnClickListener {
                 val str = newWordEditText.text.toString().trim()
                 if (str.isEmpty()) {
-                    toast(getString(R.string.word_is_not_valid), Toast.LENGTH_LONG)
+                    toast(getString(R.string.word_field_is_empty), Toast.LENGTH_LONG)
                 } else {
                     lookUpTheNewWord(str)
                 }
             }
-        }
 
-        binding.apply {
 
             hideHeaderButton.setOnClickListener {
                 enterNewWordCardview.visibility = View.GONE
                 floatingActionButton.show()
             }
-        }
-        binding.apply {
             floatingActionButton.setOnClickListener {
                 floatingActionButton.hide()
                 enterNewWordCardview.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun FragmentWordDisplayBinding.extrackedWordFromHeader(): Word {
+        val wordText = newWordEditText.text.toString()
+
+        val definitionText = newDefinitionEditText.text.toString()
+        val selectedCategory = viewModel.currentCategory.value ?: viewModel.defaultCategory
+        return Word(wordText, definitionText, selectedCategory)
     }
 
     private fun initAdapters() {
