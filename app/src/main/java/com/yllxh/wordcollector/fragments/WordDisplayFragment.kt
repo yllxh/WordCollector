@@ -78,9 +78,6 @@ class WordDisplayFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
-    /**
-     * Helper function together the initialization of OnClickListeners of Views.
-     */
     private fun setOnClickListeners() {
         binding.apply {
             saveTextview.setOnClickListener {
@@ -124,10 +121,6 @@ class WordDisplayFragment : Fragment() {
         }
     }
 
-    /**
-     * Initializes the recycleViews with adapters.
-     * Must be called before startObservingData()
-     */
     private fun initAdapters() {
         categoryAdapter = CategoryAdapter(requireContext()) {
             viewModel.setCurrentCategory(it.name)
@@ -143,9 +136,6 @@ class WordDisplayFragment : Fragment() {
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
     }
 
-    /**
-     * Helper function used to group together subscriptions to observe data changes.
-     */
     private fun startObservingData() {
         viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
             categoryAdapter.submitList(list)
@@ -179,9 +169,6 @@ class WordDisplayFragment : Fragment() {
         })
     }
 
-    /**
-     * Sets the correct visibility to views on the screen.
-     */
     private fun onSearchStateChange(isSearching: Boolean) {
         when {
             isSearching -> {
@@ -252,9 +239,6 @@ class WordDisplayFragment : Fragment() {
         activity.recreate()
     }
 
-    /**
-     * Enable the deletion of words, by swiping the item left or right.
-     */
     private val itemTouchHelper = object : ItemTouchHelper
     .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -285,10 +269,6 @@ class WordDisplayFragment : Fragment() {
         viewModel.setCurrentCategory(selectedCategory)
     }
 
-    /**
-     * Navigates to the LookUpFragment and passes to it the word,
-     * that needs to be looked up.
-     */
     private fun lookUpTheNewWord(wordStr: String) {
         val url = getString(R.string.google_translate_site) + wordStr
         findNavController().navigate(
