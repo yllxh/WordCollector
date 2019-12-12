@@ -29,7 +29,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
 
     private val _selectedCategory by lazy {
         MutableLiveData<String>().apply {
-            Log.d(TAG, "_currentCategory Initialed.")
+            Log.d(TAG, "_currentCategory Initialized.")
             value = getLastSelectedCategory(application)
         }
     }
