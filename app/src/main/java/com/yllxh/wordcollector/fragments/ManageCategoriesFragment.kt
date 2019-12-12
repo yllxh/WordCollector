@@ -29,6 +29,7 @@ class ManageCategoriesFragment : Fragment(){
 
         categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
             viewModel.setCurrentCategory(category.name)
+            categoryAdapter.notifySelectedCategoryChanged(category.name)
             EditCategoryDialog.newInstance(category)
                 .show(requireFragmentManager(), EditCategoryDialog.TAG)
         }
