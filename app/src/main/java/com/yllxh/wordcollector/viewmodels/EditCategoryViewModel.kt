@@ -10,20 +10,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class AddEditCategoryViewModel(application: Application) : AndroidViewModel(application) {
+class EditCategoryViewModel(
+    application: Application
+) : AndroidViewModel(application) {
     // Job needed by the coroutine scope.
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
 
     private val repository = AppRepository(application)
-
-    /**
-     * Used to keep track of the current category
-     */
     private val currentCategory: String by lazy {
-            getLastSelectedCategory(application)
+        getLastSelectedCategory(application)
     }
+    lateinit var passedCategory: Category
 
     /**
      * Inserts a category in the database,

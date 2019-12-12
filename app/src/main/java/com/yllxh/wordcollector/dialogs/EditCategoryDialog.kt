@@ -11,32 +11,35 @@ import androidx.lifecycle.ViewModelProviders
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
-import com.yllxh.wordcollector.viewmodels.AddEditCategoryViewModel
+import com.yllxh.wordcollector.viewmodels.EditCategoryViewModel
 
 
 class EditCategoryDialog : DialogFragment(){
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(AddEditCategoryViewModel::class.java)
-    }
+    private lateinit var binding: DialogAddEditCategoryBinding
+    private lateinit var viewModel :EditCategoryViewModel
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val category: Category = arguments?.getParcelable(KEY) ?: Category("")
-        val binding: DialogAddEditCategoryBinding = DataBindingUtil.inflate(
+        viewModel = ViewModelProviders.of(this).get(EditCategoryViewModel::class.java)
+        if (savedInstanceState == null) {
+            viewModel.passedCategory = arguments?.getParcelable(KEY) ?: Category("")
+        }
+
+        binding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
             R.layout.dialog_add_edit_category,
             null,
             false
         )
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(binding.root)
-            .create()
+        binding.newCategoryEt.setText(
+            viewModel.passedCategory.name)
+        val dialog = createDialog()
+        setOnClickListeners(dialog)
 
-        val oldCategoryName = category.name
+        return dialog
+    }
 
-
-        binding.newCategoryEt.setText(oldCategoryName)
-
+    private fun setOnClickListeners(dialog: AlertDialog) {
         binding.cancelButton.setOnClickListener {
             dialog.cancel()
         }
@@ -45,15 +48,12 @@ class EditCategoryDialog : DialogFragment(){
             val newCategoryName = binding.newCategoryEt.text.toString()
 
             val successful =
-            if (category.name.isEmpty()) {
-                viewModel.insertCategory(Category(newCategoryName))
-            } else {
-                viewModel.updateCategory(
-                    Category(newCategoryName),
-                    Category(oldCategoryName)
-                )
-            }
-            // If the category is not updated/inserted display a toast to inform the user.
+                if (viewModel.passedCategory.name.isEmpty()) {
+                    viewModel.insertCategory(Category(newCategoryName))
+                } else {
+                    viewModel.updateCategory(Category(newCategoryName), viewModel.passedCategory)
+                }
+
             if (!successful) {
                 toast(getString(R.string.category_name_alert))
             } else {
@@ -61,7 +61,12 @@ class EditCategoryDialog : DialogFragment(){
             }
             dialog.cancel()
         }
-        return dialog
+    }
+
+    private fun createDialog(): AlertDialog {
+        return AlertDialog.Builder(requireContext())
+            .setView(binding.root)
+            .create()
     }
 
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
