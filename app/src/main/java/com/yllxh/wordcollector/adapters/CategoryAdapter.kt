@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.adapters
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import com.yllxh.wordcollector.databinding.CategoryListItemBinding
 import com.yllxh.wordcollector.utils.getLastSelectedCategory
 
 
+
+const val TAG = "Category Adapter"
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
@@ -58,17 +61,6 @@ class CategoryAdapter(
         super.submitList(list)
     }
 
-
-    /**
-     * Overloaded submitList method that updates the selected category
-     * and directly updates the list using the super class method.
-     *
-     *
-     */
-    fun submitList(list: List<Category>?, selectedCategory: String) {
-        updateSelectedItemPosition(list, selectedCategory)
-        super.submitList(list)
-    }
     private fun updateSelectedItemPosition(list: List<Category>?, selectedCategory: String) {
         list?.let {
             for (i in list.indices) {
@@ -76,6 +68,23 @@ class CategoryAdapter(
                     selectedItemPosition = i
                     break
                 }
+            }
+        }
+    }
+
+    fun notifySelectedCategoryChanged(categoryName: String?) {
+        val previousSelection = selectedItemPosition.let { if (it == -1) 0 else it }
+        Log.d(TAG,categoryName ?: "NONE")
+        updateSelectedItemPosition(categoryName)
+        notifyItemChanged(previousSelection)
+        notifyItemChanged(selectedItemPosition)
+    }
+
+    private fun updateSelectedItemPosition(categoryName: String?, list: List<Category> = currentList) {
+        for (i in list.indices) {
+            if (list[i].name == categoryName) {
+                selectedItemPosition = i
+                break
             }
         }
     }

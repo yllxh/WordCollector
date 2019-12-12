@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Adapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -17,13 +18,14 @@ import com.yllxh.wordcollector.viewmodels.EditWordViewModel
 
 class EditWordDialog : DialogFragment(){
     private lateinit var binding: DialogEditWordBinding
-    private lateinit var oldWord: Word
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(EditWordViewModel::class.java)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        oldWord = arguments!!.getParcelable(KEY) ?: Word()
+        if (savedInstanceState == null) {
+            viewModel.oldWord = arguments!!.getParcelable(KEY) ?: Word()
+        }
 
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
@@ -31,7 +33,7 @@ class EditWordDialog : DialogFragment(){
             null,
             false
         )
-        binding.data = oldWord
+        binding.data = viewModel.oldWord
 
         val categoryAdapter = CategoryAdapter(requireContext(), inDialog = true) {
             viewModel.setSelectedCategory(it.name)
@@ -39,22 +41,31 @@ class EditWordDialog : DialogFragment(){
         binding.dialogCategoryRecycleview.adapter = categoryAdapter
 
         viewModel.categories.observe(this, Observer {
-            categoryAdapter.submitList(it, oldWord.category)
-            viewModel.setSelectedCategory(oldWord.category)
+            categoryAdapter.submitList(it)
+            viewModel.setSelectedCategory()
         })
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(binding.root)
-            .create()
+
+        viewModel.selectedCategory.observe(this, Observer {
+            categoryAdapter.notifySelectedCategoryChanged(it)
+        })
+
+        val dialog = createDialog()
         setOnClickListeners(dialog)
 
         return dialog
+    }
+
+    private fun createDialog(): AlertDialog {
+        return AlertDialog.Builder(requireContext())
+            .setView(binding.root)
+            .create()
     }
 
     private fun setOnClickListeners(dialog: AlertDialog) {
         binding.saveButton.setOnClickListener {
             // If the word is not updated display a toast to inform the user
             val newWord = extractNewWord()
-            val wasWordValid = viewModel.update(newWord, oldWord)
+            val wasWordValid = viewModel.update(newWord, viewModel.oldWord)
 
             if (!wasWordValid) {
                 toast(getString(R.string.word_was_not_edited))
@@ -67,7 +78,7 @@ class EditWordDialog : DialogFragment(){
     }
 
     private fun extractNewWord(): Word {
-        val selectedCategory = viewModel.selectedCategory.value ?: oldWord.category
+        val selectedCategory = viewModel.selectedCategory.value ?: viewModel.oldWord.category
         val definitionText = binding.editedDefinition.text.toString()
         val wordText = binding.editedWord.text.toString()
         return Word(wordText, definitionText, selectedCategory)

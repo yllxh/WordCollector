@@ -22,8 +22,8 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val repository = AppRepository(application)
-    private val defaultCategory = repository.defaultCategory
 
+    lateinit var oldWord: Word
 
     private val _selectedCategory by lazy {
         MutableLiveData<String>().apply {
@@ -35,8 +35,8 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
 
     var categories = repository.categories
 
-    fun setSelectedCategory(name: String?) {
-        val selectedCategory = name ?: defaultCategory
+    fun setSelectedCategory(name: String? = oldWord.category) {
+        val selectedCategory = name ?: oldWord.category
         _selectedCategory.value = selectedCategory
     }
 
