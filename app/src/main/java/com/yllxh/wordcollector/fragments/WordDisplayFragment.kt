@@ -29,15 +29,13 @@ import com.yllxh.wordcollector.utils.setDayNightMode
 
 class WordDisplayFragment : Fragment() {
 
-    private val delayTime by lazy {
-        resources.getInteger(R.integer.short_delay).toLong()
-    }
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
-    }
+
     private lateinit var binding: FragmentWordDisplayBinding
     private lateinit var wordAdapter: WordAdapter
     private lateinit var categoryAdapter: CategoryAdapter
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -207,6 +205,8 @@ class WordDisplayFragment : Fragment() {
     }
 
     private fun setSearchBehavior(searchView: SearchView) {
+        val delayTime =
+            resources.getInteger(R.integer.short_delay).toLong()
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 wordAdapter.submitList(
