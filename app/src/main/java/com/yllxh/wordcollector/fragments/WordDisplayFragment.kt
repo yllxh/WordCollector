@@ -137,18 +137,13 @@ class WordDisplayFragment : Fragment() {
     private fun startObservingData() {
         viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
             categoryAdapter.submitList(list)
-
-            viewModel.apply {
-                if (list.none { it.name == selectedCategory.value }) {
-                    setCurrentCategory(defaultCategory)
-                }
-            }
         })
 
         viewModel.selectedCategory.observe(this, Observer {
             wordAdapter.submitList(
                 viewModel.filterWordsToCategory(it)
             )
+            categoryAdapter.notifySelectedCategoryChanged(it)
         })
 
         viewModel.words.observe(this, Observer {

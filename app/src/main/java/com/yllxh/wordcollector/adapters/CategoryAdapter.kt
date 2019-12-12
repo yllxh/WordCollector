@@ -39,11 +39,7 @@ class CategoryAdapter(
     }
 
 
-    override fun onNewItemSelected(newItemId: Int, category: Category) {
-        val oldItemId = selectedItemPosition
-        selectedItemPosition = newItemId
-        notifyItemChanged(newItemId)
-        notifyItemChanged(oldItemId)
+    override fun onNewItemSelected(category: Category) {
         onItemClickListener(category)
     }
 
@@ -57,11 +53,11 @@ class CategoryAdapter(
      */
     override fun submitList(list: List<Category>?) {
         val selectedCategory = getLastSelectedCategory(context)
-        updateSelectedItemPosition(list, selectedCategory)
+        updateSelectedItemPosition(selectedCategory, list)
         super.submitList(list)
     }
 
-    private fun updateSelectedItemPosition(list: List<Category>?, selectedCategory: String) {
+    private fun updateSelectedItemPosition(selectedCategory: String?, list: List<Category>? = currentList) {
         list?.let {
             for (i in list.indices) {
                 if (list[i].name == selectedCategory) {
@@ -79,17 +75,6 @@ class CategoryAdapter(
         notifyItemChanged(previousSelection)
         notifyItemChanged(selectedItemPosition)
     }
-
-    private fun updateSelectedItemPosition(categoryName: String?, list: List<Category> = currentList) {
-        for (i in list.indices) {
-            if (list[i].name == categoryName) {
-                selectedItemPosition = i
-                break
-            }
-        }
-    }
-
-
 }
 class CategoryViewHolder private constructor(private val binding: CategoryListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -97,10 +82,7 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
     interface SelectionListener {
         var selectedItemPosition: Int
 
-        fun onNewItemSelected(
-            newItemId: Int,
-            category: Category
-        )
+        fun onNewItemSelected(category: Category)
         fun getContext(): Context
     }
 
@@ -112,7 +94,7 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
         binding.apply {
             categoryTextView.text = category.name
             root.setOnClickListener {
-                listener.onNewItemSelected(adapterPosition, category)
+                listener.onNewItemSelected(category)
             }
 
             // Paints the current view with the correct colors
