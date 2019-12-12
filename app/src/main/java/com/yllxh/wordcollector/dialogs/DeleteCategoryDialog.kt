@@ -23,7 +23,6 @@ import com.yllxh.wordcollector.viewmodels.DeleteCategoryViewModel
 class DeleteCategoryDialog : DialogFragment() {
 
     private var clicksCount = 0
-    lateinit var passedCategory: Category
     private lateinit var binding: DialogDeletingCategoryBinding
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(DeleteCategoryViewModel::class.java)
@@ -32,6 +31,7 @@ class DeleteCategoryDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState != null) {
             clicksCount = savedInstanceState.getInt(CLICKS_KEY)
+            viewModel.passedCategory = arguments?.getParcelable(KEY) ?: Category("")
         }
 
         binding = DataBindingUtil.inflate(
@@ -41,12 +41,11 @@ class DeleteCategoryDialog : DialogFragment() {
             false
         )
 
-        passedCategory = arguments?.getParcelable(KEY) ?: Category("")
 
         val currentCategory = getLastSelectedCategory(requireContext())
-        val isCurrentCategory = currentCategory == passedCategory.name
+        val isCurrentCategory = currentCategory == viewModel.passedCategory.name
 
-        val isDefaultCategory = passedCategory.name == viewModel.defaultCategory
+        val isDefaultCategory = viewModel.passedCategory.name == viewModel.defaultCategory
         if (isDefaultCategory) {
             binding.alertMessageTextView.text = getString(R.string.delete_all_items)
         }
@@ -76,7 +75,7 @@ class DeleteCategoryDialog : DialogFragment() {
             yesButton.setOnClickListener {
                 when {
                     !isDefaultCategory -> {
-                        viewModel.deleteAllOfCategory(passedCategory)
+                        viewModel.deleteAllOfCategory(viewModel.passedCategory)
                         dismissDialog(isCurrentCategory, dialog)
                     }
                     isDefaultCategory -> {
@@ -92,7 +91,7 @@ class DeleteCategoryDialog : DialogFragment() {
             }
 
             noButton.setOnClickListener {
-                val wasCategoryDeleted = viewModel.deleteCategory(passedCategory)
+                val wasCategoryDeleted = viewModel.deleteCategory(viewModel.passedCategory)
                 if (!wasCategoryDeleted && isDefaultCategory) {
                     Toast.makeText(activity, getString(R.string.look_again), Toast.LENGTH_SHORT)
                         .show()

@@ -18,6 +18,7 @@ class DeleteCategoryViewModel(application: Application) : AndroidViewModel(appli
     private val repository = AppRepository(application)
 
     val defaultCategory = repository.defaultCategory
+    lateinit var passedCategory: Category
 
     /**
      * Deletes the specified category, including all the words of this category.
