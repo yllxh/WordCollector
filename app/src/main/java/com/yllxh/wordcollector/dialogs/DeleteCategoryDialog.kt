@@ -23,7 +23,8 @@ import com.yllxh.wordcollector.viewmodels.DeleteCategoryViewModel
 class DeleteCategoryDialog : DialogFragment(){
 
     private var clicksCount = 0
-    lateinit var category: Category
+    lateinit var passedCategory: Category
+    private lateinit var binding: DialogDeletingCategoryBinding
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(DeleteCategoryViewModel::class.java)
     }
@@ -33,31 +34,43 @@ class DeleteCategoryDialog : DialogFragment(){
             clicksCount = savedInstanceState.getInt(CLICKS_KEY)
         }
 
-        val binding: DialogDeletingCategoryBinding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
             R.layout.dialog_deleting_category,
             null,
             false
         )
 
-        category = arguments?.getParcelable(KEY) ?: Category("")
+        passedCategory = arguments?.getParcelable(KEY) ?: Category("")
 
         val currentCategory = getLastSelectedCategory(requireContext())
-        val isCurrentCategory = currentCategory == category.name
+        val isCurrentCategory = currentCategory == passedCategory.name
 
-        val isDefaultCategory = category.name == viewModel.defaultCategory
+        val isDefaultCategory = passedCategory.name == viewModel.defaultCategory
         if (isDefaultCategory) {
             binding.alertMessageTextView.text = getString(R.string.delete_all_items)
         }
 
 
-        val dialog = AlertDialog.Builder(requireContext())
+
+
+        val dialog = createDialog(binding)
+
+        setOnClickListeners(dialog, isDefaultCategory, isCurrentCategory)
+        return dialog
+    }
+
+    private fun createDialog(binding: DialogDeletingCategoryBinding): AlertDialog {
+        return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
+    }
 
-
-
-        // Set onClickListeners to dialog buttons.
+    private fun setOnClickListeners(
+        dialog: AlertDialog,
+        isDefaultCategory: Boolean,
+        isCurrentCategory: Boolean
+    ) {
         binding.apply {
             cancelButton.setOnClickListener {
                 dialog.cancel()
@@ -66,7 +79,7 @@ class DeleteCategoryDialog : DialogFragment(){
             yesButton.setOnClickListener {
                 when {
                     !isDefaultCategory -> {
-                        viewModel.deleteAllOfCategory(category)
+                        viewModel.deleteAllOfCategory(passedCategory)
                         dismissDialog(isCurrentCategory, dialog)
                     }
                     isDefaultCategory -> {
@@ -82,18 +95,17 @@ class DeleteCategoryDialog : DialogFragment(){
             }
 
             noButton.setOnClickListener {
-                val wasCategoryDeleted = viewModel.deleteCategory(category)
+                val wasCategoryDeleted = viewModel.deleteCategory(passedCategory)
                 if (!wasCategoryDeleted && isDefaultCategory) {
                     Toast.makeText(activity, getString(R.string.look_again), Toast.LENGTH_SHORT)
                         .show()
                 }
-                if (isCurrentCategory){
+                if (isCurrentCategory) {
                     dismissDialog(isCurrentCategory, dialog)
                 }
                 dialog.cancel()
             }
         }
-        return dialog
     }
 
     override fun onDismiss(dialog: DialogInterface) {
