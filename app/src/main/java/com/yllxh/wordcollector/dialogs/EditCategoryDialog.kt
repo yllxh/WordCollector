@@ -14,7 +14,7 @@ import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
 import com.yllxh.wordcollector.viewmodels.AddEditCategoryViewModel
 
 
-class AddEditCategoryDialog : DialogFragment(){
+class EditCategoryDialog : DialogFragment(){
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(AddEditCategoryViewModel::class.java)
     }
@@ -73,11 +73,11 @@ class AddEditCategoryDialog : DialogFragment(){
 
         const val TAG: String = KEY
 
-        fun newInstance(category: Category? = null): AddEditCategoryDialog {
+        fun newInstance(category: Category? = null): EditCategoryDialog {
             val bundle = Bundle()
             bundle.putParcelable(KEY, category ?: Category(""))
 
-            val newDialog = AddEditCategoryDialog()
+            val newDialog = EditCategoryDialog()
             newDialog.arguments = bundle
 
             return newDialog

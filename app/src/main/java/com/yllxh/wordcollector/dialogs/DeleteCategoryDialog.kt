@@ -20,7 +20,7 @@ import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import com.yllxh.wordcollector.viewmodels.DeleteCategoryViewModel
 
 
-class DeleteCategoryDialog : DialogFragment(){
+class DeleteCategoryDialog : DialogFragment() {
 
     private var clicksCount = 0
     lateinit var passedCategory: Category
@@ -30,7 +30,7 @@ class DeleteCategoryDialog : DialogFragment(){
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             clicksCount = savedInstanceState.getInt(CLICKS_KEY)
         }
 
@@ -50,9 +50,6 @@ class DeleteCategoryDialog : DialogFragment(){
         if (isDefaultCategory) {
             binding.alertMessageTextView.text = getString(R.string.delete_all_items)
         }
-
-
-
 
         val dialog = createDialog(binding)
 

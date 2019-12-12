@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.yllxh.wordcollector.dialogs.AddEditCategoryDialog
+import com.yllxh.wordcollector.dialogs.EditCategoryDialog
 import com.yllxh.wordcollector.dialogs.DeleteCategoryDialog
 import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
@@ -29,8 +29,8 @@ class ManageCategoriesFragment : Fragment(){
 
         categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
             viewModel.setCurrentCategory(category.name)
-            AddEditCategoryDialog.newInstance(category)
-                .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
+            EditCategoryDialog.newInstance(category)
+                .show(requireFragmentManager(), EditCategoryDialog.TAG)
         }
         binding.categoryRecycleview.adapter = categoryAdapter
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
@@ -41,8 +41,8 @@ class ManageCategoriesFragment : Fragment(){
 
         // Fab button used to pop up a dialog, for inserting a new category.
         binding.fab.setOnClickListener {
-            AddEditCategoryDialog.newInstance()
-                .show(requireFragmentManager(), AddEditCategoryDialog.TAG)
+            EditCategoryDialog.newInstance()
+                .show(requireFragmentManager(), EditCategoryDialog.TAG)
 
         }
         return binding.root
