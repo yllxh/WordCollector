@@ -11,15 +11,17 @@ import androidx.lifecycle.ViewModelProviders
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
+import com.yllxh.wordcollector.utils.getLastSelectedCategory
+import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import com.yllxh.wordcollector.viewmodels.EditCategoryViewModel
 
 
 class EditCategoryDialog : DialogFragment(){
     private lateinit var binding: DialogAddEditCategoryBinding
-    private lateinit var viewModel :EditCategoryViewModel
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(EditCategoryViewModel::class.java)
+    }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        viewModel = ViewModelProviders.of(this).get(EditCategoryViewModel::class.java)
         if (savedInstanceState == null) {
             viewModel.passedCategory = arguments?.getParcelable(KEY) ?: Category("")
         }
@@ -57,6 +59,7 @@ class EditCategoryDialog : DialogFragment(){
             if (!successful) {
                 toast(getString(R.string.category_name_alert))
             } else {
+                setLastSelectedCategory(requireContext(), newCategoryName)
                 toast(getString(R.string.category_saved))
             }
             dialog.cancel()

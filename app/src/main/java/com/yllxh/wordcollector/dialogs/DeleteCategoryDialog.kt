@@ -31,9 +31,9 @@ class DeleteCategoryDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState != null) {
             clicksCount = savedInstanceState.getInt(CLICKS_KEY)
+        }else {
             viewModel.passedCategory = arguments?.getParcelable(KEY) ?: Category("")
         }
-
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
             R.layout.dialog_deleting_category,

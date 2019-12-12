@@ -1,6 +1,7 @@
 package com.yllxh.wordcollector.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.savedstate.SavedStateRegistry
 import com.google.android.material.snackbar.Snackbar
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.viewmodels.WordDisplayViewModel
@@ -27,6 +29,7 @@ import com.yllxh.wordcollector.utils.getNightMode
 import com.yllxh.wordcollector.utils.setDayNightMode
 
 
+    private const val TAG = "AAAAAWORDDISPLAY"
 class WordDisplayFragment : Fragment() {
 
 
@@ -49,10 +52,91 @@ class WordDisplayFragment : Fragment() {
         initAdapters()
 
         startObservingData()
-
         setOnClickListeners()
 
         return binding.root
+    }
+
+    private fun setOnClickListeners() {
+        binding.apply {
+            saveTextview.setOnClickListener {
+                val word = extractWordFromHeader()
+
+                newWordEditText.setText("")
+                newDefinitionEditText.setText("")
+                // If the word is not inserted, than it means that it is not valid
+                if (!viewModel.insertWord(word)) {
+                    toast(getString(R.string.word_is_not_valid))
+                }
+            }
+            lookUpTextview.setOnClickListener {
+                val str = newWordEditText.text.toString().trim()
+                if (str.isEmpty()) {
+                    toast(getString(R.string.word_field_is_empty), Toast.LENGTH_LONG)
+                } else {
+                    lookUpTheNewWord(str)
+                }
+            }
+
+            hideHeaderButton.setOnClickListener {
+                enterNewWordCardview.visibility = View.GONE
+                floatingActionButton.show()
+            }
+            floatingActionButton.setOnClickListener {
+                floatingActionButton.hide()
+                enterNewWordCardview.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun FragmentWordDisplayBinding.extractWordFromHeader(): Word {
+        val wordText = newWordEditText.text.toString()
+
+        val definitionText = newDefinitionEditText.text.toString()
+        val selectedCategory = viewModel.selectedCategory.value ?: viewModel.defaultCategory
+        return Word(wordText, definitionText, selectedCategory)
+    }
+
+    private fun initAdapters() {
+        categoryAdapter = CategoryAdapter(requireContext()) {
+            viewModel.setCurrentCategory(it.name)
+        }
+        binding.categoryRecycleview.adapter = categoryAdapter
+
+        wordAdapter = WordAdapter { word ->
+            EditWordDialog.newInstance(word)
+                .show(requireFragmentManager(), EditWordDialog.TAG)
+        }
+        binding.wordRecycleview.adapter = wordAdapter
+        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
+    }
+
+    private fun startObservingData() {
+        viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
+            categoryAdapter.submitList(list)
+            categoryAdapter.notifyDataSetChanged()
+        })
+
+        viewModel.selectedCategory.observe(this, Observer {
+            wordAdapter.submitList(
+                viewModel.filterWordsToCategory(it))
+            categoryAdapter.notifySelectedCategoryChanged(it)
+        })
+
+        viewModel.words.observe(this, Observer {
+            wordAdapter.submitList(
+                viewModel.filterWordsToCategory()
+            )
+
+            // If the new word was inserted to the list, scroll to the Top of the recycleView
+            if (viewModel.newItemInserted || viewModel.isUserSearching) {
+                binding.wordRecycleview.smoothScrollToPosition(0)
+
+                if (viewModel.isUserSearching) {
+                    viewModel.newItemInserted = false
+                }
+            }
+        })
     }
 
     override fun onResume() {
@@ -76,90 +160,6 @@ class WordDisplayFragment : Fragment() {
         }
         return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
                 || super.onOptionsItemSelected(item)
-    }
-
-    private fun setOnClickListeners() {
-        binding.apply {
-            saveTextview.setOnClickListener {
-                val word = extrackedWordFromHeader()
-
-                newWordEditText.setText("")
-                newDefinitionEditText.setText("")
-                // If the word is not inserted, than it means that it is not valid
-                if (!viewModel.insertWord(word)) {
-                    toast(getString(R.string.word_is_not_valid))
-                }
-            }
-            lookUpTextview.setOnClickListener {
-                val str = newWordEditText.text.toString().trim()
-                if (str.isEmpty()) {
-                    toast(getString(R.string.word_field_is_empty), Toast.LENGTH_LONG)
-                } else {
-                    lookUpTheNewWord(str)
-                }
-            }
-
-
-            hideHeaderButton.setOnClickListener {
-                enterNewWordCardview.visibility = View.GONE
-                floatingActionButton.show()
-            }
-            floatingActionButton.setOnClickListener {
-                floatingActionButton.hide()
-                enterNewWordCardview.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun FragmentWordDisplayBinding.extrackedWordFromHeader(): Word {
-        val wordText = newWordEditText.text.toString()
-
-        val definitionText = newDefinitionEditText.text.toString()
-        val selectedCategory = viewModel.selectedCategory.value ?: viewModel.defaultCategory
-        return Word(wordText, definitionText, selectedCategory)
-    }
-
-    private fun initAdapters() {
-        categoryAdapter = CategoryAdapter(requireContext()) {
-            viewModel.setCurrentCategory(it.name)
-        }
-        binding.categoryRecycleview.adapter = categoryAdapter
-
-        wordAdapter = WordAdapter { word ->
-            EditWordDialog.newInstance(word)
-                .show(requireFragmentManager(), EditWordDialog.TAG)
-        }
-        binding.wordRecycleview.adapter = wordAdapter
-
-        ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
-    }
-
-    private fun startObservingData() {
-        viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
-            categoryAdapter.submitList(list)
-        })
-
-        viewModel.selectedCategory.observe(this, Observer {
-            wordAdapter.submitList(
-                viewModel.filterWordsToCategory(it)
-            )
-            categoryAdapter.notifySelectedCategoryChanged(it)
-        })
-
-        viewModel.words.observe(this, Observer {
-            wordAdapter.submitList(
-                viewModel.filterWordsToCategory()
-            )
-
-            // If the new word was inserted to the list, scroll to the Top of the recycleView
-            if (viewModel.newItemInserted || viewModel.isUserSearching) {
-                binding.wordRecycleview.smoothScrollToPosition(0)
-
-                if (viewModel.isUserSearching) {
-                    viewModel.newItemInserted = false
-                }
-            }
-        })
     }
 
     private fun onSearchStateChange(isSearching: Boolean) {

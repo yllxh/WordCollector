@@ -19,7 +19,7 @@ import com.yllxh.wordcollector.utils.getLastSelectedCategory
 
 
 
-const val TAG = "Category Adapter"
+const val TAG = "AAAAACategory Adap"
 class CategoryAdapter(
     private val context: Context,
     private val widthMatchParent: Boolean = false,
@@ -69,10 +69,10 @@ class CategoryAdapter(
     }
 
     fun notifySelectedCategoryChanged(categoryName: String?) {
-        val previousSelection = selectedItemPosition.let { if (it == -1) 0 else it }
         Log.d(TAG,categoryName ?: "NONE")
+
+        notifyItemChanged(selectedItemPosition)
         updateSelectedItemPosition(categoryName)
-        notifyItemChanged(previousSelection)
         notifyItemChanged(selectedItemPosition)
     }
 }
@@ -102,19 +102,17 @@ class CategoryViewHolder private constructor(private val binding: CategoryListIt
                 adapterPosition -> {
                     // Highlight the selected category.
                     cardView.setCardBackgroundColor(
-                        ContextCompat.getColor(listener.getContext(), R.color.colorAccent)
-                    )
+                        ContextCompat.getColor(listener.getContext(), R.color.colorAccent))
+
                     categoryTextView.setTextColor(
-                        ContextCompat.getColor(listener.getContext(), R.color.categorySelectedTextColor)
-                    )
+                        ContextCompat.getColor(listener.getContext(), R.color.categorySelectedTextColor))
                 }
                 else -> {
                     cardView.setCardBackgroundColor(
-                        ContextCompat.getColor(listener.getContext(), R.color.categoryBackground)
-                    )
+                        ContextCompat.getColor(listener.getContext(), R.color.categoryBackground))
+
                     categoryTextView.setTextColor(
-                        ContextCompat.getColor(listener.getContext(), R.color.categoryTextColor)
-                    )
+                        ContextCompat.getColor(listener.getContext(), R.color.categoryTextColor))
                 }
             }
 

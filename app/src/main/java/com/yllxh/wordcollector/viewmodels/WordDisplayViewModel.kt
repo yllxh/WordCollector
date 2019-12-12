@@ -12,7 +12,7 @@ import com.yllxh.wordcollector.utils.isValidWord
 import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import kotlinx.coroutines.*
 
-private const val TAG = "WordDisplayViewModel"
+private const val TAG = "WordDViewModelAAAAAA"
 class WordDisplayViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
@@ -29,8 +29,8 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
 
     private val _selectedCategory by lazy {
         MutableLiveData<String>().apply {
-            Log.d(TAG, "_currentCategory Initialized.")
             value = getLastSelectedCategory(application)
+            Log.d(TAG, "_currentCategory Initialized. $value")
         }
     }
     val selectedCategory: LiveData<String>
