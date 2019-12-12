@@ -115,7 +115,7 @@ class WordDisplayFragment : Fragment() {
         val wordText = newWordEditText.text.toString()
 
         val definitionText = newDefinitionEditText.text.toString()
-        val selectedCategory = viewModel.currentCategory.value ?: viewModel.defaultCategory
+        val selectedCategory = viewModel.selectedCategory.value ?: viewModel.defaultCategory
         return Word(wordText, definitionText, selectedCategory)
     }
 
@@ -139,13 +139,13 @@ class WordDisplayFragment : Fragment() {
             categoryAdapter.submitList(list)
 
             viewModel.apply {
-                if (list.none { it.name == currentCategory.value }) {
+                if (list.none { it.name == selectedCategory.value }) {
                     setCurrentCategory(defaultCategory)
                 }
             }
         })
 
-        viewModel.currentCategory.observe(this, Observer {
+        viewModel.selectedCategory.observe(this, Observer {
             wordAdapter.submitList(
                 viewModel.filterWordsToCategory(it)
             )
@@ -175,7 +175,7 @@ class WordDisplayFragment : Fragment() {
             else -> {
                 setVisibilityHeaderAndCategoryAdapter(View.VISIBLE)
                 viewModel.apply {
-                    setCurrentCategory(currentCategory.value)
+                    setCurrentCategory(selectedCategory.value)
                 }
             }
         }

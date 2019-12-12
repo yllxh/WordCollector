@@ -1,6 +1,7 @@
 package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +12,9 @@ import com.yllxh.wordcollector.utils.isValidWord
 import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import kotlinx.coroutines.*
 
-
+private const val TAG = "WordDisplayViewModel"
 class WordDisplayViewModel(application: Application) : AndroidViewModel(application) {
+
     /**
      * Job needed by the coroutine scope.
      */
@@ -24,26 +26,19 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
 
     private val repository = AppRepository(application)
     val defaultCategory = repository.defaultCategory
-    /**
-     * Used to keep track of the current category
-     */
-    private val _currentCategory by lazy {
+
+    private val _selectedCategory by lazy {
         MutableLiveData<String>().apply {
+            Log.d(TAG, "_currentCategory Initialed.")
             value = getLastSelectedCategory(application)
         }
     }
-    val currentCategory: LiveData<String>
-        get() = _currentCategory
+    val selectedCategory: LiveData<String>
+        get() = _selectedCategory
 
     var words = repository.words
     var categories = repository.categories
 
-    /**
-     * Inserts a word in the database,
-     * if the word is inserted it returns true and false otherwise.
-     *
-     * @param isNewWord  Indicates if this word existed before.
-     */
     fun insertWord(word: Word, isNewWord: Boolean = true): Boolean {
         if (isValidWord(word)) {
             coroutineScope.launch {
@@ -61,9 +56,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    /**
-     * Returns a filtered list of the all the words that contain the queryString.
-     */
+
     fun filterWordsToMatchQuery(queryString: String): List<Word>? {
         return words.value?.filter {
             it.word.contains(queryString, true)
@@ -71,19 +64,17 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    /**
-     * Returns a filtered list of words of the current category.
-     */
-    fun filterWordsToCategory(s: String? = _currentCategory.value): List<Word>? {
+
+    fun filterWordsToCategory(s: String? = _selectedCategory.value): List<Word>? {
         return when (s ?: defaultCategory) {
             defaultCategory -> words.value
-            else -> words.value?.filter { it.category == _currentCategory.value }
+            else -> words.value?.filter { it.category == _selectedCategory.value }
         }
     }
 
     fun setCurrentCategory(name: String?) {
         val selectedCategory = name ?: defaultCategory
-        _currentCategory.value = selectedCategory
+        _selectedCategory.value = selectedCategory
         setLastSelectedCategory(getApplication(), selectedCategory)
     }
 
