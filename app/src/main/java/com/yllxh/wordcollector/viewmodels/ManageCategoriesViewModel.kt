@@ -12,6 +12,7 @@ class ManageCategoriesViewModel(application: Application) :
     private val repository = AppRepository(application)
 
     var categories = repository.categories
+    val defaultCategory: String = repository.defaultCategory
 
     fun setCurrentCategory(name: String) {
         setLastSelectedCategory(getApplication(), name)

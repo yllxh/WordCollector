@@ -30,14 +30,17 @@ class ManageCategoriesFragment : Fragment(){
         categoryAdapter = CategoryAdapter(requireContext(), true){ category ->
             viewModel.setCurrentCategory(category.name)
             categoryAdapter.notifySelectedCategoryChanged(category.name)
-            EditCategoryDialog.newInstance(category)
-                .show(requireFragmentManager(), EditCategoryDialog.TAG)
+            if (category.name != viewModel.defaultCategory) {
+                EditCategoryDialog.newInstance(category)
+                    .show(requireFragmentManager(), EditCategoryDialog.TAG)
+            }
         }
         binding.categoryRecycleview.adapter = categoryAdapter
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
 
         viewModel.categories.observe(this, Observer {
             categoryAdapter.submitList(it)
+            categoryAdapter.notifyDataSetChanged()
         })
 
         // Fab button used to pop up a dialog, for inserting a new category.
