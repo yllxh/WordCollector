@@ -31,7 +31,6 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     private val _selectedCategory by lazy {
         MutableLiveData<String>().apply {
             value = getLastSelectedCategory(application)
-            Log.d(TAG, "_currentCategory Initialized. $value")
         }
     }
     val selectedCategory: LiveData<String>
