@@ -24,6 +24,7 @@ class EditWordDialog : DialogFragment(){
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState == null) {
             viewModel.oldWord = arguments!!.getParcelable(KEY) ?: Word()
+            viewModel.setSelectedCategory()
         }
 
         binding = DataBindingUtil.inflate(

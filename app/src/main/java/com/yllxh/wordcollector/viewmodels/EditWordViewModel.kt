@@ -25,11 +25,7 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
 
     lateinit var oldWord: Word
 
-    private val _selectedCategory by lazy {
-        MutableLiveData<String>().apply {
-            value = getLastSelectedCategory(application)
-        }
-    }
+    private val _selectedCategory = MutableLiveData<String>()
     val selectedCategory: LiveData<String>
         get() = _selectedCategory
 

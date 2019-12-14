@@ -122,9 +122,15 @@ class WordDisplayFragment : Fragment() {
 
         viewModel.words.observe(this, Observer {
             wordAdapter.submitList(
-                viewModel.filterWordsToCategory()
+                when {
+                    viewModel.isUserSearching -> {
+                        viewModel.filterWordsToMatchQuery()
+                    }
+                    else -> {
+                        viewModel.filterWordsToCategory()
+                    }
+                }
             )
-
             // If the new word was inserted to the list, scroll to the Top of the recycleView
             if (viewModel.newItemInserted || viewModel.isUserSearching) {
                 binding.wordRecycleview.smoothScrollToPosition(0)

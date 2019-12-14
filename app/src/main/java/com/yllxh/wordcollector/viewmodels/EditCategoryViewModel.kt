@@ -17,7 +17,6 @@ class EditCategoryViewModel(
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-
     private val repository = AppRepository(application)
     private val currentCategory: String by lazy {
         getLastSelectedCategory(application)
