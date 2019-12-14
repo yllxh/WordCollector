@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +23,7 @@ import com.yllxh.wordcollector.databinding.FragmentWordDisplayBinding
 import com.yllxh.wordcollector.dialogs.EditWordDialog
 import com.yllxh.wordcollector.utils.getLastSelectedCategory
 import com.yllxh.wordcollector.utils.getNightMode
+import com.yllxh.wordcollector.utils.lookUpWord
 import com.yllxh.wordcollector.utils.setDayNightMode
 
 
@@ -71,7 +71,7 @@ class WordDisplayFragment : Fragment() {
                 if (str.isEmpty()) {
                     toast(getString(R.string.word_field_is_empty), Toast.LENGTH_LONG)
                 } else {
-                    lookUpTheNewWord(str)
+                    lookUpWord(str)
                 }
             }
 
@@ -265,12 +265,7 @@ class WordDisplayFragment : Fragment() {
         viewModel.setCurrentCategory(selectedCategory)
     }
 
-    private fun lookUpTheNewWord(wordStr: String) {
-        val url = getString(R.string.google_translate_site) + wordStr
-        findNavController().navigate(
-            WordDisplayFragmentDirections.actionWordDisplayFragmentToLookUpFragment(url)
-        )
-    }
+
 
     private fun toast(s: String, lengthLong: Int = Toast.LENGTH_SHORT) {
         Toast.makeText(activity, s, lengthLong).show()

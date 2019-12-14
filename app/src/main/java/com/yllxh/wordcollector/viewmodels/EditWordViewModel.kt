@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Word
-import com.yllxh.wordcollector.utils.getLastSelectedCategory
 import com.yllxh.wordcollector.utils.isValidNewWord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

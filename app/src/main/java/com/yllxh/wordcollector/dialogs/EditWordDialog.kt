@@ -13,6 +13,7 @@ import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.databinding.DialogEditWordBinding
+import com.yllxh.wordcollector.utils.lookUpWord
 import com.yllxh.wordcollector.viewmodels.EditWordViewModel
 
 class EditWordDialog : DialogFragment(){
@@ -72,6 +73,17 @@ class EditWordDialog : DialogFragment(){
             }
             dialog.cancel()
         }
+
+        binding.dialogLookUpTextView.setOnClickListener {
+            val str = binding.editedWord.text.toString().trim()
+            if (str.isEmpty()) {
+                toast(getString(R.string.word_field_is_empty), Toast.LENGTH_LONG)
+            } else {
+                lookUpWord(str)
+            }
+            dialog.cancel()
+        }
+
         binding.cancelButton.setOnClickListener {
             dialog.cancel()
         }
