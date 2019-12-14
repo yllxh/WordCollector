@@ -75,6 +75,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/edited_definition" />
 
         <TextView
+                android:id="@+id/dialog_look_up_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/look_up"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/save_button"
+                app:layout_constraintTop_toBottomOf="@+id/dialog_category_recycleview" />
+        <TextView
                 android:id="@+id/save_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
