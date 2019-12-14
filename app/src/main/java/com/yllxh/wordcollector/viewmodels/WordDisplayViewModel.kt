@@ -23,7 +23,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
 
     var isUserSearching = false
     var newItemInserted = false
-    var lastSeachedQuery = ""
+    var lastSearchedQuery = ""
 
     private val repository = AppRepository(application)
     val defaultCategory = repository.defaultCategory
@@ -46,7 +46,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
         setLastSelectedCategory(getApplication(), selectedCategory)
     }
 
-    fun filterWordsToMatchQuery(queryString: String = lastSeachedQuery): List<Word>? {
+    fun filterWordsToMatchQuery(queryString: String = lastSearchedQuery): List<Word>? {
         return words.value?.filter {
             it.word.contains(queryString, true)
                     || it.definition.contains(queryString, true)
