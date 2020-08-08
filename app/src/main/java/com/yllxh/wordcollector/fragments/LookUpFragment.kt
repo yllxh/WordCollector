@@ -16,7 +16,7 @@ class LookUpFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentLookUpBinding.inflate(inflater, container, false)
 
-        val url = LookUpFragmentArgs.fromBundle(arguments!!).url
+        val url = LookUpFragmentArgs.fromBundle(requireArguments()).url
         binding.webView.apply {
             settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
@@ -24,6 +24,4 @@ class LookUpFragment : Fragment() {
         }
         return binding.root
     }
-
-
 }

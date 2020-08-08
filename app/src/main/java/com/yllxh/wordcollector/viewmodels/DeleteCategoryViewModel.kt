@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Category
 import kotlinx.coroutines.CoroutineScope
@@ -10,10 +11,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class DeleteCategoryViewModel(application: Application) : AndroidViewModel(application){
-
-    // Job needed by the coroutine scope.
-    private val viewModelJob = Job()
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val repository = AppRepository(application)
 
@@ -25,7 +22,7 @@ class DeleteCategoryViewModel(application: Application) : AndroidViewModel(appli
      */
     fun deleteAllOfCategory(category: Category): Boolean {
         return if (category.name != defaultCategory) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 repository.deleteAllOfCategory(category)
             }
             deleteCategory(category)
@@ -38,7 +35,7 @@ class DeleteCategoryViewModel(application: Application) : AndroidViewModel(appli
      */
     fun deleteCategory(category: Category): Boolean {
         if (category.name != defaultCategory) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 repository.delete(category)
             }
             return true
@@ -47,7 +44,7 @@ class DeleteCategoryViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun deleteAllWords() {
-        coroutineScope.launch {
+        viewModelScope.launch {
             repository.deleteAllWords()
         }
     }

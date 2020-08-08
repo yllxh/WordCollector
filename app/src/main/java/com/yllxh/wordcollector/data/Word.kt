@@ -14,11 +14,4 @@ data class Word(
     var category: String = DEFAULT_CATEGORY_NAME,
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L): Parcelable {
-
-    @Ignore
-    constructor(
-        word: String = "",
-        definition: String = "",
-        category: String = DEFAULT_CATEGORY_NAME
-    ):this(word, definition, category, 0)
 }

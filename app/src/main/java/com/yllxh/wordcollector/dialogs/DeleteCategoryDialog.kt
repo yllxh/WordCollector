@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogDeletingCategoryBinding
@@ -25,7 +25,7 @@ class DeleteCategoryDialog : DialogFragment() {
     private var clicksCount = 0
     private lateinit var binding: DialogDeletingCategoryBinding
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(DeleteCategoryViewModel::class.java)
+        ViewModelProvider(this).get(DeleteCategoryViewModel::class.java)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

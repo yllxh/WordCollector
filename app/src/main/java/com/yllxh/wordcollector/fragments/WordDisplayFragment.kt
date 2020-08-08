@@ -8,8 +8,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -29,12 +29,11 @@ import com.yllxh.wordcollector.utils.setDayNightMode
 
 class WordDisplayFragment : Fragment() {
 
-
     private lateinit var binding: FragmentWordDisplayBinding
     private lateinit var wordAdapter: WordAdapter
     private lateinit var categoryAdapter: CategoryAdapter
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(WordDisplayViewModel::class.java)
+        ViewModelProvider(this).get(WordDisplayViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,25 +101,25 @@ class WordDisplayFragment : Fragment() {
 
         wordAdapter = WordAdapter { word ->
             EditWordDialog.newInstance(word)
-                .show(requireFragmentManager(), EditWordDialog.TAG)
+                .show(parentFragmentManager, EditWordDialog.TAG)
         }
         binding.wordRecycleview.adapter = wordAdapter
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.wordRecycleview)
     }
 
     private fun startObservingData() {
-        viewModel.categories.observe(this@WordDisplayFragment, Observer { list ->
+        viewModel.categories.observe(viewLifecycleOwner, Observer { list ->
             categoryAdapter.submitList(list)
             categoryAdapter.notifyDataSetChanged()
         })
 
-        viewModel.selectedCategory.observe(this, Observer {
+        viewModel.selectedCategory.observe(viewLifecycleOwner, Observer {
             wordAdapter.submitList(
                 viewModel.filterWordsToCategory(it))
             categoryAdapter.notifySelectedCategoryChanged(it)
         })
 
-        viewModel.words.observe(this, Observer {
+        viewModel.words.observe(viewLifecycleOwner, Observer {
             wordAdapter.submitList(
                 when {
                     viewModel.isUserSearching -> {
@@ -161,7 +160,7 @@ class WordDisplayFragment : Fragment() {
             toggleNightMode()
             return true
         }
-        return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
+        return NavigationUI.onNavDestinationSelected(item, findNavController())
                 || super.onOptionsItemSelected(item)
     }
 

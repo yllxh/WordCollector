@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import java.util.concurrent.Executors
 
 const val DATABASE_NAME = "app_database"
 const val DEFAULT_CATEGORY_NAME = "All"
@@ -25,14 +26,14 @@ abstract class AppDatabase : RoomDatabase() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 val categoryDao: CategoryDao? = INSTANCE?.categoryDao
-                Thread {
+                Executors.newSingleThreadExecutor().execute {
                     categoryDao?.let {
                         // If there are no categories in the database, insertWord a Category.
                         if (categoryDao.getAnyCategory().isEmpty()) {
                             categoryDao.insert(Category())
                         }
                     }
-                }.start()
+                }
             }
         }
 

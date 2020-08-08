@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.data.Word
@@ -19,12 +19,12 @@ import com.yllxh.wordcollector.viewmodels.EditWordViewModel
 class EditWordDialog : DialogFragment(){
     private lateinit var binding: DialogEditWordBinding
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(EditWordViewModel::class.java)
+        ViewModelProvider(this).get(EditWordViewModel::class.java)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState == null) {
-            viewModel.oldWord = arguments!!.getParcelable(KEY) ?: Word()
+            viewModel.oldWord = requireArguments().getParcelable(KEY) ?: Word()
             viewModel.setSelectedCategory()
         }
 

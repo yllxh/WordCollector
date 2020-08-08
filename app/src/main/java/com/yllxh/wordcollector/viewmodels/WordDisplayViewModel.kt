@@ -1,10 +1,10 @@
 package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.utils.getLastSelectedCategory
@@ -12,15 +12,7 @@ import com.yllxh.wordcollector.utils.isValidWord
 import com.yllxh.wordcollector.utils.setLastSelectedCategory
 import kotlinx.coroutines.*
 
-private const val TAG = "WordDViewModelAAAAAA"
 class WordDisplayViewModel(application: Application) : AndroidViewModel(application) {
-
-    /**
-     * Job needed by the coroutine scope.
-     */
-    private val viewModelJob = Job()
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
     var isUserSearching = false
     var newItemInserted = false
     var lastSearchedQuery = ""
@@ -61,7 +53,7 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
 
     fun insertWord(word: Word, isNewWord: Boolean = true): Boolean {
         if (isValidWord(word)) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 repository.insert(word)
                 newItemInserted = isNewWord
             }
@@ -71,14 +63,8 @@ class WordDisplayViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun deleteWord(word: Word) {
-        coroutineScope.launch {
+        viewModelScope.launch {
             repository.delete(word)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // Cancels the job used by the coroutine.
-        viewModelJob.cancel()
     }
 }

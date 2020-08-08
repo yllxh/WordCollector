@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.yllxh.wordcollector.R
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.databinding.DialogAddEditCategoryBinding
@@ -18,7 +18,7 @@ import com.yllxh.wordcollector.viewmodels.EditCategoryViewModel
 class EditCategoryDialog : DialogFragment(){
     private lateinit var binding: DialogAddEditCategoryBinding
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(EditCategoryViewModel::class.java)
+        ViewModelProvider(this).get(EditCategoryViewModel::class.java)
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (savedInstanceState == null) {

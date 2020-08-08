@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Word
 import com.yllxh.wordcollector.utils.isValidNewWord
@@ -13,13 +14,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class EditWordViewModel(application: Application) : AndroidViewModel(application){
-
-    /**
-     * Job needed by the coroutine scope.
-     */
-    private val viewModelJob = Job()
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
     private val repository = AppRepository(application)
 
     lateinit var oldWord: Word
@@ -38,7 +32,7 @@ class EditWordViewModel(application: Application) : AndroidViewModel(application
     fun update(newWord: Word, oldWord: Word): Boolean {
         return if (isValidNewWord(newWord, oldWord)) {
             newWord.id = oldWord.id
-            coroutineScope.launch {
+            viewModelScope.launch {
                 repository.update(newWord, oldWord)
             }
             true

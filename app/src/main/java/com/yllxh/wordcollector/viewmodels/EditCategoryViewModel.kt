@@ -2,6 +2,7 @@ package com.yllxh.wordcollector.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.yllxh.wordcollector.AppRepository
 import com.yllxh.wordcollector.data.Category
 import com.yllxh.wordcollector.utils.*
@@ -13,9 +14,6 @@ import kotlinx.coroutines.launch
 class EditCategoryViewModel(
     application: Application
 ) : AndroidViewModel(application) {
-    // Job needed by the coroutine scope.
-    private val viewModelJob = Job()
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val repository = AppRepository(application)
     private val currentCategory: String by lazy {
@@ -29,7 +27,7 @@ class EditCategoryViewModel(
      */
     fun insertCategory(category: Category): Boolean {
         return if (isValidCategory(category)) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 repository.insert(category)
             }
             true
@@ -42,7 +40,7 @@ class EditCategoryViewModel(
      */
     fun updateCategory(newCategory: Category, oldCategory: Category): Boolean {
         return if (isValidNewCategory(newCategory, oldCategory)) {
-            coroutineScope.launch {
+            viewModelScope.launch {
                 repository.update(newCategory, oldCategory)
             }
             if (oldCategory.name == currentCategory) {

@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yllxh.wordcollector.dialogs.EditCategoryDialog
@@ -21,7 +21,7 @@ class ManageCategoriesFragment : Fragment(){
 
     lateinit var categoryAdapter: CategoryAdapter
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(ManageCategoriesViewModel::class.java)
+        ViewModelProvider(this).get(ManageCategoriesViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,13 +32,13 @@ class ManageCategoriesFragment : Fragment(){
             categoryAdapter.notifySelectedCategoryChanged(category.name)
             if (category.name != viewModel.defaultCategory) {
                 EditCategoryDialog.newInstance(category)
-                    .show(requireFragmentManager(), EditCategoryDialog.TAG)
+                    .show(parentFragmentManager, EditCategoryDialog.TAG)
             }
         }
         binding.categoryRecycleview.adapter = categoryAdapter
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.categoryRecycleview)
 
-        viewModel.categories.observe(this, Observer {
+        viewModel.categories.observe(viewLifecycleOwner, Observer {
             categoryAdapter.submitList(it)
             categoryAdapter.notifyDataSetChanged()
         })
@@ -46,7 +46,7 @@ class ManageCategoriesFragment : Fragment(){
         // Fab button used to pop up a dialog, for inserting a new category.
         binding.fab.setOnClickListener {
             EditCategoryDialog.newInstance()
-                .show(requireFragmentManager(), EditCategoryDialog.TAG)
+                .show(parentFragmentManager, EditCategoryDialog.TAG)
 
         }
         return binding.root
@@ -73,7 +73,7 @@ class ManageCategoriesFragment : Fragment(){
             val position = viewHolder.adapterPosition
             val category = viewModel.categories.value!![position]
             DeleteCategoryDialog.newInstance(this@ManageCategoriesFragment, category)
-                .show(requireFragmentManager(), DeleteCategoryDialog.TAG)
+                .show(parentFragmentManager, DeleteCategoryDialog.TAG)
         }
     }
 }
