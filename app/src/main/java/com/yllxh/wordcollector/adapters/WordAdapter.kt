@@ -17,7 +17,6 @@ class WordAdapter(private var onEditClickListener: (Word) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position), onEditClickListener)
-
     }
 
     class ViewHolder private constructor(private var binding: WordListItemBinding) :

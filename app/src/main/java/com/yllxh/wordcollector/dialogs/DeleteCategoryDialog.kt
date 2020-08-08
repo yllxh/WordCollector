@@ -134,14 +134,10 @@ class DeleteCategoryDialog : DialogFragment() {
         const val DELETE_CATEGORY_REQUEST = 101
 
         fun newInstance(fragment: Fragment, category: Category): DeleteCategoryDialog {
-
-            val bundle = Bundle()
-            bundle.putParcelable(KEY, category)
-
-            val newDialog = DeleteCategoryDialog()
-            newDialog.setTargetFragment(fragment, DELETE_CATEGORY_REQUEST)
-            newDialog.arguments = bundle
-            return newDialog
+            return DeleteCategoryDialog().apply {
+                setTargetFragment(fragment, DELETE_CATEGORY_REQUEST)
+                arguments = Bundle().apply { putParcelable(KEY, category) }
+            }
 
         }
     }
