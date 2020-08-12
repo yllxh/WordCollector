@@ -7,7 +7,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".fragments.WordDisplayFragment"
+            tools:context=".screens.worddisplay.WordDisplayFragment"
             >
         <LinearLayout
                 android:id="@+id/enter_new_word_cardview"

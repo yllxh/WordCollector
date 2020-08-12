@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector.fragments
+package com.yllxh.wordcollector.screens.managecategories
 
 
 import android.content.Intent
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yllxh.wordcollector.dialogs.EditCategoryDialog
 import com.yllxh.wordcollector.dialogs.DeleteCategoryDialog
-import com.yllxh.wordcollector.viewmodels.ManageCategoriesViewModel
 import com.yllxh.wordcollector.adapters.CategoryAdapter
 import com.yllxh.wordcollector.databinding.FragmentManageCategoriesBinding
 

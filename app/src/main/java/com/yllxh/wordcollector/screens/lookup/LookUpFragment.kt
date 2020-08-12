@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector.fragments
+package com.yllxh.wordcollector.screens.lookup
 
 
 import android.annotation.SuppressLint
@@ -16,7 +16,9 @@ class LookUpFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentLookUpBinding.inflate(inflater, container, false)
 
-        val url = LookUpFragmentArgs.fromBundle(requireArguments()).url
+        val url = LookUpFragmentArgs.fromBundle(
+            requireArguments()
+        ).url
         binding.webView.apply {
             settings.javaScriptEnabled = true
             webViewClient = WebViewClient()

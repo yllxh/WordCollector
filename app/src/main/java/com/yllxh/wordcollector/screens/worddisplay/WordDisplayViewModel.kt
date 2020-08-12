@@ -1,4 +1,4 @@
-package com.yllxh.wordcollector.viewmodels
+package com.yllxh.wordcollector.screens.worddisplay
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
